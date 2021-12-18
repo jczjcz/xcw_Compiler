@@ -1,11 +1,14 @@
 %{
 #define YYSTYPE void*
 #define INTSIZE 4
+#define ToStr(k) (string*)(k)
+#define ToInt(k) (int*)(k)
 
 #include<iostream>
 #include<fstream>
 #include<string>
 #include<cstdlib>
+#include<vector>
 
 using namespace std;
 
@@ -16,7 +19,36 @@ extern int yyparse();
 
 ostream &out = cout;       // 用于输出
 
+int VAR_T_num = 0, VAR_t_num = 0, VAR_p_num = 0;       //这三个全局变量分别表示Eeyore中的原生变量、临时变量和函数参数的编号
 
+
+
+int DEEP;      //当前的深度
+struct IDENT_scope{     //符号表元素
+    string IDENT_name;
+    int IDENT_num;
+    int IDENT_deep;
+    IDENT_scope(string name, int num, int deep){
+        IDENT_name = name;
+        IDENT_num = num;
+        IDENT_deep = deep;
+    }
+};
+
+vector<IDENT_scope> Scope;     //符号表
+
+bool check_define(IDENT_scope ident){       // 检查当前域中是否存在重复
+    int i = Scope.size() - 1;
+    if(i == -1)
+        return true;
+    while(Scope[i].IDENT_deep == DEEP){
+        if(ident.IDENT_name == Scope[i].IDENT_name){
+            return false;
+        }
+        i--;
+    }
+    return true;
+}
 
 
 
@@ -37,13 +69,8 @@ ostream &out = cout;       // 用于输出
 %%
 
 CompUnit:
-    CompUnits Decl
-    |   Decl
-;
-
-CompUnits:
-    CompUnit CompUnits
-    |   CompUnit
+    Decl
+    | CompUnit Decl
 ;
 
 Decl:
@@ -59,15 +86,25 @@ BType:
 ;
 
 VarDefs:
-    VarDef VarDefs
-    |   VarDef
+    VarDef
+    |   VarDefs VarDef
 ;
 
 VarDef:
     IDENT
     {
         $$ = $1;
-        cout << "hello world" << endl;
+        IDENT_scope tmp = IDENT_scope(*ToStr($1), 0, DEEP);
+        if(check_define(tmp)){       //如果在当前域中未被定义过
+            Scope.push_back(tmp);
+            out << "var T" << VAR_T_num << endl;
+            out << "T" << VAR_T_num << " = " << 0 << endl;
+            VAR_T_num ++ ;
+        }
+        else{
+            string err = "\"" +  *ToStr($1) + "\" already defined in this scope.";
+            yyerror(err);
+        }
     }
 ;
 

@@ -66,11 +66,14 @@
 
 #define YYSTYPE void*
 #define INTSIZE 4
+#define ToStr(k) (string*)(k)
+#define ToInt(k) (int*)(k)
 
 #include<iostream>
 #include<fstream>
 #include<string>
 #include<cstdlib>
+#include<vector>
 
 using namespace std;
 
@@ -81,12 +84,41 @@ extern int yyparse();
 
 ostream &out = cout;       // 用于输出
 
+int VAR_T_num = 0, VAR_t_num = 0, VAR_p_num = 0;       //这三个全局变量分别表示Eeyore中的原生变量、临时变量和函数参数的编号
+
+
+
+int DEEP;      //当前的深度
+struct IDENT_scope{     //符号表元素
+    string IDENT_name;
+    int IDENT_num;
+    int IDENT_deep;
+    IDENT_scope(string name, int num, int deep){
+        IDENT_name = name;
+        IDENT_num = num;
+        IDENT_deep = deep;
+    }
+};
+
+vector<IDENT_scope> Scope;     //符号表
+
+bool check_define(IDENT_scope ident){       // 检查当前域中是否存在重复
+    int i = Scope.size() - 1;
+    if(i == -1)
+        return true;
+    while(Scope[i].IDENT_deep == DEEP){
+        if(ident.IDENT_name == Scope[i].IDENT_name){
+            return false;
+        }
+        i--;
+    }
+    return true;
+}
 
 
 
 
-
-#line 90 "build/xcw_parser.tab.c" /* yacc.c:339  */
+#line 122 "build/xcw_parser.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -211,7 +243,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 215 "build/xcw_parser.tab.c" /* yacc.c:358  */
+#line 247 "build/xcw_parser.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -451,18 +483,18 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  7
+#define YYFINAL  6
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   15
+#define YYLAST   26
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  38
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  8
+#define YYNNTS  7
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  11
+#define YYNRULES  9
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  16
+#define YYNSTATES  13
 
 /* YYTRANSLATE[YYX] -- Symbol number corresponding to YYX as returned
    by yylex, with out-of-bounds checking.  */
@@ -512,8 +544,7 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    40,    40,    41,    45,    46,    50,    54,    58,    62,
-      63,    67
+       0,    72,    72,    73,    77,    81,    85,    89,    90,    94
 };
 #endif
 
@@ -526,8 +557,8 @@ static const char *const yytname[] =
   "IDENT", "LPAREN", "RPAREN", "LCURLY", "RCURLY", "LBRAC", "RBRAC", "INT",
   "CONST", "VOID", "LE", "LEQ", "GE", "GEQ", "EQ", "NEQ", "AND", "OR",
   "NOT", "IF", "ELSE", "WHILE", "BREAK", "CONT", "RETURN", "ASSIGN",
-  "SEMI", "COMMA", "PERIOD", "NUMBER", "$accept", "CompUnit", "CompUnits",
-  "Decl", "VarDecl", "BType", "VarDefs", "VarDef", YY_NULLPTR
+  "SEMI", "COMMA", "PERIOD", "NUMBER", "$accept", "CompUnit", "Decl",
+  "VarDecl", "BType", "VarDefs", "VarDef", YY_NULLPTR
 };
 #endif
 
@@ -543,10 +574,10 @@ static const yytype_uint16 yytoknum[] =
 };
 # endif
 
-#define YYPACT_NINF -31
+#define YYPACT_NINF -14
 
 #define yypact_value_is_default(Yystate) \
-  (!!((Yystate) == (-31)))
+  (!!((Yystate) == (-14)))
 
 #define YYTABLE_NINF -1
 
@@ -557,8 +588,8 @@ static const yytype_uint16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-     -13,   -31,     0,   -13,   -31,   -31,    -5,   -31,   -13,   -13,
-     -31,   -31,   -30,    -5,   -31,   -31
+     -13,   -14,     1,   -14,   -14,    -5,   -14,   -14,   -14,    -8,
+     -14,   -14,   -14
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -566,20 +597,20 @@ static const yytype_int8 yypact[] =
      means the default is an error.  */
 static const yytype_uint8 yydefact[] =
 {
-       0,     8,     0,     0,     3,     6,     0,     1,     0,     0,
-       2,    11,     0,    10,     7,     9
+       0,     6,     0,     2,     4,     0,     1,     3,     9,     0,
+       7,     5,     8
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -31,     5,     6,    -2,   -31,   -31,    -4,   -31
+     -14,   -14,     2,   -14,   -14,   -14,    -4
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     8,     9,     4,     5,     6,    12,    13
+      -1,     2,     3,     4,     5,     9,    10
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -587,36 +618,36 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_uint8 yytable[] =
 {
-       7,    10,     1,    11,    14,     2,     3,    10,     0,    15,
-       0,     0,     0,     0,     0,     1
+       8,     6,     1,     8,     7,    12,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     1,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,    11
 };
 
 static const yytype_int8 yycheck[] =
 {
-       0,     3,    15,     8,    34,     0,     0,     9,    -1,    13,
-      -1,    -1,    -1,    -1,    -1,    15
+       8,     0,    15,     8,     2,     9,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    15,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    34
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-       0,    15,    39,    40,    41,    42,    43,     0,    39,    40,
-      41,     8,    44,    45,    34,    44
+       0,    15,    39,    40,    41,    42,     0,    40,     8,    43,
+      44,    34,    44
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-       0,    38,    39,    39,    40,    40,    41,    42,    43,    44,
-      44,    45
+       0,    38,    39,    39,    40,    41,    42,    43,    43,    44
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
 {
-       0,     2,     2,     1,     2,     1,     1,     3,     1,     2,
-       1,     1
+       0,     2,     1,     2,     1,     3,     1,     1,     2,     1
 };
 
 
@@ -1292,17 +1323,27 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-        case 11:
-#line 68 "source/xcw_parser.y" /* yacc.c:1646  */
+        case 9:
+#line 95 "source/xcw_parser.y" /* yacc.c:1646  */
     {
         (yyval) = (yyvsp[0]);
-        cout << "hello world" << endl;
+        IDENT_scope tmp = IDENT_scope(*ToStr((yyvsp[0])), 0, DEEP);
+        if(check_define(tmp)){       //如果在当前域中未被定义过
+            Scope.push_back(tmp);
+            out << "var T" << VAR_T_num << endl;
+            out << "T" << VAR_T_num << " = " << 0 << endl;
+            VAR_T_num ++ ;
+        }
+        else{
+            string err = "\"" +  *ToStr((yyvsp[0])) + "\" already defined in this scope.";
+            yyerror(err);
+        }
     }
-#line 1302 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 1343 "build/xcw_parser.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1306 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 1347 "build/xcw_parser.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1530,7 +1571,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 79 "source/xcw_parser.y" /* yacc.c:1906  */
+#line 116 "source/xcw_parser.y" /* yacc.c:1906  */
 
 
 void yyerror(const char *s) {

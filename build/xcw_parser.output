@@ -34,37 +34,23 @@ Terminals unused in grammar
    NUMBER
 
 
-Rules useless in parser due to conflicts
-
-    3 CompUnits: CompUnit CompUnits
-    4          | CompUnit
-
-
-State 2 conflicts: 1 shift/reduce
-State 8 conflicts: 1 shift/reduce
-State 9 conflicts: 1 shift/reduce
-
-
 Grammar
 
     0 $accept: CompUnit $end
 
-    1 CompUnit: CompUnits Decl
-    2         | Decl
+    1 CompUnit: Decl
+    2         | CompUnit Decl
 
-    3 CompUnits: CompUnit CompUnits
-    4          | CompUnit
+    3 Decl: VarDecl
 
-    5 Decl: VarDecl
+    4 VarDecl: BType VarDefs SEMI
 
-    6 VarDecl: BType VarDefs SEMI
+    5 BType: INT
 
-    7 BType: INT
+    6 VarDefs: VarDef
+    7        | VarDefs VarDef
 
-    8 VarDefs: VarDef VarDefs
-    9        | VarDef
-
-   10 VarDef: IDENT
+    8 VarDef: IDENT
 
 
 Terminals, with rules where they appear
@@ -76,14 +62,14 @@ SUB (259)
 MUL (260)
 DIV (261)
 MOD (262)
-IDENT (263) 10
+IDENT (263) 8
 LPAREN (264)
 RPAREN (265)
 LCURLY (266)
 RCURLY (267)
 LBRAC (268)
 RBRAC (269)
-INT (270) 7
+INT (270) 5
 CONST (271)
 VOID (272)
 LE (273)
@@ -102,7 +88,7 @@ BREAK (285)
 CONT (286)
 RETURN (287)
 ASSIGN (288)
-SEMI (289) 6
+SEMI (289) 4
 COMMA (290)
 PERIOD (291)
 NUMBER (292)
@@ -113,19 +99,17 @@ Nonterminals, with rules where they appear
 $accept (38)
     on left: 0
 CompUnit (39)
-    on left: 1 2, on right: 0 3 4
-CompUnits (40)
-    on left: 3 4, on right: 1 3
-Decl (41)
-    on left: 5, on right: 1 2
-VarDecl (42)
-    on left: 6, on right: 5
-BType (43)
-    on left: 7, on right: 6
-VarDefs (44)
-    on left: 8 9, on right: 6 8
-VarDef (45)
-    on left: 10, on right: 8 9
+    on left: 1 2, on right: 0 2
+Decl (40)
+    on left: 3, on right: 1 2
+VarDecl (41)
+    on left: 4, on right: 3
+BType (42)
+    on left: 5, on right: 4
+VarDefs (43)
+    on left: 6 7, on right: 4 7
+VarDef (44)
+    on left: 8, on right: 6 7
 
 
 State 0
@@ -134,153 +118,104 @@ State 0
 
     INT  shift, and go to state 1
 
-    CompUnit   go to state 2
-    CompUnits  go to state 3
-    Decl       go to state 4
-    VarDecl    go to state 5
-    BType      go to state 6
+    CompUnit  go to state 2
+    Decl      go to state 3
+    VarDecl   go to state 4
+    BType     go to state 5
 
 
 State 1
 
-    7 BType: INT .
+    5 BType: INT .
 
-    $default  reduce using rule 7 (BType)
+    $default  reduce using rule 5 (BType)
 
 
 State 2
 
     0 $accept: CompUnit . $end
-    3 CompUnits: CompUnit . CompUnits
-    4          | CompUnit .
+    2 CompUnit: CompUnit . Decl
 
-    $end  shift, and go to state 7
+    $end  shift, and go to state 6
     INT   shift, and go to state 1
 
-    INT  [reduce using rule 4 (CompUnits)]
-
-    CompUnit   go to state 8
-    CompUnits  go to state 9
-    Decl       go to state 4
-    VarDecl    go to state 5
-    BType      go to state 6
+    Decl     go to state 7
+    VarDecl  go to state 4
+    BType    go to state 5
 
 
 State 3
 
-    1 CompUnit: CompUnits . Decl
+    1 CompUnit: Decl .
 
-    INT  shift, and go to state 1
-
-    Decl     go to state 10
-    VarDecl  go to state 5
-    BType    go to state 6
+    $default  reduce using rule 1 (CompUnit)
 
 
 State 4
 
-    2 CompUnit: Decl .
+    3 Decl: VarDecl .
 
-    $default  reduce using rule 2 (CompUnit)
+    $default  reduce using rule 3 (Decl)
 
 
 State 5
 
-    5 Decl: VarDecl .
+    4 VarDecl: BType . VarDefs SEMI
 
-    $default  reduce using rule 5 (Decl)
+    IDENT  shift, and go to state 8
+
+    VarDefs  go to state 9
+    VarDef   go to state 10
 
 
 State 6
-
-    6 VarDecl: BType . VarDefs SEMI
-
-    IDENT  shift, and go to state 11
-
-    VarDefs  go to state 12
-    VarDef   go to state 13
-
-
-State 7
 
     0 $accept: CompUnit $end .
 
     $default  accept
 
 
+State 7
+
+    2 CompUnit: CompUnit Decl .
+
+    $default  reduce using rule 2 (CompUnit)
+
+
 State 8
 
-    3 CompUnits: CompUnit . CompUnits
-    4          | CompUnit .
+    8 VarDef: IDENT .
 
-    INT  shift, and go to state 1
-
-    INT  [reduce using rule 4 (CompUnits)]
-
-    CompUnit   go to state 8
-    CompUnits  go to state 9
-    Decl       go to state 4
-    VarDecl    go to state 5
-    BType      go to state 6
+    $default  reduce using rule 8 (VarDef)
 
 
 State 9
 
-    1 CompUnit: CompUnits . Decl
-    3 CompUnits: CompUnit CompUnits .
+    4 VarDecl: BType VarDefs . SEMI
+    7 VarDefs: VarDefs . VarDef
 
-    INT  shift, and go to state 1
+    IDENT  shift, and go to state 8
+    SEMI   shift, and go to state 11
 
-    INT  [reduce using rule 3 (CompUnits)]
-
-    Decl     go to state 10
-    VarDecl  go to state 5
-    BType    go to state 6
+    VarDef  go to state 12
 
 
 State 10
 
-    1 CompUnit: CompUnits Decl .
+    6 VarDefs: VarDef .
 
-    $default  reduce using rule 1 (CompUnit)
+    $default  reduce using rule 6 (VarDefs)
 
 
 State 11
 
-   10 VarDef: IDENT .
+    4 VarDecl: BType VarDefs SEMI .
 
-    $default  reduce using rule 10 (VarDef)
+    $default  reduce using rule 4 (VarDecl)
 
 
 State 12
 
-    6 VarDecl: BType VarDefs . SEMI
+    7 VarDefs: VarDefs VarDef .
 
-    SEMI  shift, and go to state 14
-
-
-State 13
-
-    8 VarDefs: VarDef . VarDefs
-    9        | VarDef .
-
-    IDENT  shift, and go to state 11
-
-    $default  reduce using rule 9 (VarDefs)
-
-    VarDefs  go to state 15
-    VarDef   go to state 13
-
-
-State 14
-
-    6 VarDecl: BType VarDefs SEMI .
-
-    $default  reduce using rule 6 (VarDecl)
-
-
-State 15
-
-    8 VarDefs: VarDef VarDefs .
-
-    $default  reduce using rule 8 (VarDefs)
+    $default  reduce using rule 7 (VarDefs)
