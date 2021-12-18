@@ -12,7 +12,7 @@ using namespace std;
 void yyerror(const char *);
 void yyerror(const string&);
 extern int yylex();
-extern int yyparse()
+extern int yyparse();
 
 ostream &out = cout;       // 用于输出
 
@@ -65,6 +65,10 @@ VarDefs:
 
 VarDef:
     IDENT
+    {
+        $$ = $1;
+        cout << "hello world" << endl;
+    }
 ;
 
 

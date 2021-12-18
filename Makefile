@@ -1,5 +1,5 @@
 .PHONY: lc
 lc:
-	lex -o build/main.l.yy.cpp source/scanner.l
-	yacc -v --defines=build/parser.tab.h --output=build/parser.tab.c source/parser.y
-	g++ -o build/compiler -I source build/main.l.yy.cpp build/parser.tab.c source/tokenclass.cpp source/tokenclass.h
+	lex -o build/xcw_main.l.yy.cpp source/xcw_scanner.l
+	yacc -v --defines=build/xcw_parser.tab.h --output=build/xcw_parser.tab.c source/xcw_parser.y
+	g++ -o build/xcw_compiler -I source build/xcw_main.l.yy.cpp build/xcw_parser.tab.c

@@ -1,0 +1,286 @@
+Terminals unused in grammar
+
+   ADD
+   SUB
+   MUL
+   DIV
+   MOD
+   LPAREN
+   RPAREN
+   LCURLY
+   RCURLY
+   LBRAC
+   RBRAC
+   CONST
+   VOID
+   LE
+   LEQ
+   GE
+   GEQ
+   EQ
+   NEQ
+   AND
+   OR
+   NOT
+   IF
+   ELSE
+   WHILE
+   BREAK
+   CONT
+   RETURN
+   ASSIGN
+   COMMA
+   PERIOD
+   NUMBER
+
+
+Rules useless in parser due to conflicts
+
+    3 CompUnits: CompUnit CompUnits
+    4          | CompUnit
+
+
+State 2 conflicts: 1 shift/reduce
+State 8 conflicts: 1 shift/reduce
+State 9 conflicts: 1 shift/reduce
+
+
+Grammar
+
+    0 $accept: CompUnit $end
+
+    1 CompUnit: CompUnits Decl
+    2         | Decl
+
+    3 CompUnits: CompUnit CompUnits
+    4          | CompUnit
+
+    5 Decl: VarDecl
+
+    6 VarDecl: BType VarDefs SEMI
+
+    7 BType: INT
+
+    8 VarDefs: VarDef VarDefs
+    9        | VarDef
+
+   10 VarDef: IDENT
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+ADD (258)
+SUB (259)
+MUL (260)
+DIV (261)
+MOD (262)
+IDENT (263) 10
+LPAREN (264)
+RPAREN (265)
+LCURLY (266)
+RCURLY (267)
+LBRAC (268)
+RBRAC (269)
+INT (270) 7
+CONST (271)
+VOID (272)
+LE (273)
+LEQ (274)
+GE (275)
+GEQ (276)
+EQ (277)
+NEQ (278)
+AND (279)
+OR (280)
+NOT (281)
+IF (282)
+ELSE (283)
+WHILE (284)
+BREAK (285)
+CONT (286)
+RETURN (287)
+ASSIGN (288)
+SEMI (289) 6
+COMMA (290)
+PERIOD (291)
+NUMBER (292)
+
+
+Nonterminals, with rules where they appear
+
+$accept (38)
+    on left: 0
+CompUnit (39)
+    on left: 1 2, on right: 0 3 4
+CompUnits (40)
+    on left: 3 4, on right: 1 3
+Decl (41)
+    on left: 5, on right: 1 2
+VarDecl (42)
+    on left: 6, on right: 5
+BType (43)
+    on left: 7, on right: 6
+VarDefs (44)
+    on left: 8 9, on right: 6 8
+VarDef (45)
+    on left: 10, on right: 8 9
+
+
+State 0
+
+    0 $accept: . CompUnit $end
+
+    INT  shift, and go to state 1
+
+    CompUnit   go to state 2
+    CompUnits  go to state 3
+    Decl       go to state 4
+    VarDecl    go to state 5
+    BType      go to state 6
+
+
+State 1
+
+    7 BType: INT .
+
+    $default  reduce using rule 7 (BType)
+
+
+State 2
+
+    0 $accept: CompUnit . $end
+    3 CompUnits: CompUnit . CompUnits
+    4          | CompUnit .
+
+    $end  shift, and go to state 7
+    INT   shift, and go to state 1
+
+    INT  [reduce using rule 4 (CompUnits)]
+
+    CompUnit   go to state 8
+    CompUnits  go to state 9
+    Decl       go to state 4
+    VarDecl    go to state 5
+    BType      go to state 6
+
+
+State 3
+
+    1 CompUnit: CompUnits . Decl
+
+    INT  shift, and go to state 1
+
+    Decl     go to state 10
+    VarDecl  go to state 5
+    BType    go to state 6
+
+
+State 4
+
+    2 CompUnit: Decl .
+
+    $default  reduce using rule 2 (CompUnit)
+
+
+State 5
+
+    5 Decl: VarDecl .
+
+    $default  reduce using rule 5 (Decl)
+
+
+State 6
+
+    6 VarDecl: BType . VarDefs SEMI
+
+    IDENT  shift, and go to state 11
+
+    VarDefs  go to state 12
+    VarDef   go to state 13
+
+
+State 7
+
+    0 $accept: CompUnit $end .
+
+    $default  accept
+
+
+State 8
+
+    3 CompUnits: CompUnit . CompUnits
+    4          | CompUnit .
+
+    INT  shift, and go to state 1
+
+    INT  [reduce using rule 4 (CompUnits)]
+
+    CompUnit   go to state 8
+    CompUnits  go to state 9
+    Decl       go to state 4
+    VarDecl    go to state 5
+    BType      go to state 6
+
+
+State 9
+
+    1 CompUnit: CompUnits . Decl
+    3 CompUnits: CompUnit CompUnits .
+
+    INT  shift, and go to state 1
+
+    INT  [reduce using rule 3 (CompUnits)]
+
+    Decl     go to state 10
+    VarDecl  go to state 5
+    BType    go to state 6
+
+
+State 10
+
+    1 CompUnit: CompUnits Decl .
+
+    $default  reduce using rule 1 (CompUnit)
+
+
+State 11
+
+   10 VarDef: IDENT .
+
+    $default  reduce using rule 10 (VarDef)
+
+
+State 12
+
+    6 VarDecl: BType VarDefs . SEMI
+
+    SEMI  shift, and go to state 14
+
+
+State 13
+
+    8 VarDefs: VarDef . VarDefs
+    9        | VarDef .
+
+    IDENT  shift, and go to state 11
+
+    $default  reduce using rule 9 (VarDefs)
+
+    VarDefs  go to state 15
+    VarDef   go to state 13
+
+
+State 14
+
+    6 VarDecl: BType VarDefs SEMI .
+
+    $default  reduce using rule 6 (VarDecl)
+
+
+State 15
+
+    8 VarDefs: VarDef VarDefs .
+
+    $default  reduce using rule 8 (VarDefs)

@@ -6,9 +6,9 @@
 #include <string>
 using namespace std;
 // Token table
-#include "parser.tab.h"
+#include "xcw_parser.tab.h"
 // Token class
-#include "tokenclass.h"
+//#include "tokenclass.h"
 
 int charNum = 1;
 %}
