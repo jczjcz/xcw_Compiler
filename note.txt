@@ -4,3 +4,16 @@ git push
 
 
 
+    | AddExp ADD MulExp
+    {
+        //out << "AddExp ADD MulExp" << *ToInt($1) << "+" << *ToInt($3) << endl;
+        int res = *ToInt($1) + *ToInt($3);
+        $$ = & res; 
+    }
+    | AddExp SUB MulExp
+    {
+        int res = *ToInt($1) - *ToInt($3);
+        $$ = & res; 
+    }
+
+

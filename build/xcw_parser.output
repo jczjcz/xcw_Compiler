@@ -11,7 +11,6 @@ Terminals unused in grammar
    RCURLY
    LBRAC
    RBRAC
-   CONST
    VOID
    LE
    LEQ
@@ -28,10 +27,7 @@ Terminals unused in grammar
    BREAK
    CONT
    RETURN
-   ASSIGN
-   COMMA
    PERIOD
-   NUMBER
 
 
 Grammar
@@ -41,16 +37,44 @@ Grammar
     1 CompUnit: Decl
     2         | CompUnit Decl
 
-    3 Decl: VarDecl
+    3 Decl: ConstDecl
+    4     | VarDecl
 
-    4 VarDecl: BType VarDefs SEMI
+    5 ConstDecl: CONST BType ConstDefs SEMI
 
-    5 BType: INT
+    6 ConstDefs: ConstDef
+    7          | ConstDefs COMMA ConstDef
 
-    6 VarDefs: VarDef
-    7        | VarDefs VarDef
+    8 ConstDef: IDENT ASSIGN ConstInitVal
 
-    8 VarDef: IDENT
+    9 ConstInitVal: ConstExp
+
+   10 ConstExp: AddExp
+
+   11 VarDecl: BType VarDefs SEMI
+
+   12 BType: INT
+
+   13 VarDefs: VarDef
+   14        | VarDefs COMMA VarDef
+
+   15 VarDef: IDENT
+   16       | IDENT ASSIGN InitVal
+
+   17 InitVal: Exp
+
+   18 Exp: AddExp
+
+   19 AddExp: MulExp
+
+   20 MulExp: UnaryExp
+
+   21 UnaryExp: PrimaryExp
+
+   22 PrimaryExp: NUMBER
+   23           | LVal
+
+   24 LVal: IDENT
 
 
 Terminals, with rules where they appear
@@ -62,15 +86,15 @@ SUB (259)
 MUL (260)
 DIV (261)
 MOD (262)
-IDENT (263) 8
+IDENT (263) 8 15 16 24
 LPAREN (264)
 RPAREN (265)
 LCURLY (266)
 RCURLY (267)
 LBRAC (268)
 RBRAC (269)
-INT (270) 5
-CONST (271)
+INT (270) 12
+CONST (271) 5
 VOID (272)
 LE (273)
 LEQ (274)
@@ -87,11 +111,11 @@ WHILE (284)
 BREAK (285)
 CONT (286)
 RETURN (287)
-ASSIGN (288)
-SEMI (289) 4
-COMMA (290)
+ASSIGN (288) 8 16
+SEMI (289) 5 11
+COMMA (290) 7 14
 PERIOD (291)
-NUMBER (292)
+NUMBER (292) 22
 
 
 Nonterminals, with rules where they appear
@@ -101,121 +125,347 @@ $accept (38)
 CompUnit (39)
     on left: 1 2, on right: 0 2
 Decl (40)
-    on left: 3, on right: 1 2
-VarDecl (41)
-    on left: 4, on right: 3
-BType (42)
-    on left: 5, on right: 4
-VarDefs (43)
-    on left: 6 7, on right: 4 7
-VarDef (44)
+    on left: 3 4, on right: 1 2
+ConstDecl (41)
+    on left: 5, on right: 3
+ConstDefs (42)
+    on left: 6 7, on right: 5 7
+ConstDef (43)
     on left: 8, on right: 6 7
+ConstInitVal (44)
+    on left: 9, on right: 8
+ConstExp (45)
+    on left: 10, on right: 9
+VarDecl (46)
+    on left: 11, on right: 4
+BType (47)
+    on left: 12, on right: 5 11
+VarDefs (48)
+    on left: 13 14, on right: 11 14
+VarDef (49)
+    on left: 15 16, on right: 13 14
+InitVal (50)
+    on left: 17, on right: 16
+Exp (51)
+    on left: 18, on right: 17
+AddExp (52)
+    on left: 19, on right: 10 18
+MulExp (53)
+    on left: 20, on right: 19
+UnaryExp (54)
+    on left: 21, on right: 20
+PrimaryExp (55)
+    on left: 22 23, on right: 21
+LVal (56)
+    on left: 24, on right: 23
 
 
 State 0
 
     0 $accept: . CompUnit $end
 
-    INT  shift, and go to state 1
+    INT    shift, and go to state 1
+    CONST  shift, and go to state 2
 
-    CompUnit  go to state 2
-    Decl      go to state 3
-    VarDecl   go to state 4
-    BType     go to state 5
+    CompUnit   go to state 3
+    Decl       go to state 4
+    ConstDecl  go to state 5
+    VarDecl    go to state 6
+    BType      go to state 7
 
 
 State 1
 
-    5 BType: INT .
+   12 BType: INT .
 
-    $default  reduce using rule 5 (BType)
+    $default  reduce using rule 12 (BType)
 
 
 State 2
 
-    0 $accept: CompUnit . $end
-    2 CompUnit: CompUnit . Decl
+    5 ConstDecl: CONST . BType ConstDefs SEMI
 
-    $end  shift, and go to state 6
-    INT   shift, and go to state 1
+    INT  shift, and go to state 1
 
-    Decl     go to state 7
-    VarDecl  go to state 4
-    BType    go to state 5
+    BType  go to state 8
 
 
 State 3
+
+    0 $accept: CompUnit . $end
+    2 CompUnit: CompUnit . Decl
+
+    $end   shift, and go to state 9
+    INT    shift, and go to state 1
+    CONST  shift, and go to state 2
+
+    Decl       go to state 10
+    ConstDecl  go to state 5
+    VarDecl    go to state 6
+    BType      go to state 7
+
+
+State 4
 
     1 CompUnit: Decl .
 
     $default  reduce using rule 1 (CompUnit)
 
 
-State 4
+State 5
 
-    3 Decl: VarDecl .
+    3 Decl: ConstDecl .
 
     $default  reduce using rule 3 (Decl)
 
 
-State 5
-
-    4 VarDecl: BType . VarDefs SEMI
-
-    IDENT  shift, and go to state 8
-
-    VarDefs  go to state 9
-    VarDef   go to state 10
-
-
 State 6
+
+    4 Decl: VarDecl .
+
+    $default  reduce using rule 4 (Decl)
+
+
+State 7
+
+   11 VarDecl: BType . VarDefs SEMI
+
+    IDENT  shift, and go to state 11
+
+    VarDefs  go to state 12
+    VarDef   go to state 13
+
+
+State 8
+
+    5 ConstDecl: CONST BType . ConstDefs SEMI
+
+    IDENT  shift, and go to state 14
+
+    ConstDefs  go to state 15
+    ConstDef   go to state 16
+
+
+State 9
 
     0 $accept: CompUnit $end .
 
     $default  accept
 
 
-State 7
+State 10
 
     2 CompUnit: CompUnit Decl .
 
     $default  reduce using rule 2 (CompUnit)
 
 
-State 8
-
-    8 VarDef: IDENT .
-
-    $default  reduce using rule 8 (VarDef)
-
-
-State 9
-
-    4 VarDecl: BType VarDefs . SEMI
-    7 VarDefs: VarDefs . VarDef
-
-    IDENT  shift, and go to state 8
-    SEMI   shift, and go to state 11
-
-    VarDef  go to state 12
-
-
-State 10
-
-    6 VarDefs: VarDef .
-
-    $default  reduce using rule 6 (VarDefs)
-
-
 State 11
 
-    4 VarDecl: BType VarDefs SEMI .
+   15 VarDef: IDENT .
+   16       | IDENT . ASSIGN InitVal
 
-    $default  reduce using rule 4 (VarDecl)
+    ASSIGN  shift, and go to state 17
+
+    $default  reduce using rule 15 (VarDef)
 
 
 State 12
 
-    7 VarDefs: VarDefs VarDef .
+   11 VarDecl: BType VarDefs . SEMI
+   14 VarDefs: VarDefs . COMMA VarDef
 
-    $default  reduce using rule 7 (VarDefs)
+    SEMI   shift, and go to state 18
+    COMMA  shift, and go to state 19
+
+
+State 13
+
+   13 VarDefs: VarDef .
+
+    $default  reduce using rule 13 (VarDefs)
+
+
+State 14
+
+    8 ConstDef: IDENT . ASSIGN ConstInitVal
+
+    ASSIGN  shift, and go to state 20
+
+
+State 15
+
+    5 ConstDecl: CONST BType ConstDefs . SEMI
+    7 ConstDefs: ConstDefs . COMMA ConstDef
+
+    SEMI   shift, and go to state 21
+    COMMA  shift, and go to state 22
+
+
+State 16
+
+    6 ConstDefs: ConstDef .
+
+    $default  reduce using rule 6 (ConstDefs)
+
+
+State 17
+
+   16 VarDef: IDENT ASSIGN . InitVal
+
+    IDENT   shift, and go to state 23
+    NUMBER  shift, and go to state 24
+
+    InitVal     go to state 25
+    Exp         go to state 26
+    AddExp      go to state 27
+    MulExp      go to state 28
+    UnaryExp    go to state 29
+    PrimaryExp  go to state 30
+    LVal        go to state 31
+
+
+State 18
+
+   11 VarDecl: BType VarDefs SEMI .
+
+    $default  reduce using rule 11 (VarDecl)
+
+
+State 19
+
+   14 VarDefs: VarDefs COMMA . VarDef
+
+    IDENT  shift, and go to state 11
+
+    VarDef  go to state 32
+
+
+State 20
+
+    8 ConstDef: IDENT ASSIGN . ConstInitVal
+
+    IDENT   shift, and go to state 23
+    NUMBER  shift, and go to state 24
+
+    ConstInitVal  go to state 33
+    ConstExp      go to state 34
+    AddExp        go to state 35
+    MulExp        go to state 28
+    UnaryExp      go to state 29
+    PrimaryExp    go to state 30
+    LVal          go to state 31
+
+
+State 21
+
+    5 ConstDecl: CONST BType ConstDefs SEMI .
+
+    $default  reduce using rule 5 (ConstDecl)
+
+
+State 22
+
+    7 ConstDefs: ConstDefs COMMA . ConstDef
+
+    IDENT  shift, and go to state 14
+
+    ConstDef  go to state 36
+
+
+State 23
+
+   24 LVal: IDENT .
+
+    $default  reduce using rule 24 (LVal)
+
+
+State 24
+
+   22 PrimaryExp: NUMBER .
+
+    $default  reduce using rule 22 (PrimaryExp)
+
+
+State 25
+
+   16 VarDef: IDENT ASSIGN InitVal .
+
+    $default  reduce using rule 16 (VarDef)
+
+
+State 26
+
+   17 InitVal: Exp .
+
+    $default  reduce using rule 17 (InitVal)
+
+
+State 27
+
+   18 Exp: AddExp .
+
+    $default  reduce using rule 18 (Exp)
+
+
+State 28
+
+   19 AddExp: MulExp .
+
+    $default  reduce using rule 19 (AddExp)
+
+
+State 29
+
+   20 MulExp: UnaryExp .
+
+    $default  reduce using rule 20 (MulExp)
+
+
+State 30
+
+   21 UnaryExp: PrimaryExp .
+
+    $default  reduce using rule 21 (UnaryExp)
+
+
+State 31
+
+   23 PrimaryExp: LVal .
+
+    $default  reduce using rule 23 (PrimaryExp)
+
+
+State 32
+
+   14 VarDefs: VarDefs COMMA VarDef .
+
+    $default  reduce using rule 14 (VarDefs)
+
+
+State 33
+
+    8 ConstDef: IDENT ASSIGN ConstInitVal .
+
+    $default  reduce using rule 8 (ConstDef)
+
+
+State 34
+
+    9 ConstInitVal: ConstExp .
+
+    $default  reduce using rule 9 (ConstInitVal)
+
+
+State 35
+
+   10 ConstExp: AddExp .
+
+    $default  reduce using rule 10 (ConstExp)
+
+
+State 36
+
+    7 ConstDefs: ConstDefs COMMA ConstDef .
+
+    $default  reduce using rule 7 (ConstDefs)

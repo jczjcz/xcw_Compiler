@@ -66,8 +66,9 @@
 
 #define YYSTYPE void*
 #define INTSIZE 4
-#define ToStr(k) (string*)(k)
-#define ToInt(k) (int*)(k)
+#define ToStr(k) ((string*)(k))
+#define ToInt(k) ((int*)(k))
+#define ToPtrnum(k) ((Ptr_num*)(k))
 
 #include<iostream>
 #include<fstream>
@@ -86,28 +87,53 @@ ostream &out = cout;       // 用于输出
 
 int VAR_T_num = 0, VAR_t_num = 0, VAR_p_num = 0;       //这三个全局变量分别表示Eeyore中的原生变量、临时变量和函数参数的编号
 
-
+struct Ptr_num{             // 用来传递参数，用IF_ptr_int表示传上来的是否为常量
+    int ptr_int;
+    string ptr_str;
+    bool IF_ptr_int;
+};
 
 int DEEP;      //当前的深度
 struct IDENT_scope{     //符号表元素
     string IDENT_name;
-    int IDENT_num;
+    string IDENT_num;          // 变量的值可变，因此用string存储
+    int  IDENT_const_num;      // const常量直接用INT型数字表示其内容
     int IDENT_deep;
-    IDENT_scope(string name, int num, int deep){
+    bool IDENT_if_const;
+    string IR_name;          // 在Eeyore中的变量名
+    IDENT_scope(string name, int num, int deep, bool if_const){       //常量的构造函数
+        IDENT_name = name;
+        IDENT_const_num = num;
+        IDENT_deep = deep;
+        IDENT_if_const = if_const;
+    }
+    IDENT_scope(string name, string num, int deep, bool if_const){          //变量的构造函数
         IDENT_name = name;
         IDENT_num = num;
         IDENT_deep = deep;
+        IDENT_if_const = if_const;
+    }
+    void Print_IDENT(){          // 输出所有变量，方便调试
+        out << "Name = " << IDENT_name << endl;
+        if(IDENT_if_const)
+            out << "    Num = " << IDENT_const_num << endl;
+        else
+            out << "    Num = " << IDENT_num << endl;
+        out << "    Deep = " << IDENT_deep << endl;
+        out << "    IF_const = " << IDENT_if_const << endl;
+        if(!IDENT_if_const)
+            out << "    IR_name = " << IR_name << endl;
     }
 };
 
 vector<IDENT_scope> Scope;     //符号表
 
-bool check_define(IDENT_scope ident){       // 检查当前域中是否存在重复
+bool check_define(string str){       // 检查当前域中是否存在重复
     int i = Scope.size() - 1;
     if(i == -1)
         return true;
-    while(Scope[i].IDENT_deep == DEEP){
-        if(ident.IDENT_name == Scope[i].IDENT_name){
+    while(Scope[i].IDENT_deep == DEEP && i >= 0){
+        if(str == Scope[i].IDENT_name){
             return false;
         }
         i--;
@@ -115,10 +141,23 @@ bool check_define(IDENT_scope ident){       // 检查当前域中是否存在重
     return true;
 }
 
+IDENT_scope* find_define(string name){
+    int i = Scope.size() - 1;
+    if(i == -1)
+        return nullptr;
+    while(i >= 0){
+        if(name == Scope[i].IDENT_name){
+            return & Scope[i];
+        }
+        i--;
+    }
+    return nullptr;
+}
 
 
 
-#line 122 "build/xcw_parser.tab.c" /* yacc.c:339  */
+
+#line 161 "build/xcw_parser.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -243,7 +282,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 247 "build/xcw_parser.tab.c" /* yacc.c:358  */
+#line 286 "build/xcw_parser.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -483,18 +522,18 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  6
+#define YYFINAL  9
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   26
+#define YYLAST   29
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  38
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  7
+#define YYNNTS  19
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  9
+#define YYNRULES  25
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  13
+#define YYNSTATES  37
 
 /* YYTRANSLATE[YYX] -- Symbol number corresponding to YYX as returned
    by yylex, with out-of-bounds checking.  */
@@ -542,9 +581,11 @@ static const yytype_uint8 yytranslate[] =
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
-static const yytype_uint8 yyrline[] =
+static const yytype_uint16 yyrline[] =
 {
-       0,    72,    72,    73,    77,    81,    85,    89,    90,    94
+       0,   111,   111,   112,   116,   117,   121,   125,   126,   130,
+     148,   152,   160,   164,   168,   169,   173,   189,   221,   225,
+     229,   234,   238,   245,   252,   256
 };
 #endif
 
@@ -558,7 +599,9 @@ static const char *const yytname[] =
   "CONST", "VOID", "LE", "LEQ", "GE", "GEQ", "EQ", "NEQ", "AND", "OR",
   "NOT", "IF", "ELSE", "WHILE", "BREAK", "CONT", "RETURN", "ASSIGN",
   "SEMI", "COMMA", "PERIOD", "NUMBER", "$accept", "CompUnit", "Decl",
-  "VarDecl", "BType", "VarDefs", "VarDef", YY_NULLPTR
+  "ConstDecl", "ConstDefs", "ConstDef", "ConstInitVal", "ConstExp",
+  "VarDecl", "BType", "VarDefs", "VarDef", "InitVal", "Exp", "AddExp",
+  "MulExp", "UnaryExp", "PrimaryExp", "LVal", YY_NULLPTR
 };
 #endif
 
@@ -574,10 +617,10 @@ static const yytype_uint16 yytoknum[] =
 };
 # endif
 
-#define YYPACT_NINF -14
+#define YYPACT_NINF -31
 
 #define yypact_value_is_default(Yystate) \
-  (!!((Yystate) == (-14)))
+  (!!((Yystate) == (-31)))
 
 #define YYTABLE_NINF -1
 
@@ -588,8 +631,10 @@ static const yytype_uint16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-     -13,   -14,     1,   -14,   -14,    -5,   -14,   -14,   -14,    -8,
-     -14,   -14,   -14
+     -13,   -31,    -7,     1,   -31,   -31,   -31,     2,     3,   -31,
+     -31,   -24,   -30,   -31,   -21,   -28,   -31,    -8,   -31,     2,
+      -8,   -31,     3,   -31,   -31,   -31,   -31,   -31,   -31,   -31,
+     -31,   -31,   -31,   -31,   -31,   -31,   -31
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -597,20 +642,24 @@ static const yytype_int8 yypact[] =
      means the default is an error.  */
 static const yytype_uint8 yydefact[] =
 {
-       0,     6,     0,     2,     4,     0,     1,     3,     9,     0,
-       7,     5,     8
+       0,    13,     0,     0,     2,     4,     5,     0,     0,     1,
+       3,    16,     0,    14,     0,     0,     7,     0,    12,     0,
+       0,     6,     0,    25,    23,    17,    18,    19,    20,    21,
+      22,    24,    15,     9,    10,    11,     8
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -14,   -14,     2,   -14,   -14,   -14,    -4
+     -31,   -31,    10,   -31,   -31,    -4,   -31,   -31,   -31,    12,
+     -31,     0,   -31,   -31,    -5,   -31,   -31,   -31,   -31
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     2,     3,     4,     5,     9,    10
+      -1,     3,     4,     5,    15,    16,    33,    34,     6,     7,
+      12,    13,    25,    26,    27,    28,    29,    30,    31
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -618,36 +667,42 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_uint8 yytable[] =
 {
-       8,     6,     1,     8,     7,    12,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     1,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,    11
+      23,     9,     1,     2,    18,    19,    21,    22,     1,    17,
+      11,    14,    20,    10,     8,    35,     1,     2,    36,    32,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,    24
 };
 
 static const yytype_int8 yycheck[] =
 {
-       8,     0,    15,     8,     2,     9,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    15,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    34
+       8,     0,    15,    16,    34,    35,    34,    35,    15,    33,
+       8,     8,    33,     3,     2,    20,    15,    16,    22,    19,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    37
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-       0,    15,    39,    40,    41,    42,     0,    40,     8,    43,
-      44,    34,    44
+       0,    15,    16,    39,    40,    41,    46,    47,    47,     0,
+      40,     8,    48,    49,     8,    42,    43,    33,    34,    35,
+      33,    34,    35,     8,    37,    50,    51,    52,    53,    54,
+      55,    56,    49,    44,    45,    52,    43
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-       0,    38,    39,    39,    40,    41,    42,    43,    43,    44
+       0,    38,    39,    39,    40,    40,    41,    42,    42,    43,
+      44,    45,    46,    47,    48,    48,    49,    49,    50,    51,
+      52,    53,    54,    55,    55,    56
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
 {
-       0,     2,     1,     2,     1,     3,     1,     1,     2,     1
+       0,     2,     1,     2,     1,     1,     4,     1,     3,     3,
+       1,     1,     3,     1,     1,     3,     1,     3,     1,     1,
+       1,     1,     1,     1,     1,     1
 };
 
 
@@ -1324,11 +1379,40 @@ yyreduce:
   switch (yyn)
     {
         case 9:
-#line 95 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 131 "source/xcw_parser.y" /* yacc.c:1646  */
+    {
+        int num = *ToInt((yyvsp[0]));
+        IDENT_scope tmp = IDENT_scope(*ToStr((yyvsp[-2])), num, DEEP, 1);
+        //tmp.Print_IDENT();
+        if(check_define(*ToStr((yyvsp[-2])))){       //如果在当前域中未被定义过
+            //out << "11111" << endl;
+            Scope.push_back(tmp);
+            VAR_T_num ++ ;
+        }
+        else{
+            string err = "\"" +  *ToStr((yyvsp[-2])) + "\" already defined in this scope.";
+            yyerror(err);
+        }
+    }
+#line 1398 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 11:
+#line 153 "source/xcw_parser.y" /* yacc.c:1646  */
     {
         (yyval) = (yyvsp[0]);
-        IDENT_scope tmp = IDENT_scope(*ToStr((yyvsp[0])), 0, DEEP);
-        if(check_define(tmp)){       //如果在当前域中未被定义过
+        //out << "ADD EXP" << endl;
+    }
+#line 1407 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 16:
+#line 174 "source/xcw_parser.y" /* yacc.c:1646  */
+    {
+        IDENT_scope tmp = IDENT_scope(*ToStr((yyvsp[0])), "0", DEEP, 0);
+        tmp.IR_name = "T" + to_string(VAR_T_num);
+        //tmp.Print_IDENT();
+        if(check_define(*ToStr((yyvsp[0])))){       //如果在当前域中未被定义过
             Scope.push_back(tmp);
             out << "var T" << VAR_T_num << endl;
             out << "T" << VAR_T_num << " = " << 0 << endl;
@@ -1339,11 +1423,86 @@ yyreduce:
             yyerror(err);
         }
     }
-#line 1343 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 1427 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 17:
+#line 190 "source/xcw_parser.y" /* yacc.c:1646  */
+    {
+        if(!check_define(*ToStr((yyvsp[-2])))){   
+            string err = "\"" +  *ToStr((yyvsp[-2])) + "\" already defined in this scope.";
+            yyerror(err);
+        }
+
+        if(ToPtrnum((yyvsp[0]))->IF_ptr_int){       //传递的是常量
+            int num = ToPtrnum((yyvsp[0]))->ptr_int;
+            IDENT_scope tmp = IDENT_scope(*ToStr((yyvsp[-2])), to_string(num), DEEP, 0);  
+            tmp.IR_name = "T" + to_string(VAR_T_num);   
+            Scope.push_back(tmp);
+            out << "var T" << VAR_T_num << endl;
+            out << "T" << VAR_T_num << " = " << num << endl;
+            VAR_T_num ++ ;
+        }
+        else{              //传递的是变量
+            string num = ToPtrnum((yyvsp[0]))->ptr_str;
+            //out << "------------num = " << num << endl;
+            IDENT_scope tmp = IDENT_scope(*ToStr((yyvsp[-2])), num, DEEP, 0);
+            tmp.IR_name = "T" + to_string(VAR_T_num);   
+            Scope.push_back(tmp);
+            out << "var T" << VAR_T_num << endl;
+            out << "T" << VAR_T_num << " = " << num << endl;
+            VAR_T_num ++ ;
+        }
+        
+        //tmp.Print_IDENT();
+    }
+#line 1460 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 22:
+#line 239 "source/xcw_parser.y" /* yacc.c:1646  */
+    {
+        (yyval) = (yyvsp[0]);
+    }
+#line 1468 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 23:
+#line 246 "source/xcw_parser.y" /* yacc.c:1646  */
+    {
+        Ptr_num* tmp_ptr = new Ptr_num;
+        tmp_ptr->ptr_int = *ToInt((yyvsp[0]));
+        tmp_ptr->IF_ptr_int = 1;
+        (yyval) = tmp_ptr;
+    }
+#line 1479 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 25:
+#line 257 "source/xcw_parser.y" /* yacc.c:1646  */
+    {
+        IDENT_scope* tmp = find_define(*ToStr((yyvsp[0])));
+        //out << "Tostr -> " << *ToStr($1) << endl;
+        if( tmp == nullptr){          //变量尚未定义
+            string err = "\"" +  *ToStr((yyvsp[0])) + "\" was not declared in this scope.";
+            yyerror(err);
+        }
+        Ptr_num* tmp_ptr = new Ptr_num;
+        if(tmp->IDENT_if_const){      //是常量，此时直接返回数值
+            tmp_ptr->ptr_int = tmp->IDENT_const_num;
+            tmp_ptr->IF_ptr_int = 1;
+        }
+        else{       //是变量，此时返回类似于T0
+            tmp_ptr->ptr_str = tmp->IR_name;
+            tmp_ptr->IF_ptr_int = 0;
+        }   
+        (yyval) = tmp_ptr;
+    }
+#line 1502 "build/xcw_parser.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1347 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 1506 "build/xcw_parser.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1571,7 +1730,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 116 "source/xcw_parser.y" /* yacc.c:1906  */
+#line 283 "source/xcw_parser.y" /* yacc.c:1906  */
 
 
 void yyerror(const char *s) {

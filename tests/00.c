@@ -1,3 +1,4 @@
-int a;
-int b;
-int c;
+int a = 1;
+int b = a;
+
+
