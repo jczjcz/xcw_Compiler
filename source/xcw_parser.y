@@ -43,7 +43,9 @@ struct IDENT_scope{     //符号表元素
     string IDENT_name;
     string IDENT_num;          // 变量的值可变，因此用string存储
     int  IDENT_const_num;      // const常量直接用INT型数字表示其内容
+    int Array_size;
     vector<Ptr_num>* IDENT_array;     // 指向数组头部的指针
+    vector<int>* IDENT_dim_array;     // 用于存储数组的维度
     int IDENT_deep;
     bool IDENT_if_const;
     string IR_name;          // 在Eeyore中的变量名
@@ -107,10 +109,12 @@ IDENT_scope* find_define(string name){
 
 //-----------------数组相关变量------------------------------
 vector<int> Array_dim;        // 该数据结构用于数组声明时，从前到后，用于存放数组的各个维度
+vector<Ptr_num> Array_LVal_dim;       //在右侧作为表达式的时候，用来存储数组对象的各个维度
 int path_length = 1;
 int Array_loc;
 int Array_dest, old_Array_dest;    //old_Array_dest用来临时存之前的Array_dest
 int Array_deep;
+string Array_name;
 //----------------------------------------------------------
 
 %}
@@ -181,9 +185,16 @@ ConstDef:
         out << "var " << n*INTSIZE << " T" << to_string(VAR_T_num) <<endl;
 
         vector<Ptr_num>* Ident_array = new vector<Ptr_num>;
+        vector<int>* Ident_dim_array = new vector<int>;
         IDENT_scope tmp = IDENT_scope(*ToStr($1), "0", DEEP, 1);      //这个是常量数组
         tmp.IDENT_if_array = 1;      //表示这个量是数组
         tmp.IDENT_array = Ident_array;     //指向这个新生成的vector数组
+        tmp.Array_size = n;
+        tmp.IR_name = "T" + to_string(VAR_T_num);
+        for(int i = 0; i < Array_dim.size();i++){
+            Ident_dim_array->push_back(Array_dim[i]);
+        }
+        tmp.IDENT_dim_array = Ident_dim_array;
         Scope.push_back(tmp);
     }
         LCURLY
@@ -252,12 +263,18 @@ VarDef:
     }
     | IDENT ASSIGN InitVal
     {
-        if(!check_define(*ToStr($1))){   
-            string err = "\"" +  *ToStr($1) + "\" already defined in this scope.";
-            yyerror(err);
-        }
+        // out << "Init end"<<endl;
+        // out << "IF_ptr_str = "<<ToPtrnum($3)->ptr_str << endl;
+        // out << "IF_ptr_int = "<<ToPtrnum($3)->IF_ptr_int << endl;
 
-        if(ToPtrnum($3)->IF_ptr_int){       //传递的是常量
+
+        // if(!check_define(*ToStr($1))){   
+        //     string err = "\"" +  *ToStr($1) + "\" already defined in this scope.";
+        //     yyerror(err);
+        // }
+
+
+        if(ToPtrnum($3)->IF_ptr_int == 1){       //传递的是常量
             int num = ToPtrnum($3)->ptr_int;
             IDENT_scope tmp = IDENT_scope(*ToStr($1), to_string(num), DEEP, 0);  
             tmp.IR_name = "T" + to_string(VAR_T_num);   
@@ -267,8 +284,11 @@ VarDef:
             VAR_T_num ++ ;
         }
         else{              //传递的是变量
+            // out << "in the else " << endl;
+            // out << "----------IF_ptr_str = " << ToPtrnum($3)->ptr_str << endl;
             string num = ToPtrnum($3)->ptr_str;
-            //out << "------------num = " << num << endl;
+
+            // out << "------------num = " << num << endl;
             IDENT_scope tmp = IDENT_scope(*ToStr($1), num, DEEP, 0);
             tmp.IR_name = "T" + to_string(VAR_T_num);   
             Scope.push_back(tmp);
@@ -294,9 +314,16 @@ VarDef:
         out << "var " << n*INTSIZE << " T" << to_string(VAR_T_num) <<endl;
         
         vector<Ptr_num>* Ident_array = new vector<Ptr_num>;
+        vector<int>* Ident_dim_array = new vector<int>;
         IDENT_scope tmp = IDENT_scope(*ToStr($1), "0", DEEP, 0);
         tmp.IDENT_if_array = 1;      //表示这个量是数组
         tmp.IDENT_array = Ident_array;     //指向这个新生成的vector数组
+        tmp.Array_size = n;
+        tmp.IR_name = "T" + to_string(VAR_T_num);
+        for(int i = 0; i < Array_dim.size();i++){
+            Ident_dim_array->push_back(Array_dim[i]);
+        }
+        tmp.IDENT_dim_array = Ident_dim_array;
         Scope.push_back(tmp);
 
         for(int i = 0; i < n; i++){
@@ -326,9 +353,17 @@ VarDef:
         out << "var " << n*INTSIZE << " T" << to_string(VAR_T_num) <<endl;
 
         vector<Ptr_num>* Ident_array = new vector<Ptr_num>;
+        vector<int>* Ident_dim_array = new vector<int>;
         IDENT_scope tmp = IDENT_scope(*ToStr($1), "0", DEEP, 0);
         tmp.IDENT_if_array = 1;      //表示这个量是数组
         tmp.IDENT_array = Ident_array;     //指向这个新生成的vector数组
+        tmp.Array_size = n;
+        tmp.IR_name = "T" + to_string(VAR_T_num);
+        // 把Array_dim中的内容复制到IDENT_dim_array中
+        for(int i = 0; i < Array_dim.size();i++){
+            Ident_dim_array->push_back(Array_dim[i]);
+        }
+        tmp.IDENT_dim_array = Ident_dim_array;
         Scope.push_back(tmp);
     }
         LCURLY
@@ -440,6 +475,11 @@ ArrayUnit:
 
 InitVal: 
     Exp
+    {
+        // out << "LVAL end"<<endl;
+        // out << "IF_ptr_str = "<<ToPtrnum($1)->ptr_str<<endl;
+        // $$ = $1;
+    }
 ;
 
 Exp:
@@ -652,6 +692,11 @@ PrimaryExp:
         $$ = tmp_ptr;
     }
     | LVal
+    {
+        // out << "LVAL end"<<endl;
+        // out << "IF_ptr_str = "<<ToPtrnum($1)->ptr_str<<endl;
+        $$ = $1;
+    }
 ;
 
 LVal:
@@ -674,8 +719,86 @@ LVal:
         }   
         $$ = tmp_ptr;
     }
+    | IDENT
+    {
+        IDENT_scope* tmp = find_define(*ToStr($1));    //搜索这个数组的定义
+        Array_name = tmp->IR_name;
+        Array_dim.clear();
+        for(int i = 0;i < (*tmp).IDENT_dim_array->size();i++){
+            Array_dim.push_back((*(*tmp).IDENT_dim_array)[i]);
+        }
+    }
+    ArrayLVals
+    {        //a[2][3]     a[1][b]  
+        // IDENT_scope* tmp = ((IDENT_scope*)$$); 
+        Ptr_num tmp_ptr, tmp_ptr_new, tmp_ptr_old;
+        int ptr_size = INTSIZE;
+
+        for(int i = Array_LVal_dim.size()-1; i >= 0 ;i --){
+            //out << "i = "<<i << endl;
+            // tmp_ptr_old = tmp_ptr_new;
+            tmp_ptr = Array_LVal_dim[i];
+            //out << "int = " << tmp_ptr.ptr_int << endl;
+            if(tmp_ptr.IF_ptr_int){     //是整数
+                //out << "tmp_ptr.IF_ptr_int = 1" << endl;
+                tmp_ptr_new.IF_ptr_int = 1;
+                tmp_ptr_new.ptr_int = tmp_ptr.ptr_int * ptr_size;
+                //out << "tmp_ptr_new.ptr_int = " << tmp_ptr_new.ptr_int << endl;
+                if(i != Array_LVal_dim.size()-1){     //第一次，不用考虑和之前相加
+                    if(tmp_ptr_old.IF_ptr_int){     //如果前面的也是INT
+                        tmp_ptr_old.ptr_int += tmp_ptr_old.ptr_int;
+                    }
+                    else{
+                        out << "t" + to_string(VAR_t_num ) << " = "<< tmp_ptr_new.ptr_int << " + " << tmp_ptr_old.ptr_str << endl;
+                        tmp_ptr_old.ptr_str = "t" + to_string(VAR_t_num);
+                        VAR_t_num ++;
+                    }
+                }
+                else{
+                    tmp_ptr_old = tmp_ptr_new;
+                }
+            }
+            else{
+                //out << "tmp_ptr.IF_ptr_int = 0" << endl;
+                tmp_ptr_new.IF_ptr_int = 0;
+                tmp_ptr_new.ptr_str = "t" + to_string(VAR_t_num);
+                tmp_ptr_old.ptr_str = to_string(tmp_ptr_old.ptr_int);    //强制转换为string类型
+                tmp_ptr_old.IF_ptr_int = 0;
+                VAR_t_num ++;
+                out << tmp_ptr_new.ptr_str << " = " << tmp_ptr.ptr_str << " * " << ptr_size << endl;
+                if(i != Array_LVal_dim.size()-1){     //第一次不用考虑和之前相加
+                    //out << "tmp_ptr_old.ptr_int = " << tmp_ptr_old.ptr_int << endl;
+                    out << "t" + to_string(VAR_t_num ) << " = "<< tmp_ptr_new.ptr_str << " + " << tmp_ptr_old.ptr_str << endl;
+                    tmp_ptr_old.ptr_str = "t" + to_string(VAR_t_num);
+                    VAR_t_num ++;
+                }
+                else{
+                    tmp_ptr_old = tmp_ptr_new;
+                }
+            }
+            ptr_size *= Array_dim[i];
+            // out << "test ptr_size" << endl;
+            // out << (*(tmp->IDENT_dim_array)) << endl;
+            // out << "test ptr_size" << endl;
+        }
+        Array_LVal_dim.clear();
+        //out << "Arrayend " << endl;
+        tmp_ptr_old.ptr_str = Array_name + "[" + tmp_ptr_old.ptr_str + "]";
+        $$ = & tmp_ptr_old;
+    }
 ;
 
+ArrayLVals:
+    ArrayLVal
+    | ArrayLVals ArrayLVal
+;
+
+ArrayLVal:
+    LBRAC Exp RBRAC
+    {
+        Array_LVal_dim.push_back(*(ToPtrnum($2)));    //存入进行引用的维度
+    }
+;
 
 
 

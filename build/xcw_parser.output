@@ -102,6 +102,15 @@ Grammar
 
    46 LVal: IDENT
 
+   47 $@6: %empty
+
+   48 LVal: IDENT $@6 ArrayLVals
+
+   49 ArrayLVals: ArrayLVal
+   50           | ArrayLVals ArrayLVal
+
+   51 ArrayLVal: LBRAC Exp RBRAC
+
 
 Terminals, with rules where they appear
 
@@ -112,13 +121,13 @@ SUB (259) 38
 MUL (260) 40
 DIV (261) 41
 MOD (262) 42
-IDENT (263) 8 11 18 19 20 23 46
+IDENT (263) 8 11 18 19 20 23 46 48
 LPAREN (264)
 RPAREN (265)
 LCURLY (266) 11 23 30
 RCURLY (267) 11 23 30
-LBRAC (268) 33
-RBRAC (269) 33
+LBRAC (268) 33 51
+RBRAC (269) 33 51
 INT (270) 15
 CONST (271) 5
 VOID (272)
@@ -193,7 +202,7 @@ ArrayUnit (59)
 InitVal (60)
     on left: 34, on right: 19
 Exp (61)
-    on left: 35, on right: 28 34
+    on left: 35, on right: 28 34 51
 AddExp (62)
     on left: 36 37 38, on right: 13 35 37 38
 MulExp (63)
@@ -203,7 +212,13 @@ UnaryExp (64)
 PrimaryExp (65)
     on left: 44 45, on right: 43
 LVal (66)
-    on left: 46, on right: 45
+    on left: 46 48, on right: 45
+$@6 (67)
+    on left: 47, on right: 48
+ArrayLVals (68)
+    on left: 49 50, on right: 48 50
+ArrayLVal (69)
+    on left: 51, on right: 49 50
 
 
 State 0
@@ -480,8 +495,12 @@ State 26
 State 27
 
    46 LVal: IDENT .
+   48     | IDENT . $@6 ArrayLVals
 
+    LBRAC     reduce using rule 47 ($@6)
     $default  reduce using rule 46 (LVal)
+
+    $@6  go to state 45
 
 
 State 28
@@ -495,7 +514,7 @@ State 29
 
    33 ArrayUnit: LBRAC ConstExp . RBRAC
 
-    RBRAC  shift, and go to state 45
+    RBRAC  shift, and go to state 46
 
 
 State 30
@@ -504,8 +523,8 @@ State 30
    37 AddExp: AddExp . ADD MulExp
    38       | AddExp . SUB MulExp
 
-    ADD  shift, and go to state 46
-    SUB  shift, and go to state 47
+    ADD  shift, and go to state 47
+    SUB  shift, and go to state 48
 
     $default  reduce using rule 13 (ConstExp)
 
@@ -517,9 +536,9 @@ State 31
    41       | MulExp . DIV UnaryExp
    42       | MulExp . MOD UnaryExp
 
-    MUL  shift, and go to state 48
-    DIV  shift, and go to state 49
-    MOD  shift, and go to state 50
+    MUL  shift, and go to state 49
+    DIV  shift, and go to state 50
+    MOD  shift, and go to state 51
 
     $default  reduce using rule 36 (AddExp)
 
@@ -565,8 +584,8 @@ State 37
    37 AddExp: AddExp . ADD MulExp
    38       | AddExp . SUB MulExp
 
-    ADD  shift, and go to state 46
-    SUB  shift, and go to state 47
+    ADD  shift, and go to state 47
+    SUB  shift, and go to state 48
 
     $default  reduce using rule 35 (Exp)
 
@@ -577,7 +596,7 @@ State 38
 
     $default  reduce using rule 21 ($@3)
 
-    $@3  go to state 51
+    $@3  go to state 52
 
 
 State 39
@@ -614,7 +633,7 @@ State 43
 
     $default  reduce using rule 9 ($@1)
 
-    $@1  go to state 52
+    $@1  go to state 53
 
 
 State 44
@@ -626,32 +645,29 @@ State 44
 
 State 45
 
+   48 LVal: IDENT $@6 . ArrayLVals
+
+    LBRAC  shift, and go to state 54
+
+    ArrayLVals  go to state 55
+    ArrayLVal   go to state 56
+
+
+State 46
+
    33 ArrayUnit: LBRAC ConstExp RBRAC .
 
     $default  reduce using rule 33 (ArrayUnit)
 
 
-State 46
+State 47
 
    37 AddExp: AddExp ADD . MulExp
 
     IDENT   shift, and go to state 27
     NUMBER  shift, and go to state 28
 
-    MulExp      go to state 53
-    UnaryExp    go to state 32
-    PrimaryExp  go to state 33
-    LVal        go to state 34
-
-
-State 47
-
-   38 AddExp: AddExp SUB . MulExp
-
-    IDENT   shift, and go to state 27
-    NUMBER  shift, and go to state 28
-
-    MulExp      go to state 54
+    MulExp      go to state 57
     UnaryExp    go to state 32
     PrimaryExp  go to state 33
     LVal        go to state 34
@@ -659,135 +675,196 @@ State 47
 
 State 48
 
-   40 MulExp: MulExp MUL . UnaryExp
+   38 AddExp: AddExp SUB . MulExp
 
     IDENT   shift, and go to state 27
     NUMBER  shift, and go to state 28
 
-    UnaryExp    go to state 55
+    MulExp      go to state 58
+    UnaryExp    go to state 32
     PrimaryExp  go to state 33
     LVal        go to state 34
 
 
 State 49
 
-   41 MulExp: MulExp DIV . UnaryExp
+   40 MulExp: MulExp MUL . UnaryExp
 
     IDENT   shift, and go to state 27
     NUMBER  shift, and go to state 28
 
-    UnaryExp    go to state 56
+    UnaryExp    go to state 59
     PrimaryExp  go to state 33
     LVal        go to state 34
 
 
 State 50
 
-   42 MulExp: MulExp MOD . UnaryExp
+   41 MulExp: MulExp DIV . UnaryExp
 
     IDENT   shift, and go to state 27
     NUMBER  shift, and go to state 28
 
-    UnaryExp    go to state 57
+    UnaryExp    go to state 60
     PrimaryExp  go to state 33
     LVal        go to state 34
 
 
 State 51
 
-   23 VarDef: IDENT ArrayDef ASSIGN $@3 . LCURLY $@4 ArrayInit RCURLY
+   42 MulExp: MulExp MOD . UnaryExp
 
-    LCURLY  shift, and go to state 58
+    IDENT   shift, and go to state 27
+    NUMBER  shift, and go to state 28
+
+    UnaryExp    go to state 61
+    PrimaryExp  go to state 33
+    LVal        go to state 34
 
 
 State 52
 
-   11 ConstDef: IDENT ArrayDef ASSIGN $@1 . LCURLY $@2 ArrayInit RCURLY
+   23 VarDef: IDENT ArrayDef ASSIGN $@3 . LCURLY $@4 ArrayInit RCURLY
 
-    LCURLY  shift, and go to state 59
+    LCURLY  shift, and go to state 62
 
 
 State 53
+
+   11 ConstDef: IDENT ArrayDef ASSIGN $@1 . LCURLY $@2 ArrayInit RCURLY
+
+    LCURLY  shift, and go to state 63
+
+
+State 54
+
+   51 ArrayLVal: LBRAC . Exp RBRAC
+
+    IDENT   shift, and go to state 27
+    NUMBER  shift, and go to state 28
+
+    Exp         go to state 64
+    AddExp      go to state 37
+    MulExp      go to state 31
+    UnaryExp    go to state 32
+    PrimaryExp  go to state 33
+    LVal        go to state 34
+
+
+State 55
+
+   48 LVal: IDENT $@6 ArrayLVals .
+   50 ArrayLVals: ArrayLVals . ArrayLVal
+
+    LBRAC  shift, and go to state 54
+
+    $default  reduce using rule 48 (LVal)
+
+    ArrayLVal  go to state 65
+
+
+State 56
+
+   49 ArrayLVals: ArrayLVal .
+
+    $default  reduce using rule 49 (ArrayLVals)
+
+
+State 57
 
    37 AddExp: AddExp ADD MulExp .
    40 MulExp: MulExp . MUL UnaryExp
    41       | MulExp . DIV UnaryExp
    42       | MulExp . MOD UnaryExp
 
-    MUL  shift, and go to state 48
-    DIV  shift, and go to state 49
-    MOD  shift, and go to state 50
+    MUL  shift, and go to state 49
+    DIV  shift, and go to state 50
+    MOD  shift, and go to state 51
 
     $default  reduce using rule 37 (AddExp)
 
 
-State 54
+State 58
 
    38 AddExp: AddExp SUB MulExp .
    40 MulExp: MulExp . MUL UnaryExp
    41       | MulExp . DIV UnaryExp
    42       | MulExp . MOD UnaryExp
 
-    MUL  shift, and go to state 48
-    DIV  shift, and go to state 49
-    MOD  shift, and go to state 50
+    MUL  shift, and go to state 49
+    DIV  shift, and go to state 50
+    MOD  shift, and go to state 51
 
     $default  reduce using rule 38 (AddExp)
 
 
-State 55
+State 59
 
    40 MulExp: MulExp MUL UnaryExp .
 
     $default  reduce using rule 40 (MulExp)
 
 
-State 56
+State 60
 
    41 MulExp: MulExp DIV UnaryExp .
 
     $default  reduce using rule 41 (MulExp)
 
 
-State 57
+State 61
 
    42 MulExp: MulExp MOD UnaryExp .
 
     $default  reduce using rule 42 (MulExp)
 
 
-State 58
+State 62
 
    23 VarDef: IDENT ArrayDef ASSIGN $@3 LCURLY . $@4 ArrayInit RCURLY
 
     $default  reduce using rule 22 ($@4)
 
-    $@4  go to state 60
+    $@4  go to state 66
 
 
-State 59
+State 63
 
    11 ConstDef: IDENT ArrayDef ASSIGN $@1 LCURLY . $@2 ArrayInit RCURLY
 
     $default  reduce using rule 10 ($@2)
 
-    $@2  go to state 61
+    $@2  go to state 67
 
 
-State 60
+State 64
+
+   51 ArrayLVal: LBRAC Exp . RBRAC
+
+    RBRAC  shift, and go to state 68
+
+
+State 65
+
+   50 ArrayLVals: ArrayLVals ArrayLVal .
+
+    $default  reduce using rule 50 (ArrayLVals)
+
+
+State 66
 
    23 VarDef: IDENT ArrayDef ASSIGN $@3 LCURLY $@4 . ArrayInit RCURLY
 
     IDENT   shift, and go to state 27
-    LCURLY  shift, and go to state 62
+    LCURLY  shift, and go to state 69
     NUMBER  shift, and go to state 28
 
     $default  reduce using rule 24 (ArrayInit)
 
-    ArrayInit   go to state 63
-    ArrayExps   go to state 64
-    ArrayExp    go to state 65
-    Exp         go to state 66
+    ArrayInit   go to state 70
+    ArrayExps   go to state 71
+    ArrayExp    go to state 72
+    Exp         go to state 73
     AddExp      go to state 37
     MulExp      go to state 31
     UnaryExp    go to state 32
@@ -795,20 +872,20 @@ State 60
     LVal        go to state 34
 
 
-State 61
+State 67
 
    11 ConstDef: IDENT ArrayDef ASSIGN $@1 LCURLY $@2 . ArrayInit RCURLY
 
     IDENT   shift, and go to state 27
-    LCURLY  shift, and go to state 62
+    LCURLY  shift, and go to state 69
     NUMBER  shift, and go to state 28
 
     $default  reduce using rule 24 (ArrayInit)
 
-    ArrayInit   go to state 67
-    ArrayExps   go to state 64
-    ArrayExp    go to state 65
-    Exp         go to state 66
+    ArrayInit   go to state 74
+    ArrayExps   go to state 71
+    ArrayExp    go to state 72
+    Exp         go to state 73
     AddExp      go to state 37
     MulExp      go to state 31
     UnaryExp    go to state 32
@@ -816,67 +893,74 @@ State 61
     LVal        go to state 34
 
 
-State 62
+State 68
+
+   51 ArrayLVal: LBRAC Exp RBRAC .
+
+    $default  reduce using rule 51 (ArrayLVal)
+
+
+State 69
 
    30 ArrayExp: LCURLY . $@5 ArrayInit RCURLY
 
     $default  reduce using rule 29 ($@5)
 
-    $@5  go to state 68
+    $@5  go to state 75
 
 
-State 63
+State 70
 
    23 VarDef: IDENT ArrayDef ASSIGN $@3 LCURLY $@4 ArrayInit . RCURLY
 
-    RCURLY  shift, and go to state 69
+    RCURLY  shift, and go to state 76
 
 
-State 64
+State 71
 
    25 ArrayInit: ArrayExps .
    27 ArrayExps: ArrayExps . COMMA ArrayExp
 
-    COMMA  shift, and go to state 70
+    COMMA  shift, and go to state 77
 
     $default  reduce using rule 25 (ArrayInit)
 
 
-State 65
+State 72
 
    26 ArrayExps: ArrayExp .
 
     $default  reduce using rule 26 (ArrayExps)
 
 
-State 66
+State 73
 
    28 ArrayExp: Exp .
 
     $default  reduce using rule 28 (ArrayExp)
 
 
-State 67
+State 74
 
    11 ConstDef: IDENT ArrayDef ASSIGN $@1 LCURLY $@2 ArrayInit . RCURLY
 
-    RCURLY  shift, and go to state 71
+    RCURLY  shift, and go to state 78
 
 
-State 68
+State 75
 
    30 ArrayExp: LCURLY $@5 . ArrayInit RCURLY
 
     IDENT   shift, and go to state 27
-    LCURLY  shift, and go to state 62
+    LCURLY  shift, and go to state 69
     NUMBER  shift, and go to state 28
 
     $default  reduce using rule 24 (ArrayInit)
 
-    ArrayInit   go to state 72
-    ArrayExps   go to state 64
-    ArrayExp    go to state 65
-    Exp         go to state 66
+    ArrayInit   go to state 79
+    ArrayExps   go to state 71
+    ArrayExp    go to state 72
+    Exp         go to state 73
     AddExp      go to state 37
     MulExp      go to state 31
     UnaryExp    go to state 32
@@ -884,23 +968,23 @@ State 68
     LVal        go to state 34
 
 
-State 69
+State 76
 
    23 VarDef: IDENT ArrayDef ASSIGN $@3 LCURLY $@4 ArrayInit RCURLY .
 
     $default  reduce using rule 23 (VarDef)
 
 
-State 70
+State 77
 
    27 ArrayExps: ArrayExps COMMA . ArrayExp
 
     IDENT   shift, and go to state 27
-    LCURLY  shift, and go to state 62
+    LCURLY  shift, and go to state 69
     NUMBER  shift, and go to state 28
 
-    ArrayExp    go to state 73
-    Exp         go to state 66
+    ArrayExp    go to state 80
+    Exp         go to state 73
     AddExp      go to state 37
     MulExp      go to state 31
     UnaryExp    go to state 32
@@ -908,28 +992,28 @@ State 70
     LVal        go to state 34
 
 
-State 71
+State 78
 
    11 ConstDef: IDENT ArrayDef ASSIGN $@1 LCURLY $@2 ArrayInit RCURLY .
 
     $default  reduce using rule 11 (ConstDef)
 
 
-State 72
+State 79
 
    30 ArrayExp: LCURLY $@5 ArrayInit . RCURLY
 
-    RCURLY  shift, and go to state 74
+    RCURLY  shift, and go to state 81
 
 
-State 73
+State 80
 
    27 ArrayExps: ArrayExps COMMA ArrayExp .
 
     $default  reduce using rule 27 (ArrayExps)
 
 
-State 74
+State 81
 
    30 ArrayExp: LCURLY $@5 ArrayInit RCURLY .
 
