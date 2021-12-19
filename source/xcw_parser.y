@@ -164,6 +164,48 @@ ConstDef:
             yyerror(err);
         }
     }
+    | IDENT ArrayDef ASSIGN
+    {
+        // 因为常量数组的下标仍有可能是变量，因此考虑将其用变量数组的形式做
+        Array_deep = 0;    //将深度初始化为0
+        Array_loc = 0;    //将下标初始化为0，path_length是整个数组的长度
+        old_Array_dest = 0;
+        path_length = ToPtrnum($2)->ptr_int;
+        //首先检查当前域中是否出现
+        if(!check_define(*ToStr($1))){
+            string err = "\"" +  *ToStr($1) + "\" already defined in this scope.";
+            yyerror(err);
+        }
+        int n = ToPtrnum($2)->ptr_int;      //当前数组的元素总数，例如a[2][3], n=6
+        // 输出 var 24 T0 
+        out << "var " << n*INTSIZE << " T" << to_string(VAR_T_num) <<endl;
+
+        vector<Ptr_num>* Ident_array = new vector<Ptr_num>;
+        IDENT_scope tmp = IDENT_scope(*ToStr($1), "0", DEEP, 1);      //这个是常量数组
+        tmp.IDENT_if_array = 1;      //表示这个量是数组
+        tmp.IDENT_array = Ident_array;     //指向这个新生成的vector数组
+        Scope.push_back(tmp);
+    }
+        LCURLY
+        {
+            Array_deep = 0;    //将深度初始化为0
+            Array_loc = 0;    //将下标初始化为0，path_length是整个数组的长度
+            Array_dest = Array_loc + path_length;
+        }
+        ArrayInit RCURLY
+        {
+            //没填满的元素用0填充
+            //out << "------- Array_dest = "<<Array_dest<<endl;
+            for(; Array_loc < Array_dest; Array_loc++){
+                //out << "Array_loc = " << Array_loc << endl;
+                Ptr_num tmp_ptr = Ptr_num("0");     //构造vector中的元素
+                string ir_name = "T" + to_string(VAR_T_num) + "[" + to_string(4 * Array_loc) + "]";
+                Scope.back().IDENT_array->push_back(tmp_ptr);
+                out << ir_name << " = " << 0 << endl;
+            }
+            VAR_T_num ++;     //定义结束后，把变量名数字 + 1
+            Array_dim.clear();     //初始化数组维度
+        }
 ;
 
 ConstInitVal: 
@@ -267,6 +309,11 @@ VarDef:
     }
     | IDENT ArrayDef ASSIGN 
     {
+        // 先进行初始化
+        Array_deep = 0;    //将深度初始化为0
+        Array_loc = 0;    //将下标初始化为0，path_length是整个数组的长度
+        old_Array_dest = 0;
+        path_length = ToPtrnum($2)->ptr_int;
         // 对应 a[4][2] = {1,2,{3},{5},7,8} 这些情况
 
         //首先检查当前域中是否出现
@@ -286,8 +333,6 @@ VarDef:
     }
         LCURLY
         {
-            Array_deep = 0;    //将深度初始化为0
-            Array_loc = 0;    //将下标初始化为0，path_length是整个数组的长度
             Array_dest = Array_loc + path_length;
         }
         ArrayInit RCURLY
@@ -389,7 +434,7 @@ ArrayUnit:
         $$ = $2;
         //out << "dim = " << ToPtrnum($2)->ptr_int << endl;
         Array_dim.push_back(ToPtrnum($2)->ptr_int);      //把数组数据放到Array_dim中，记录数组维度信息
-        path_length *= ToPtrnum($2)->ptr_int;
+        
     }
 ;
 
