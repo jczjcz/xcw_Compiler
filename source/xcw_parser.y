@@ -229,31 +229,190 @@ AddExp:
     MulExp
     | AddExp ADD MulExp
     {
-        add_1 = ToPtrnum($1);
-        mul_1 = ToPtrnum($3);
+        Ptr_num* add_1 = ToPtrnum($1);
+        Ptr_num* mul_1 = ToPtrnum($3);
         Ptr_num* tmp_ptr = new Ptr_num;
         if(add_1->IF_ptr_int && mul_1->IF_ptr_int){      //两个都是常量
             tmp_ptr->ptr_int = add_1->ptr_int + mul_1->ptr_int;
             tmp_ptr->IF_ptr_int = 1;
         }
         else{             // 至少有一个是变量
-            tmp_ptr->ptr_int = add_1->ptr_str + "+" + mul_1->ptr_str;
+            //如果其中有常量，先强制把常量转成string类型
+            string str1, str2;
+            if(add_1->IF_ptr_int){
+                str1 = to_string(add_1->ptr_int);
+            }
+            else{
+                str1 = add_1->ptr_str;
+            }
+            if(mul_1->IF_ptr_int){
+                str2 = to_string(mul_1->ptr_int);
+            }
+            else{
+                str2 = mul_1->ptr_str;
+            }
+
+            tmp_ptr->ptr_str = "t" +  to_string(VAR_t_num);   // 生成中间变量
+            VAR_t_num ++;
+            //是字符型
             tmp_ptr->IF_ptr_int = 0;
-            //TODO:生成临时变量
+            out << tmp_ptr->ptr_str << " = " << str1 << " + " << str2 << endl;      // 输出类似于 t0 = T0 + 1
         }
         //out << "AddExp ADD MulExp" << *ToInt($1) << "+" << *ToInt($3) << endl;
         $$ = tmp_ptr; 
     }
     | AddExp SUB MulExp
     {
-        int res = *ToInt($1) - *ToInt($3);
-        $$ = & res; 
+        Ptr_num* add_1 = ToPtrnum($1);
+        Ptr_num* mul_1 = ToPtrnum($3);
+        Ptr_num* tmp_ptr = new Ptr_num;
+        if(add_1->IF_ptr_int && mul_1->IF_ptr_int){      //两个都是常量
+            tmp_ptr->ptr_int = add_1->ptr_int - mul_1->ptr_int;
+            tmp_ptr->IF_ptr_int = 1;
+        }
+        else{             // 至少有一个是变量
+            //如果其中有常量，先强制把常量转成string类型
+            string str1, str2;
+            if(add_1->IF_ptr_int){
+                str1 = to_string(add_1->ptr_int);
+            }
+            else{
+                str1 = add_1->ptr_str;
+            }
+            if(mul_1->IF_ptr_int){
+                str2 = to_string(mul_1->ptr_int);
+            }
+            else{
+                str2 = mul_1->ptr_str;
+            }
+
+            tmp_ptr->ptr_str = "t" +  to_string(VAR_t_num);   // 生成中间变量
+            VAR_t_num ++;
+            //是字符型
+            tmp_ptr->IF_ptr_int = 0;
+            out << tmp_ptr->ptr_str << " = " << str1 << " - " << str2 << endl;      // 输出类似于 t0 = T0 + 1
+        }
+        $$ = tmp_ptr; 
     }
 
 ;
 
 MulExp:
     UnaryExp
+    | MulExp MUL UnaryExp
+    {
+        Ptr_num* add_1 = ToPtrnum($1);
+        Ptr_num* mul_1 = ToPtrnum($3);
+        Ptr_num* tmp_ptr = new Ptr_num;
+        if(add_1->IF_ptr_int && mul_1->IF_ptr_int){      //两个都是常量
+            tmp_ptr->ptr_int = add_1->ptr_int * mul_1->ptr_int;
+            tmp_ptr->IF_ptr_int = 1;
+        }
+        else{             // 至少有一个是变量
+            //如果其中有常量，先强制把常量转成string类型
+            string str1, str2;
+            if(add_1->IF_ptr_int){
+                str1 = to_string(add_1->ptr_int);
+            }
+            else{
+                str1 = add_1->ptr_str;
+            }
+            if(mul_1->IF_ptr_int){
+                str2 = to_string(mul_1->ptr_int);
+            }
+            else{
+                str2 = mul_1->ptr_str;
+            }
+
+            tmp_ptr->ptr_str = "t" +  to_string(VAR_t_num);   // 生成中间变量
+            VAR_t_num ++;
+            //是字符型
+            tmp_ptr->IF_ptr_int = 0;
+            out << tmp_ptr->ptr_str << " = " << str1 << " * " << str2 << endl;      // 输出类似于 t0 = T0 + 1
+        }
+        //out << "AddExp ADD MulExp" << *ToInt($1) << "+" << *ToInt($3) << endl;
+        $$ = tmp_ptr; 
+    }
+    | MulExp DIV UnaryExp
+    {
+        Ptr_num* add_1 = ToPtrnum($1);
+        Ptr_num* mul_1 = ToPtrnum($3);
+        Ptr_num* tmp_ptr = new Ptr_num;
+        if(add_1->IF_ptr_int && mul_1->IF_ptr_int){      //两个都是常量
+            if(mul_1->ptr_int == 0){       //除0报错
+                yyerror("Integer division by zero.");
+            }
+            tmp_ptr->ptr_int = add_1->ptr_int / mul_1->ptr_int;
+            tmp_ptr->IF_ptr_int = 1;
+        }
+        else{             // 至少有一个是变量
+            //如果其中有常量，先强制把常量转成string类型
+            string str1, str2;
+            if(add_1->IF_ptr_int){
+                str1 = to_string(add_1->ptr_int);
+            }
+            else{
+                str1 = add_1->ptr_str;
+            }
+            if(mul_1->IF_ptr_int){
+                if(mul_1->ptr_int == 0){       //除0报错
+                    yyerror("Integer division by zero.");
+                }
+                str2 = to_string(mul_1->ptr_int);
+            }
+            else{
+                str2 = mul_1->ptr_str;
+            }
+
+            tmp_ptr->ptr_str = "t" +  to_string(VAR_t_num);   // 生成中间变量
+            VAR_t_num ++;
+            //是字符型
+            tmp_ptr->IF_ptr_int = 0;
+            out << tmp_ptr->ptr_str << " = " << str1 << " / " << str2 << endl;      // 输出类似于 t0 = T0 + 1
+        }
+        //out << "AddExp ADD MulExp" << *ToInt($1) << "+" << *ToInt($3) << endl;
+        $$ = tmp_ptr; 
+    }
+    | MulExp MOD UnaryExp
+    {
+        Ptr_num* add_1 = ToPtrnum($1);
+        Ptr_num* mul_1 = ToPtrnum($3);
+        Ptr_num* tmp_ptr = new Ptr_num;
+        if(add_1->IF_ptr_int && mul_1->IF_ptr_int){      //两个都是常量
+            if(mul_1->ptr_int == 0){       //除0报错
+                yyerror("Integer mod by zero.");
+            }
+            tmp_ptr->ptr_int = add_1->ptr_int % mul_1->ptr_int;
+            tmp_ptr->IF_ptr_int = 1;
+        }
+        else{             // 至少有一个是变量
+            //如果其中有常量，先强制把常量转成string类型
+            string str1, str2;
+            if(add_1->IF_ptr_int){
+                str1 = to_string(add_1->ptr_int);
+            }
+            else{
+                str1 = add_1->ptr_str;
+            }
+            if(mul_1->IF_ptr_int){
+                if(mul_1->ptr_int == 0){       //除0报错
+                    yyerror("Integer mod by zero.");
+                }
+                str2 = to_string(mul_1->ptr_int);
+            }
+            else{
+                str2 = mul_1->ptr_str;
+            }
+
+            tmp_ptr->ptr_str = "t" +  to_string(VAR_t_num);   // 生成中间变量
+            VAR_t_num ++;
+            //是字符型
+            tmp_ptr->IF_ptr_int = 0;
+            out << tmp_ptr->ptr_str << " = " << str1 << " % " << str2 << endl;      // 输出类似于 t0 = T0 + 1
+        }
+        //out << "AddExp ADD MulExp" << *ToInt($1) << "+" << *ToInt($3) << endl;
+        $$ = tmp_ptr; 
+    }
 ;
 
 UnaryExp:

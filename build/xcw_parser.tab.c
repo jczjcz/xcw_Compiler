@@ -524,16 +524,16 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  9
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   29
+#define YYLAST   30
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  38
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  19
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  25
+#define YYNRULES  30
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  37
+#define YYNSTATES  47
 
 /* YYTRANSLATE[YYX] -- Symbol number corresponding to YYX as returned
    by yylex, with out-of-bounds checking.  */
@@ -585,7 +585,8 @@ static const yytype_uint16 yyrline[] =
 {
        0,   111,   111,   112,   116,   117,   121,   125,   126,   130,
      148,   152,   160,   164,   168,   169,   173,   189,   221,   225,
-     229,   234,   238,   245,   252,   256
+     229,   230,   264,   301,   302,   336,   376,   419,   426,   433,
+     437
 };
 #endif
 
@@ -617,10 +618,10 @@ static const yytype_uint16 yytoknum[] =
 };
 # endif
 
-#define YYPACT_NINF -31
+#define YYPACT_NINF -35
 
 #define yypact_value_is_default(Yystate) \
-  (!!((Yystate) == (-31)))
+  (!!((Yystate) == (-35)))
 
 #define YYTABLE_NINF -1
 
@@ -631,10 +632,11 @@ static const yytype_uint16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-     -13,   -31,    -7,     1,   -31,   -31,   -31,     2,     3,   -31,
-     -31,   -24,   -30,   -31,   -21,   -28,   -31,    -8,   -31,     2,
-      -8,   -31,     3,   -31,   -31,   -31,   -31,   -31,   -31,   -31,
-     -31,   -31,   -31,   -31,   -31,   -31,   -31
+      -7,   -35,     5,     1,   -35,   -35,   -35,    13,    14,   -35,
+     -35,   -10,   -24,   -35,    -9,   -22,   -35,    -8,   -35,    13,
+      -8,   -35,    14,   -35,   -35,   -35,   -35,    11,    -3,   -35,
+     -35,   -35,   -35,   -35,   -35,    11,   -35,    -8,    -8,    -8,
+      -8,    -8,    -3,    -3,   -35,   -35,   -35
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -644,15 +646,16 @@ static const yytype_uint8 yydefact[] =
 {
        0,    13,     0,     0,     2,     4,     5,     0,     0,     1,
        3,    16,     0,    14,     0,     0,     7,     0,    12,     0,
-       0,     6,     0,    25,    23,    17,    18,    19,    20,    21,
-      22,    24,    15,     9,    10,    11,     8
+       0,     6,     0,    30,    28,    17,    18,    19,    20,    23,
+      27,    29,    15,     9,    10,    11,     8,     0,     0,     0,
+       0,     0,    21,    22,    24,    25,    26
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -31,   -31,    10,   -31,   -31,    -4,   -31,   -31,   -31,    12,
-     -31,     0,   -31,   -31,    -5,   -31,   -31,   -31,   -31
+     -35,   -35,    22,   -35,   -35,     4,   -35,   -35,   -35,    25,
+     -35,     9,   -35,   -35,    10,   -19,   -34,   -35,   -35
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
@@ -667,16 +670,18 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_uint8 yytable[] =
 {
-      23,     9,     1,     2,    18,    19,    21,    22,     1,    17,
-      11,    14,    20,    10,     8,    35,     1,     2,    36,    32,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,    24
+      23,     9,    39,    40,    41,    44,    45,    46,     1,     2,
+      18,    19,    21,    22,    37,    38,     1,     2,    42,    43,
+       1,    11,    14,    17,    20,    10,    36,     8,    32,    24,
+      35
 };
 
-static const yytype_int8 yycheck[] =
+static const yytype_uint8 yycheck[] =
 {
-       8,     0,    15,    16,    34,    35,    34,    35,    15,    33,
-       8,     8,    33,     3,     2,    20,    15,    16,    22,    19,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    37
+       8,     0,     5,     6,     7,    39,    40,    41,    15,    16,
+      34,    35,    34,    35,     3,     4,    15,    16,    37,    38,
+      15,     8,     8,    33,    33,     3,    22,     2,    19,    37,
+      20
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
@@ -686,7 +691,8 @@ static const yytype_uint8 yystos[] =
        0,    15,    16,    39,    40,    41,    46,    47,    47,     0,
       40,     8,    48,    49,     8,    42,    43,    33,    34,    35,
       33,    34,    35,     8,    37,    50,    51,    52,    53,    54,
-      55,    56,    49,    44,    45,    52,    43
+      55,    56,    49,    44,    45,    52,    43,     3,     4,     5,
+       6,     7,    53,    53,    54,    54,    54
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
@@ -694,7 +700,8 @@ static const yytype_uint8 yyr1[] =
 {
        0,    38,    39,    39,    40,    40,    41,    42,    42,    43,
       44,    45,    46,    47,    48,    48,    49,    49,    50,    51,
-      52,    53,    54,    55,    55,    56
+      52,    52,    52,    53,    53,    53,    53,    54,    55,    55,
+      56
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
@@ -702,7 +709,8 @@ static const yytype_uint8 yyr2[] =
 {
        0,     2,     1,     2,     1,     1,     4,     1,     3,     3,
        1,     1,     3,     1,     1,     3,     1,     3,     1,     1,
-       1,     1,     1,     1,     1,     1
+       1,     3,     3,     1,     3,     3,     3,     1,     1,     1,
+       1
 };
 
 
@@ -1394,7 +1402,7 @@ yyreduce:
             yyerror(err);
         }
     }
-#line 1398 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 1406 "build/xcw_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 11:
@@ -1403,7 +1411,7 @@ yyreduce:
         (yyval) = (yyvsp[0]);
         //out << "ADD EXP" << endl;
     }
-#line 1407 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 1415 "build/xcw_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 16:
@@ -1423,7 +1431,7 @@ yyreduce:
             yyerror(err);
         }
     }
-#line 1427 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 1435 "build/xcw_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 17:
@@ -1456,30 +1464,231 @@ yyreduce:
         
         //tmp.Print_IDENT();
     }
-#line 1460 "build/xcw_parser.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 22:
-#line 239 "source/xcw_parser.y" /* yacc.c:1646  */
-    {
-        (yyval) = (yyvsp[0]);
-    }
 #line 1468 "build/xcw_parser.tab.c" /* yacc.c:1646  */
     break;
 
-  case 23:
-#line 246 "source/xcw_parser.y" /* yacc.c:1646  */
+  case 21:
+#line 231 "source/xcw_parser.y" /* yacc.c:1646  */
+    {
+        Ptr_num* add_1 = ToPtrnum((yyvsp[-2]));
+        Ptr_num* mul_1 = ToPtrnum((yyvsp[0]));
+        Ptr_num* tmp_ptr = new Ptr_num;
+        if(add_1->IF_ptr_int && mul_1->IF_ptr_int){      //两个都是常量
+            tmp_ptr->ptr_int = add_1->ptr_int + mul_1->ptr_int;
+            tmp_ptr->IF_ptr_int = 1;
+        }
+        else{             // 至少有一个是变量
+            //如果其中有常量，先强制把常量转成string类型
+            string str1, str2;
+            if(add_1->IF_ptr_int){
+                str1 = to_string(add_1->ptr_int);
+            }
+            else{
+                str1 = add_1->ptr_str;
+            }
+            if(mul_1->IF_ptr_int){
+                str2 = to_string(mul_1->ptr_int);
+            }
+            else{
+                str2 = mul_1->ptr_str;
+            }
+
+            tmp_ptr->ptr_str = "t" +  to_string(VAR_t_num);   // 生成中间变量
+            VAR_t_num ++;
+            //是字符型
+            tmp_ptr->IF_ptr_int = 0;
+            out << tmp_ptr->ptr_str << " = " << str1 << " + " << str2 << endl;      // 输出类似于 t0 = T0 + 1
+        }
+        //out << "AddExp ADD MulExp" << *ToInt($1) << "+" << *ToInt($3) << endl;
+        (yyval) = tmp_ptr; 
+    }
+#line 1506 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 22:
+#line 265 "source/xcw_parser.y" /* yacc.c:1646  */
+    {
+        Ptr_num* add_1 = ToPtrnum((yyvsp[-2]));
+        Ptr_num* mul_1 = ToPtrnum((yyvsp[0]));
+        Ptr_num* tmp_ptr = new Ptr_num;
+        if(add_1->IF_ptr_int && mul_1->IF_ptr_int){      //两个都是常量
+            tmp_ptr->ptr_int = add_1->ptr_int - mul_1->ptr_int;
+            tmp_ptr->IF_ptr_int = 1;
+        }
+        else{             // 至少有一个是变量
+            //如果其中有常量，先强制把常量转成string类型
+            string str1, str2;
+            if(add_1->IF_ptr_int){
+                str1 = to_string(add_1->ptr_int);
+            }
+            else{
+                str1 = add_1->ptr_str;
+            }
+            if(mul_1->IF_ptr_int){
+                str2 = to_string(mul_1->ptr_int);
+            }
+            else{
+                str2 = mul_1->ptr_str;
+            }
+
+            tmp_ptr->ptr_str = "t" +  to_string(VAR_t_num);   // 生成中间变量
+            VAR_t_num ++;
+            //是字符型
+            tmp_ptr->IF_ptr_int = 0;
+            out << tmp_ptr->ptr_str << " = " << str1 << " - " << str2 << endl;      // 输出类似于 t0 = T0 + 1
+        }
+        (yyval) = tmp_ptr; 
+    }
+#line 1543 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 24:
+#line 303 "source/xcw_parser.y" /* yacc.c:1646  */
+    {
+        Ptr_num* add_1 = ToPtrnum((yyvsp[-2]));
+        Ptr_num* mul_1 = ToPtrnum((yyvsp[0]));
+        Ptr_num* tmp_ptr = new Ptr_num;
+        if(add_1->IF_ptr_int && mul_1->IF_ptr_int){      //两个都是常量
+            tmp_ptr->ptr_int = add_1->ptr_int * mul_1->ptr_int;
+            tmp_ptr->IF_ptr_int = 1;
+        }
+        else{             // 至少有一个是变量
+            //如果其中有常量，先强制把常量转成string类型
+            string str1, str2;
+            if(add_1->IF_ptr_int){
+                str1 = to_string(add_1->ptr_int);
+            }
+            else{
+                str1 = add_1->ptr_str;
+            }
+            if(mul_1->IF_ptr_int){
+                str2 = to_string(mul_1->ptr_int);
+            }
+            else{
+                str2 = mul_1->ptr_str;
+            }
+
+            tmp_ptr->ptr_str = "t" +  to_string(VAR_t_num);   // 生成中间变量
+            VAR_t_num ++;
+            //是字符型
+            tmp_ptr->IF_ptr_int = 0;
+            out << tmp_ptr->ptr_str << " = " << str1 << " * " << str2 << endl;      // 输出类似于 t0 = T0 + 1
+        }
+        //out << "AddExp ADD MulExp" << *ToInt($1) << "+" << *ToInt($3) << endl;
+        (yyval) = tmp_ptr; 
+    }
+#line 1581 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 25:
+#line 337 "source/xcw_parser.y" /* yacc.c:1646  */
+    {
+        Ptr_num* add_1 = ToPtrnum((yyvsp[-2]));
+        Ptr_num* mul_1 = ToPtrnum((yyvsp[0]));
+        Ptr_num* tmp_ptr = new Ptr_num;
+        if(add_1->IF_ptr_int && mul_1->IF_ptr_int){      //两个都是常量
+            if(mul_1->ptr_int == 0){       //除0报错
+                yyerror("Integer division by zero.");
+            }
+            tmp_ptr->ptr_int = add_1->ptr_int / mul_1->ptr_int;
+            tmp_ptr->IF_ptr_int = 1;
+        }
+        else{             // 至少有一个是变量
+            //如果其中有常量，先强制把常量转成string类型
+            string str1, str2;
+            if(add_1->IF_ptr_int){
+                str1 = to_string(add_1->ptr_int);
+            }
+            else{
+                str1 = add_1->ptr_str;
+            }
+            if(mul_1->IF_ptr_int){
+                if(mul_1->ptr_int == 0){       //除0报错
+                    yyerror("Integer division by zero.");
+                }
+                str2 = to_string(mul_1->ptr_int);
+            }
+            else{
+                str2 = mul_1->ptr_str;
+            }
+
+            tmp_ptr->ptr_str = "t" +  to_string(VAR_t_num);   // 生成中间变量
+            VAR_t_num ++;
+            //是字符型
+            tmp_ptr->IF_ptr_int = 0;
+            out << tmp_ptr->ptr_str << " = " << str1 << " / " << str2 << endl;      // 输出类似于 t0 = T0 + 1
+        }
+        //out << "AddExp ADD MulExp" << *ToInt($1) << "+" << *ToInt($3) << endl;
+        (yyval) = tmp_ptr; 
+    }
+#line 1625 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 26:
+#line 377 "source/xcw_parser.y" /* yacc.c:1646  */
+    {
+        Ptr_num* add_1 = ToPtrnum((yyvsp[-2]));
+        Ptr_num* mul_1 = ToPtrnum((yyvsp[0]));
+        Ptr_num* tmp_ptr = new Ptr_num;
+        if(add_1->IF_ptr_int && mul_1->IF_ptr_int){      //两个都是常量
+            if(mul_1->ptr_int == 0){       //除0报错
+                yyerror("Integer mod by zero.");
+            }
+            tmp_ptr->ptr_int = add_1->ptr_int % mul_1->ptr_int;
+            tmp_ptr->IF_ptr_int = 1;
+        }
+        else{             // 至少有一个是变量
+            //如果其中有常量，先强制把常量转成string类型
+            string str1, str2;
+            if(add_1->IF_ptr_int){
+                str1 = to_string(add_1->ptr_int);
+            }
+            else{
+                str1 = add_1->ptr_str;
+            }
+            if(mul_1->IF_ptr_int){
+                if(mul_1->ptr_int == 0){       //除0报错
+                    yyerror("Integer mod by zero.");
+                }
+                str2 = to_string(mul_1->ptr_int);
+            }
+            else{
+                str2 = mul_1->ptr_str;
+            }
+
+            tmp_ptr->ptr_str = "t" +  to_string(VAR_t_num);   // 生成中间变量
+            VAR_t_num ++;
+            //是字符型
+            tmp_ptr->IF_ptr_int = 0;
+            out << tmp_ptr->ptr_str << " = " << str1 << " % " << str2 << endl;      // 输出类似于 t0 = T0 + 1
+        }
+        //out << "AddExp ADD MulExp" << *ToInt($1) << "+" << *ToInt($3) << endl;
+        (yyval) = tmp_ptr; 
+    }
+#line 1669 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 27:
+#line 420 "source/xcw_parser.y" /* yacc.c:1646  */
+    {
+        (yyval) = (yyvsp[0]);
+    }
+#line 1677 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 28:
+#line 427 "source/xcw_parser.y" /* yacc.c:1646  */
     {
         Ptr_num* tmp_ptr = new Ptr_num;
         tmp_ptr->ptr_int = *ToInt((yyvsp[0]));
         tmp_ptr->IF_ptr_int = 1;
         (yyval) = tmp_ptr;
     }
-#line 1479 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 1688 "build/xcw_parser.tab.c" /* yacc.c:1646  */
     break;
 
-  case 25:
-#line 257 "source/xcw_parser.y" /* yacc.c:1646  */
+  case 30:
+#line 438 "source/xcw_parser.y" /* yacc.c:1646  */
     {
         IDENT_scope* tmp = find_define(*ToStr((yyvsp[0])));
         //out << "Tostr -> " << *ToStr($1) << endl;
@@ -1498,11 +1707,11 @@ yyreduce:
         }   
         (yyval) = tmp_ptr;
     }
-#line 1502 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 1711 "build/xcw_parser.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1506 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 1715 "build/xcw_parser.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1730,7 +1939,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 283 "source/xcw_parser.y" /* yacc.c:1906  */
+#line 464 "source/xcw_parser.y" /* yacc.c:1906  */
 
 
 void yyerror(const char *s) {
