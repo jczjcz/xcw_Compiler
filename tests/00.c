@@ -1,6 +1,3 @@
-int a = 1;
-int d = 0;
-const int c = 4;
-int b = a + 2 * d % c;
+int c[4][2] = {{1, 2}, {3, 4}, 5, 6, 7, 8};
 
 

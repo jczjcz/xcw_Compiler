@@ -26,16 +26,30 @@ struct Ptr_num{             // 用来传递参数，用IF_ptr_int表示传上来
     int ptr_int;
     string ptr_str;
     bool IF_ptr_int;
+    Ptr_num(int p_int){
+        ptr_int = p_int;
+        IF_ptr_int = 1; 
+    }
+    Ptr_num(string p_str){
+        ptr_str = p_str;
+        IF_ptr_int = 0; 
+    }
+    Ptr_num(){}
 };
+
 
 int DEEP;      //当前的深度
 struct IDENT_scope{     //符号表元素
     string IDENT_name;
     string IDENT_num;          // 变量的值可变，因此用string存储
     int  IDENT_const_num;      // const常量直接用INT型数字表示其内容
+    vector<Ptr_num>* IDENT_array;     // 指向数组头部的指针
     int IDENT_deep;
     bool IDENT_if_const;
     string IR_name;          // 在Eeyore中的变量名
+
+    bool IDENT_if_array;       //是否为数组变量
+
     IDENT_scope(string name, int num, int deep, bool if_const){       //常量的构造函数
         IDENT_name = name;
         IDENT_const_num = num;
@@ -48,6 +62,7 @@ struct IDENT_scope{     //符号表元素
         IDENT_deep = deep;
         IDENT_if_const = if_const;
     }
+
     void Print_IDENT(){          // 输出所有变量，方便调试
         out << "Name = " << IDENT_name << endl;
         if(IDENT_if_const)
@@ -90,6 +105,13 @@ IDENT_scope* find_define(string name){
 }
 
 
+//-----------------数组相关变量------------------------------
+vector<int> Array_dim;        // 该数据结构用于数组声明时，从前到后，用于存放数组的各个维度
+int path_length = 1;
+int Array_loc;
+int Array_dest, old_Array_dest;    //old_Array_dest用来临时存之前的Array_dest
+int Array_deep;
+//----------------------------------------------------------
 
 %}
 
@@ -214,6 +236,160 @@ VarDef:
         }
         
         //tmp.Print_IDENT();
+    }
+    | IDENT ArrayDef
+    {
+        //首先检查当前域中是否出现
+        if(!check_define(*ToStr($1))){
+            string err = "\"" +  *ToStr($1) + "\" already defined in this scope.";
+            yyerror(err);
+        }
+
+        // out << "Array num = " << ToPtrnum($2)->ptr_int << endl;
+        // yyerror("test");
+        int n = ToPtrnum($2)->ptr_int;      //当前数组的元素总数，例如a[2][3], n=6
+        // 输出 var 24 T0 
+        out << "var " << n*INTSIZE << " T" << to_string(VAR_T_num) <<endl;
+        
+        vector<Ptr_num>* Ident_array = new vector<Ptr_num>;
+        IDENT_scope tmp = IDENT_scope(*ToStr($1), "0", DEEP, 0);
+        tmp.IDENT_if_array = 1;      //表示这个量是数组
+        tmp.IDENT_array = Ident_array;     //指向这个新生成的vector数组
+        Scope.push_back(tmp);
+
+        for(int i = 0; i < n; i++){
+            Ptr_num tmp_ptr = Ptr_num("0");     //构造vector中的元素
+            string ir_name = "T" + to_string(VAR_T_num) + "[" + to_string(4 * i) + "]";
+            Ident_array->push_back(tmp_ptr);
+            out << ir_name << " = " << 0 << endl;
+        }
+        VAR_T_num ++;
+    }
+    | IDENT ArrayDef ASSIGN 
+    {
+        // 对应 a[4][2] = {1,2,{3},{5},7,8} 这些情况
+
+        //首先检查当前域中是否出现
+        if(!check_define(*ToStr($1))){
+            string err = "\"" +  *ToStr($1) + "\" already defined in this scope.";
+            yyerror(err);
+        }
+        int n = ToPtrnum($2)->ptr_int;      //当前数组的元素总数，例如a[2][3], n=6
+        // 输出 var 24 T0 
+        out << "var " << n*INTSIZE << " T" << to_string(VAR_T_num) <<endl;
+
+        vector<Ptr_num>* Ident_array = new vector<Ptr_num>;
+        IDENT_scope tmp = IDENT_scope(*ToStr($1), "0", DEEP, 0);
+        tmp.IDENT_if_array = 1;      //表示这个量是数组
+        tmp.IDENT_array = Ident_array;     //指向这个新生成的vector数组
+        Scope.push_back(tmp);
+    }
+        LCURLY
+        {
+            Array_deep = 0;    //将深度初始化为0
+            Array_loc = 0;    //将下标初始化为0，path_length是整个数组的长度
+            Array_dest = Array_loc + path_length;
+        }
+        ArrayInit RCURLY
+        {
+            //没填满的元素用0填充
+            //out << "------- Array_dest = "<<Array_dest<<endl;
+            for(; Array_loc < Array_dest; Array_loc++){
+                //out << "Array_loc = " << Array_loc << endl;
+                Ptr_num tmp_ptr = Ptr_num("0");     //构造vector中的元素
+                string ir_name = "T" + to_string(VAR_T_num) + "[" + to_string(4 * Array_loc) + "]";
+                Scope.back().IDENT_array->push_back(tmp_ptr);
+                out << ir_name << " = " << 0 << endl;
+            }
+            VAR_T_num ++;     //定义结束后，把变量名数字 + 1
+            Array_dim.clear();     //初始化数组维度
+        }
+;
+
+ArrayInit:
+    {
+        // 类似于{}的情况，推出空值
+    }
+    | ArrayExps
+    {
+        //类似于 {1},{1,2}
+       // out << "ArrayExps " << endl;
+        $$ = $1;
+    }
+;
+
+ArrayExps:
+    ArrayExp
+    | ArrayExps COMMA ArrayExp
+;
+
+ArrayExp:
+    Exp
+    {
+        //out << "Array_loc = " << Array_loc << endl;
+        //out << "EXP" << endl;
+        if(ToPtrnum($1)->IF_ptr_int){    //为常量，加入到数组中
+            Ptr_num tmp_ptr = Ptr_num(ToPtrnum($1)->ptr_int);     //构造vector中的元素
+            string ir_name = "T" + to_string(VAR_T_num) + "[" + to_string(4 * Array_loc) + "]";
+            Scope.back().IDENT_array->push_back(tmp_ptr);
+            out << ir_name << " = " << ToPtrnum($1)->ptr_int << endl;
+        }       
+        else{          //为变量，加入到数组中
+            Ptr_num tmp_ptr = Ptr_num(ToPtrnum($1)->ptr_str);     //构造vector中的元素
+            string ir_name = "T" + to_string(VAR_T_num) + "[" + to_string(4 * Array_loc) + "]";
+            Scope.back().IDENT_array->push_back(tmp_ptr);
+            out << ir_name << " = " << ToPtrnum($1)->ptr_str << endl;
+        }
+        Array_loc ++;     //位置向前进1
+    }
+    | LCURLY 
+    {
+        //out << "LCURLY" << endl;
+        path_length = path_length / Array_dim[Array_deep];
+        Array_deep ++;      //遇到左括号，深度+1
+        old_Array_dest = Array_dest;
+        Array_dest = Array_loc + path_length;
+    }
+        ArrayInit RCURLY
+        {
+            //out << "RCURLY" << endl;
+            //out << "------- Array_dest = "<<Array_dest<<endl;
+            for(; Array_loc < Array_dest; Array_loc++){
+                //out << "Array_loc = " << Array_loc << endl;
+                Ptr_num tmp_ptr = Ptr_num("0");     //构造vector中的元素
+                string ir_name = "T" + to_string(VAR_T_num) + "[" + to_string(4 * Array_loc) + "]";
+                Scope.back().IDENT_array->push_back(tmp_ptr);
+                out << ir_name << " = " << 0 << endl;
+            }
+            Array_dest = old_Array_dest;
+            Array_deep --;      //遇到右括号，深度-1
+            path_length = path_length * Array_dim[Array_deep];
+        }
+
+;
+
+
+
+ArrayDef:
+    ArrayUnit
+    {
+        //out << "Array num1111 = " << ToPtrnum($1)->ptr_int << endl;
+        $$ = $1;
+    }
+    | ArrayDef ArrayUnit
+    {
+        ToPtrnum($1)->ptr_int = ToPtrnum($1)->ptr_int * ToPtrnum($2)->ptr_int;
+        $$ = $1;
+    }
+;
+
+ArrayUnit:
+    LBRAC ConstExp RBRAC
+    {
+        $$ = $2;
+        //out << "dim = " << ToPtrnum($2)->ptr_int << endl;
+        Array_dim.push_back(ToPtrnum($2)->ptr_int);      //把数组数据放到Array_dim中，记录数组维度信息
+        path_length *= ToPtrnum($2)->ptr_int;
     }
 ;
 
@@ -454,6 +630,7 @@ LVal:
         $$ = tmp_ptr;
     }
 ;
+
 
 
 

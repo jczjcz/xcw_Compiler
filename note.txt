@@ -17,3 +17,30 @@ git push
     }
 
 
+
+LCURLY 
+    {
+        out << "LCURLY" << endl;
+        path_length = path_length / Array_dim[Array_deep];
+        Array_deep ++;      //遇到左括号，深度+1
+    }
+        ArrayInit RCURLY
+        {
+            out << "RCURLY" << endl;
+            Array_deep --;      //遇到右括号，深度-1
+            path_length = path_length * Array_dim[Array_deep];
+        }
+
+
+
+    | ArrayExps COMMA Exp
+    {
+        out << "ArrayExps COMMA Exp" << endl;
+        // if(ToPtrnum($3)->IF_ptr_int){    //为常量，加入到数组中
+        //     Ptr_num tmp_ptr = Ptr_num(ToPtrnum($3)->ptr_int);     //构造vector中的元素
+        //     string ir_name = "T" + to_string(VAR_T_num) + "[" + to_string(4 * Array_loc) + "]";
+        //     Scope.back().IDENT_array->push_back(tmp_ptr);
+        //     out << ir_name << " = " << ToPtrnum($3)->ptr_int << endl;
+        // }     
+        // Array_loc ++;     //位置向前进1
+    }
