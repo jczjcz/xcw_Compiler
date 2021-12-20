@@ -1,3 +1,6 @@
 const int c = 1;
-int b = c;
-void d(){int a=c;}
+int b[2][3];
+void d(int d[]){
+    int b;
+    int h;
+}

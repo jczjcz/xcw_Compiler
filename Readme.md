@@ -29,4 +29,6 @@
 
 - 不带输入，Block中有内容的函数的声明 例如 void d(){int a=1;}    👌
 
+- 带有输入，Block中有内容的函数的声明 例如 void d(int a){int b=1;}    👌
+
 

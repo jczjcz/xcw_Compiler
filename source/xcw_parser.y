@@ -37,6 +37,11 @@ struct Ptr_num{             // 用来传递参数，用IF_ptr_int表示传上来
     Ptr_num(){}
 };
 
+struct Params_num{      //函数参数的元素类型，需要包括 INT型变量和INT型数组指针
+    string para_str;       //变量名字
+    string para_ir_name;    //在IR中，函数参数的名字
+};
+
 
 int DEEP;      //当前的深度
 string IF_DEEP(){
@@ -54,7 +59,7 @@ struct IDENT_scope{     //符号表元素
     int Array_size;
     vector<Ptr_num>* IDENT_array;     // 指向数组头部的指针
     vector<int>* IDENT_dim_array;     // 用于存储数组的维度
-    vector<Ptr_num>* IDENT_func_param;     // 用一个数组存储所有的参数
+    //vector<Params_num>* IDENT_func_param;     // 用一个数组存储所有的参数
 
     int IDENT_func_param_num;      //参数的个数
     int IDENT_deep;
@@ -127,6 +132,11 @@ int Array_loc;
 int Array_dest, old_Array_dest;    //old_Array_dest用来临时存之前的Array_dest
 int Array_deep;
 string Array_name;
+//----------------------------------------------------------
+
+//-----------------函数相关变量------------------------------
+
+
 //----------------------------------------------------------
 
 %}
@@ -825,15 +835,29 @@ FuncDef:
         }
         //  开始函数定义
         IDENT_scope tmp = IDENT_scope(*ToStr($2), "0", DEEP, 0);    //不是Const
-        tmp.IDENT_func_param_num = 0;      //没有参数
+        //tmp.IDENT_func_param_num = 0;      //没有参数
         Scope.push_back(tmp);
-        out << "f_" << *ToStr($2) << " [" << tmp.IDENT_func_param_num << "]" << endl;
+        
     }
-    LPAREN FuncFParams RPAREN Block
+    LPAREN 
+    {
+        DEEP ++;
+    }
+    FuncFParams RPAREN
+    {
+        DEEP --;
+        //IDENT_scope* tmp_ptr = find_define(*ToStr($2));    //找到函数变量的指针
+        //tmp_ptr->IDENT_func_param_num = 
+        out << "f_" << *ToStr($2) << " [" << VAR_p_num << "]" << endl;  
+    }
+    Block
     {
         
         out << "\treturn 0" << endl;
         out << "end " << "f_" << *ToStr($2) << endl;
+
+        //声明结束后，把记录参数数量的 VAR_p_num 初始化
+        VAR_p_num = 0;
         
     }
     | VOID IDENT
@@ -845,15 +869,25 @@ FuncDef:
         }
         //  开始函数定义
         IDENT_scope tmp = IDENT_scope(*ToStr($2), "0", DEEP, 0);    //不是Const
-        tmp.IDENT_func_param_num = 0;      //没有参数
+        //tmp.IDENT_func_param_num = 0;      //没有参数
         Scope.push_back(tmp);
-        out << "f_" << *ToStr($2) << " [" << tmp.IDENT_func_param_num << "]" << endl;
+        //out << "f_" << *ToStr($2) << " [" << tmp.IDENT_func_param_num << "]" << endl;
     }
-    LPAREN FuncFParams RPAREN Block
+    LPAREN
+    {
+        DEEP ++;
+    }
+    FuncFParams RPAREN
+    {
+        DEEP --;
+        out << "f_" << *ToStr($2) << " [" << VAR_p_num << "]" << endl;
+    }
+    Block
     {
         
         out << "\treturn" << endl;
         out << "end " << "f_" << *ToStr($2) << endl;
+
         
     }
 ;
@@ -864,11 +898,61 @@ FuncFParams:
         //表示没有参数的情况
     }
     | FuncFParam
+    {
+
+    }
     | FuncFParams COMMA FuncFParam
 ;
 
-FuncFParam:
+FuncFParam:    
     INT IDENT
+    {        //a(int b){}
+        //out << "INT IDENT" << endl;
+        // 检查是否出现过
+        if(!check_define(*ToStr($2))){
+            string err = "\"" +  *ToStr($1) + "\" already defined in this scope.";
+            yyerror(err);
+        }
+        
+        IDENT_scope tmp = IDENT_scope(*ToStr($2), "0", DEEP, 0);    //是一个变量
+        tmp.IDENT_if_array = 0;    //不是数组
+        tmp.IR_name = "p" + to_string(VAR_p_num);
+        //tmp.Print_IDENT();
+        VAR_p_num ++;
+        Scope.push_back(tmp);
+    }
+    | INT IDENT LBRAC RBRAC ArrayParamDef
+    {      //void d(int d[])
+        // 检查是否出现过
+        if(!check_define(*ToStr($2))){
+            string err = "\"" +  *ToStr($1) + "\" already defined in this scope.";
+            yyerror(err);
+        }
+
+        IDENT_scope tmp = IDENT_scope(*ToStr($2), "0", DEEP, 0);    //是一个变量
+        tmp.IDENT_if_array = 1;    //是数组
+        tmp.IR_name = "p" + to_string(VAR_p_num);
+        //tmp.Print_IDENT();
+        VAR_p_num ++;
+        Scope.push_back(tmp);
+    }
+;
+
+ArrayParamDef:
+    ArrayUnit
+    {
+        //out << "Array num1111 = " << ToPtrnum($1)->ptr_int << endl;
+        $$ = $1;
+    }
+    | ArrayParamDef ArrayUnit
+    {
+        ToPtrnum($1)->ptr_int = ToPtrnum($1)->ptr_int * ToPtrnum($2)->ptr_int;
+        $$ = $1;
+    }
+    |
+    {
+        //也有可能为空
+    }
 ;
 
 Block:
@@ -879,6 +963,7 @@ Block:
         BlockItems RCURLY
         {
             //结束以后，删除在其中定义过的变量,因为这些实际上是局部变量，但方便起见输出成原生变量
+            //在这里正好也同时删除了参数变量（因为事实上声明时并不会用到）
             int i = Scope.size() - 1;
             while(Scope[i].IDENT_deep == DEEP && i >= 0){      //需要深度一致
                 Scope.pop_back();
