@@ -1,5 +1,3 @@
-int a[3][2][2] = {{1},{2},{3}};
-int b;
-int c = a[2][b][1];
-
-
+const int c = 1;
+int b = c;
+void d(){int a=c;}

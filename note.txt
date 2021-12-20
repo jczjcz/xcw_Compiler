@@ -2,45 +2,64 @@ git add.
 git commit -m "work_12_15_t"
 git push
 
-
-
-    | AddExp ADD MulExp
+FuncDef:
+    INT IDENT LPAREN FuncFParams RPAREN Block
     {
-        //out << "AddExp ADD MulExp" << *ToInt($1) << "+" << *ToInt($3) << endl;
-        int res = *ToInt($1) + *ToInt($3);
-        $$ = & res; 
-    }
-    | AddExp SUB MulExp
-    {
-        int res = *ToInt($1) - *ToInt($3);
-        $$ = & res; 
-    }
-
-
-
-LCURLY 
-    {
-        out << "LCURLY" << endl;
-        path_length = path_length / Array_dim[Array_deep];
-        Array_deep ++;      //遇到左括号，深度+1
-    }
-        ArrayInit RCURLY
-        {
-            out << "RCURLY" << endl;
-            Array_deep --;      //遇到右括号，深度-1
-            path_length = path_length * Array_dim[Array_deep];
+        out << " This is a INT Func" << endl;
+        //首先检查当前域中是否出现
+        if(!check_define(*ToStr($2))){
+            string err = "\"" +  *ToStr($1) + "\" already defined in this scope.";
+            yyerror(err);
         }
+        //  开始函数定义
+        IDENT_scope tmp = IDENT_scope(*ToStr($2), "0", DEEP, 0);    //不是Const
+        tmp.IDENT_func_param_num = 0;      //没有参数
+        Scope.push_back(tmp);
+        out << "f_" << *ToStr($2) << " [" << tmp.IDENT_func_param_num << "]" << endl;
 
 
-
-    | ArrayExps COMMA Exp
-    {
-        out << "ArrayExps COMMA Exp" << endl;
-        // if(ToPtrnum($3)->IF_ptr_int){    //为常量，加入到数组中
-        //     Ptr_num tmp_ptr = Ptr_num(ToPtrnum($3)->ptr_int);     //构造vector中的元素
-        //     string ir_name = "T" + to_string(VAR_T_num) + "[" + to_string(4 * Array_loc) + "]";
-        //     Scope.back().IDENT_array->push_back(tmp_ptr);
-        //     out << ir_name << " = " << ToPtrnum($3)->ptr_int << endl;
-        // }     
-        // Array_loc ++;     //位置向前进1
+        out << "    return 0" << endl;
+        out << "end " << "f_" << *ToStr($2) << endl;
+        
     }
+    | VOID IDENT LPAREN FuncFParams RPAREN Block
+    {
+        //首先检查当前域中是否出现
+        if(!check_define(*ToStr($2))){
+            string err = "\"" +  *ToStr($1) + "\" already defined in this scope.";
+            yyerror(err);
+        }
+        //  开始函数定义
+        IDENT_scope tmp = IDENT_scope(*ToStr($2), "0", DEEP, 0);    //不是Const
+        tmp.IDENT_func_param_num = 0;      //没有参数
+        Scope.push_back(tmp);
+        out << "f_" << *ToStr($2) << " [" << tmp.IDENT_func_param_num << "]" << endl;
+
+        out << "    return" << endl;
+        out << "end " << "f_" << *ToStr($2) << endl;
+        
+    }
+;
+
+
+FuncFParams:
+    {
+        //表示没有参数的情况
+    }
+    | FuncFParam
+    | FuncFParams COMMA FuncFParam
+;
+
+FuncFParam:
+    BType IDENT
+;
+
+Block:
+    LCURLY BlockItem RCURLY
+;
+
+BlockItem:
+    {
+        //暂时先考虑内容为空的情况
+    }
+;

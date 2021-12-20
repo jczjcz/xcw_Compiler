@@ -39,6 +39,14 @@ struct Ptr_num{             // 用来传递参数，用IF_ptr_int表示传上来
 
 
 int DEEP;      //当前的深度
+string IF_DEEP(){
+    if(DEEP==0)
+        return "";
+    return "\t";
+}
+
+
+
 struct IDENT_scope{     //符号表元素
     string IDENT_name;
     string IDENT_num;          // 变量的值可变，因此用string存储
@@ -46,11 +54,15 @@ struct IDENT_scope{     //符号表元素
     int Array_size;
     vector<Ptr_num>* IDENT_array;     // 指向数组头部的指针
     vector<int>* IDENT_dim_array;     // 用于存储数组的维度
+    vector<Ptr_num>* IDENT_func_param;     // 用一个数组存储所有的参数
+
+    int IDENT_func_param_num;      //参数的个数
     int IDENT_deep;
     bool IDENT_if_const;
     string IR_name;          // 在Eeyore中的变量名
 
     bool IDENT_if_array;       //是否为数组变量
+    bool IDENT_if_func;        //是否为函数变量
 
     IDENT_scope(string name, int num, int deep, bool if_const){       //常量的构造函数
         IDENT_name = name;
@@ -84,7 +96,7 @@ bool check_define(string str){       // 检查当前域中是否存在重复
     int i = Scope.size() - 1;
     if(i == -1)
         return true;
-    while(Scope[i].IDENT_deep == DEEP && i >= 0){
+    while(Scope[i].IDENT_deep == DEEP && i >= 0){      //需要深度一致
         if(str == Scope[i].IDENT_name){
             return false;
         }
@@ -134,8 +146,13 @@ string Array_name;
 %%
 
 CompUnit:
+    CompDecl
+    | CompUnit CompDecl
+;
+
+CompDecl:
     Decl
-    | CompUnit Decl
+    | FuncDef
 ;
 
 Decl:
@@ -144,7 +161,7 @@ Decl:
 ;
 
 ConstDecl:
-    CONST BType ConstDefs SEMI
+    CONST INT ConstDefs SEMI
 ;
 
 ConstDefs:
@@ -161,7 +178,7 @@ ConstDef:
         if(check_define(*ToStr($1))){       //如果在当前域中未被定义过
             //out << "11111" << endl;
             Scope.push_back(tmp);
-            VAR_T_num ++ ;
+            //VAR_T_num ++ ;
         }
         else{
             string err = "\"" +  *ToStr($1) + "\" already defined in this scope.";
@@ -232,12 +249,10 @@ ConstExp:
 ;
 
 VarDecl:
-    BType VarDefs SEMI
+    INT VarDefs SEMI
 ;
 
-BType:
-    INT
-;
+
 
 VarDefs:
     VarDef
@@ -252,8 +267,8 @@ VarDef:
         //tmp.Print_IDENT();
         if(check_define(*ToStr($1))){       //如果在当前域中未被定义过
             Scope.push_back(tmp);
-            out << "var T" << VAR_T_num << endl;
-            out << "T" << VAR_T_num << " = " << 0 << endl;
+            out << IF_DEEP() + "var T" << VAR_T_num << endl;
+            out << IF_DEEP() + "T" << VAR_T_num << " = " << 0 << endl;
             VAR_T_num ++ ;
         }
         else{
@@ -263,24 +278,14 @@ VarDef:
     }
     | IDENT ASSIGN InitVal
     {
-        // out << "Init end"<<endl;
-        // out << "IF_ptr_str = "<<ToPtrnum($3)->ptr_str << endl;
-        // out << "IF_ptr_int = "<<ToPtrnum($3)->IF_ptr_int << endl;
-
-
-        // if(!check_define(*ToStr($1))){   
-        //     string err = "\"" +  *ToStr($1) + "\" already defined in this scope.";
-        //     yyerror(err);
-        // }
-
 
         if(ToPtrnum($3)->IF_ptr_int == 1){       //传递的是常量
             int num = ToPtrnum($3)->ptr_int;
             IDENT_scope tmp = IDENT_scope(*ToStr($1), to_string(num), DEEP, 0);  
             tmp.IR_name = "T" + to_string(VAR_T_num);   
             Scope.push_back(tmp);
-            out << "var T" << VAR_T_num << endl;
-            out << "T" << VAR_T_num << " = " << num << endl;
+            out << IF_DEEP() + "var T" << VAR_T_num << endl;
+            out << IF_DEEP() + "T" << VAR_T_num << " = " << num << endl;
             VAR_T_num ++ ;
         }
         else{              //传递的是变量
@@ -292,8 +297,8 @@ VarDef:
             IDENT_scope tmp = IDENT_scope(*ToStr($1), num, DEEP, 0);
             tmp.IR_name = "T" + to_string(VAR_T_num);   
             Scope.push_back(tmp);
-            out << "var T" << VAR_T_num << endl;
-            out << "T" << VAR_T_num << " = " << num << endl;
+            out << IF_DEEP() + "var T" << VAR_T_num << endl;
+            out << IF_DEEP() + "T" << VAR_T_num << " = " << num << endl;
             VAR_T_num ++ ;
         }
         
@@ -311,7 +316,7 @@ VarDef:
         // yyerror("test");
         int n = ToPtrnum($2)->ptr_int;      //当前数组的元素总数，例如a[2][3], n=6
         // 输出 var 24 T0 
-        out << "var " << n*INTSIZE << " T" << to_string(VAR_T_num) <<endl;
+        out << IF_DEEP() + "var " << n*INTSIZE << " T" << to_string(VAR_T_num) <<endl;
         
         vector<Ptr_num>* Ident_array = new vector<Ptr_num>;
         vector<int>* Ident_dim_array = new vector<int>;
@@ -330,12 +335,13 @@ VarDef:
             Ptr_num tmp_ptr = Ptr_num("0");     //构造vector中的元素
             string ir_name = "T" + to_string(VAR_T_num) + "[" + to_string(4 * i) + "]";
             Ident_array->push_back(tmp_ptr);
-            out << ir_name << " = " << 0 << endl;
+            out << IF_DEEP() + ir_name << " = " << 0 << endl;
         }
         VAR_T_num ++;
     }
     | IDENT ArrayDef ASSIGN 
     {
+        
         // 先进行初始化
         Array_deep = 0;    //将深度初始化为0
         Array_loc = 0;    //将下标初始化为0，path_length是整个数组的长度
@@ -350,7 +356,7 @@ VarDef:
         }
         int n = ToPtrnum($2)->ptr_int;      //当前数组的元素总数，例如a[2][3], n=6
         // 输出 var 24 T0 
-        out << "var " << n*INTSIZE << " T" << to_string(VAR_T_num) <<endl;
+        out << IF_DEEP() + "var " << n*INTSIZE << " T" << to_string(VAR_T_num) <<endl;
 
         vector<Ptr_num>* Ident_array = new vector<Ptr_num>;
         vector<int>* Ident_dim_array = new vector<int>;
@@ -379,7 +385,7 @@ VarDef:
                 Ptr_num tmp_ptr = Ptr_num("0");     //构造vector中的元素
                 string ir_name = "T" + to_string(VAR_T_num) + "[" + to_string(4 * Array_loc) + "]";
                 Scope.back().IDENT_array->push_back(tmp_ptr);
-                out << ir_name << " = " << 0 << endl;
+                out << IF_DEEP() + ir_name << " = " << 0 << endl;
             }
             VAR_T_num ++;     //定义结束后，把变量名数字 + 1
             Array_dim.clear();     //初始化数组维度
@@ -412,13 +418,13 @@ ArrayExp:
             Ptr_num tmp_ptr = Ptr_num(ToPtrnum($1)->ptr_int);     //构造vector中的元素
             string ir_name = "T" + to_string(VAR_T_num) + "[" + to_string(4 * Array_loc) + "]";
             Scope.back().IDENT_array->push_back(tmp_ptr);
-            out << ir_name << " = " << ToPtrnum($1)->ptr_int << endl;
+            out << IF_DEEP() + ir_name << " = " << ToPtrnum($1)->ptr_int << endl;
         }       
         else{          //为变量，加入到数组中
             Ptr_num tmp_ptr = Ptr_num(ToPtrnum($1)->ptr_str);     //构造vector中的元素
             string ir_name = "T" + to_string(VAR_T_num) + "[" + to_string(4 * Array_loc) + "]";
             Scope.back().IDENT_array->push_back(tmp_ptr);
-            out << ir_name << " = " << ToPtrnum($1)->ptr_str << endl;
+            out << IF_DEEP() + ir_name << " = " << ToPtrnum($1)->ptr_str << endl;
         }
         Array_loc ++;     //位置向前进1
     }
@@ -439,7 +445,7 @@ ArrayExp:
                 Ptr_num tmp_ptr = Ptr_num("0");     //构造vector中的元素
                 string ir_name = "T" + to_string(VAR_T_num) + "[" + to_string(4 * Array_loc) + "]";
                 Scope.back().IDENT_array->push_back(tmp_ptr);
-                out << ir_name << " = " << 0 << endl;
+                out << IF_DEEP() + ir_name << " = " << 0 << endl;
             }
             Array_dest = old_Array_dest;
             Array_deep --;      //遇到右括号，深度-1
@@ -517,7 +523,7 @@ AddExp:
             VAR_t_num ++;
             //是字符型
             tmp_ptr->IF_ptr_int = 0;
-            out << tmp_ptr->ptr_str << " = " << str1 << " + " << str2 << endl;      // 输出类似于 t0 = T0 + 1
+            out << IF_DEEP() + tmp_ptr->ptr_str << " = " << str1 << " + " << str2 << endl;      // 输出类似于 t0 = T0 + 1
         }
         //out << "AddExp ADD MulExp" << *ToInt($1) << "+" << *ToInt($3) << endl;
         $$ = tmp_ptr; 
@@ -551,7 +557,7 @@ AddExp:
             VAR_t_num ++;
             //是字符型
             tmp_ptr->IF_ptr_int = 0;
-            out << tmp_ptr->ptr_str << " = " << str1 << " - " << str2 << endl;      // 输出类似于 t0 = T0 + 1
+            out << IF_DEEP() + tmp_ptr->ptr_str << " = " << str1 << " - " << str2 << endl;      // 输出类似于 t0 = T0 + 1
         }
         $$ = tmp_ptr; 
     }
@@ -589,7 +595,7 @@ MulExp:
             VAR_t_num ++;
             //是字符型
             tmp_ptr->IF_ptr_int = 0;
-            out << tmp_ptr->ptr_str << " = " << str1 << " * " << str2 << endl;      // 输出类似于 t0 = T0 + 1
+            out << IF_DEEP() + tmp_ptr->ptr_str << " = " << str1 << " * " << str2 << endl;      // 输出类似于 t0 = T0 + 1
         }
         //out << "AddExp ADD MulExp" << *ToInt($1) << "+" << *ToInt($3) << endl;
         $$ = tmp_ptr; 
@@ -629,7 +635,7 @@ MulExp:
             VAR_t_num ++;
             //是字符型
             tmp_ptr->IF_ptr_int = 0;
-            out << tmp_ptr->ptr_str << " = " << str1 << " / " << str2 << endl;      // 输出类似于 t0 = T0 + 1
+            out << IF_DEEP() + tmp_ptr->ptr_str << " = " << str1 << " / " << str2 << endl;      // 输出类似于 t0 = T0 + 1
         }
         //out << "AddExp ADD MulExp" << *ToInt($1) << "+" << *ToInt($3) << endl;
         $$ = tmp_ptr; 
@@ -669,7 +675,7 @@ MulExp:
             VAR_t_num ++;
             //是字符型
             tmp_ptr->IF_ptr_int = 0;
-            out << tmp_ptr->ptr_str << " = " << str1 << " % " << str2 << endl;      // 输出类似于 t0 = T0 + 1
+            out << IF_DEEP() + tmp_ptr->ptr_str << " = " << str1 << " % " << str2 << endl;      // 输出类似于 t0 = T0 + 1
         }
         //out << "AddExp ADD MulExp" << *ToInt($1) << "+" << *ToInt($3) << endl;
         $$ = tmp_ptr; 
@@ -730,6 +736,7 @@ LVal:
     }
     ArrayLVals
     {        //a[2][3]     a[1][b]  
+        //out << "Left = ArrayLVals " << endl;
         // IDENT_scope* tmp = ((IDENT_scope*)$$); 
         Ptr_num tmp_ptr, tmp_ptr_new, tmp_ptr_old;
         int ptr_size = INTSIZE;
@@ -749,7 +756,7 @@ LVal:
                         tmp_ptr_old.ptr_int += tmp_ptr_old.ptr_int;
                     }
                     else{
-                        out << "t" + to_string(VAR_t_num ) << " = "<< tmp_ptr_new.ptr_int << " + " << tmp_ptr_old.ptr_str << endl;
+                        out << IF_DEEP() + "t" + to_string(VAR_t_num ) << " = "<< tmp_ptr_new.ptr_int << " + " << tmp_ptr_old.ptr_str << endl;
                         tmp_ptr_old.ptr_str = "t" + to_string(VAR_t_num);
                         VAR_t_num ++;
                     }
@@ -765,10 +772,10 @@ LVal:
                 tmp_ptr_old.ptr_str = to_string(tmp_ptr_old.ptr_int);    //强制转换为string类型
                 tmp_ptr_old.IF_ptr_int = 0;
                 VAR_t_num ++;
-                out << tmp_ptr_new.ptr_str << " = " << tmp_ptr.ptr_str << " * " << ptr_size << endl;
+                out << IF_DEEP() + tmp_ptr_new.ptr_str << " = " << tmp_ptr.ptr_str << " * " << ptr_size << endl;
                 if(i != Array_LVal_dim.size()-1){     //第一次不用考虑和之前相加
                     //out << "tmp_ptr_old.ptr_int = " << tmp_ptr_old.ptr_int << endl;
-                    out << "t" + to_string(VAR_t_num ) << " = "<< tmp_ptr_new.ptr_str << " + " << tmp_ptr_old.ptr_str << endl;
+                    out <<IF_DEEP() + "t" + to_string(VAR_t_num ) << " = "<< tmp_ptr_new.ptr_str << " + " << tmp_ptr_old.ptr_str << endl;
                     tmp_ptr_old.ptr_str = "t" + to_string(VAR_t_num);
                     VAR_t_num ++;
                 }
@@ -783,7 +790,13 @@ LVal:
         }
         Array_LVal_dim.clear();
         //out << "Arrayend " << endl;
-        tmp_ptr_old.ptr_str = Array_name + "[" + tmp_ptr_old.ptr_str + "]";
+        if(tmp_ptr_old.IF_ptr_int){
+            tmp_ptr_old.ptr_str = Array_name + "[" + to_string(tmp_ptr_old.ptr_int) + "]";
+            tmp_ptr_old.IF_ptr_int = 0;
+        }
+        else    
+            tmp_ptr_old.ptr_str = Array_name + "[" + tmp_ptr_old.ptr_str + "]";
+        //out << "tmp_ptr_old.ptr_str = " << tmp_ptr_old.ptr_str << endl; 
         $$ = & tmp_ptr_old;
     }
 ;
@@ -801,7 +814,94 @@ ArrayLVal:
 ;
 
 
+FuncDef:
+    INT IDENT
+    {
+        //out << " This is a INT Func" << endl;
+        //首先检查当前域中是否出现
+        if(!check_define(*ToStr($2))){
+            string err = "\"" +  *ToStr($1) + "\" already defined in this scope.";
+            yyerror(err);
+        }
+        //  开始函数定义
+        IDENT_scope tmp = IDENT_scope(*ToStr($2), "0", DEEP, 0);    //不是Const
+        tmp.IDENT_func_param_num = 0;      //没有参数
+        Scope.push_back(tmp);
+        out << "f_" << *ToStr($2) << " [" << tmp.IDENT_func_param_num << "]" << endl;
+    }
+    LPAREN FuncFParams RPAREN Block
+    {
+        
+        out << "\treturn 0" << endl;
+        out << "end " << "f_" << *ToStr($2) << endl;
+        
+    }
+    | VOID IDENT
+    {
+        //首先检查当前域中是否出现
+        if(!check_define(*ToStr($2))){
+            string err = "\"" +  *ToStr($1) + "\" already defined in this scope.";
+            yyerror(err);
+        }
+        //  开始函数定义
+        IDENT_scope tmp = IDENT_scope(*ToStr($2), "0", DEEP, 0);    //不是Const
+        tmp.IDENT_func_param_num = 0;      //没有参数
+        Scope.push_back(tmp);
+        out << "f_" << *ToStr($2) << " [" << tmp.IDENT_func_param_num << "]" << endl;
+    }
+    LPAREN FuncFParams RPAREN Block
+    {
+        
+        out << "\treturn" << endl;
+        out << "end " << "f_" << *ToStr($2) << endl;
+        
+    }
+;
 
+
+FuncFParams:
+    {
+        //表示没有参数的情况
+    }
+    | FuncFParam
+    | FuncFParams COMMA FuncFParam
+;
+
+FuncFParam:
+    INT IDENT
+;
+
+Block:
+    LCURLY
+    {
+        DEEP ++;     // 深度+1，保证这些新加入的元素属于当前域中
+    }
+        BlockItems RCURLY
+        {
+            //结束以后，删除在其中定义过的变量,因为这些实际上是局部变量，但方便起见输出成原生变量
+            int i = Scope.size() - 1;
+            while(Scope[i].IDENT_deep == DEEP && i >= 0){      //需要深度一致
+                Scope.pop_back();
+                i--;
+            }
+            DEEP --;     //还原
+        }
+;
+
+BlockItems:
+    BlockItem
+    | BlockItems BlockItem;
+
+BlockItem:
+    {
+        // out << "BlockItem"<<endl;
+        //暂时先考虑内容为空的情况
+    }
+    | Decl
+    {
+
+    }
+;
 
 
 
