@@ -1676,7 +1676,7 @@ yyreduce:
             Ptr_num tmp_ptr = Ptr_num("0");     //构造vector中的元素
             string ir_name = "T" + to_string(VAR_T_num) + "[" + to_string(4 * i) + "]";
             Ident_array->push_back(tmp_ptr);
-            out << IF_DEEP() + ir_name << " = " << 0 << endl;
+            //out << IF_DEEP() + ir_name << " = " << 0 << endl;
         }
         VAR_T_num ++;
     }

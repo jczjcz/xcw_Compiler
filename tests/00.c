@@ -1,11 +1,8 @@
-int f(int a,int b){
-    int d = 1;
-    return d;
+int a[10];
+
+int main(int a[]){
+    int b = a[1];
+    return b;
 }
 
-void main(){
-    int b = 1;
-    int c = 2;
-    //int c = f(b,1);
-    int h = f(b,1) + b + 1;
-}
+int t = main(a[1]);
