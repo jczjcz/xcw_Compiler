@@ -68,6 +68,7 @@ struct IDENT_scope{     //符号表元素
 
     bool IDENT_if_array;       //是否为数组变量
     bool IDENT_if_func;        //是否为函数变量
+    bool IDENT_if_ret_int;    //返回是否为INT
 
     IDENT_scope(string name, int num, int deep, bool if_const){       //常量的构造函数
         IDENT_name = name;
@@ -697,6 +698,32 @@ UnaryExp:
     {
         $$ = $1;
     }
+    | IDENT LPAREN FuncRParams RPAREN
+    {
+        IDENT_scope* tmp = find_define(*ToStr($1));
+
+        if( tmp == nullptr){          //变量尚未定义
+            string err = "\"" +  *ToStr($1) + "\" was not declared in this scope.";
+            yyerror(err);
+        }
+
+        out << IF_DEEP() + "t" + to_string(VAR_t_num) + " = call f_" + *(ToStr($1)) << endl;
+
+        Ptr_num* tmp_ptr = new Ptr_num;
+        tmp_ptr->ptr_str = "t" + to_string(VAR_t_num);
+        tmp_ptr->IF_ptr_int = 0;
+
+        VAR_t_num ++;
+        $$ = tmp_ptr;
+        //出现在左边,函数必然为INT型，有返回值
+        // IDENT_scope tmp_ret = IDENT_scope("ret"+*ToStr($1),"0",DEEP,0);
+        // tmp_ret.IR_name = "T" + to_string(VAR_T_num);
+        // out << IF_DEEP() + "var " + tmp_ret.IR_name << endl;
+        // Scope.push_back(tmp_ret);
+        // out << IF_DEEP() + tmp_ret.IR_name + " = call f_" + *(ToStr($1)) << endl;
+
+        // 类似于 a(1,3)这样，表示调用函数
+    }
 ;
 
 PrimaryExp:
@@ -719,7 +746,7 @@ LVal:
     IDENT
     {
         IDENT_scope* tmp = find_define(*ToStr($1));
-        //out << "Tostr -> " << *ToStr($1) << endl;
+        //out << "ToStr -> " << *ToStr($1) << endl;
         if( tmp == nullptr){          //变量尚未定义
             string err = "\"" +  *ToStr($1) + "\" was not declared in this scope.";
             yyerror(err);
@@ -835,6 +862,7 @@ FuncDef:
         }
         //  开始函数定义
         IDENT_scope tmp = IDENT_scope(*ToStr($2), "0", DEEP, 0);    //不是Const
+        tmp.IDENT_if_ret_int = 1;
         //tmp.IDENT_func_param_num = 0;      //没有参数
         Scope.push_back(tmp);
         
@@ -868,7 +896,8 @@ FuncDef:
             yyerror(err);
         }
         //  开始函数定义
-        IDENT_scope tmp = IDENT_scope(*ToStr($2), "0", DEEP, 0);    //不是Const
+        IDENT_scope tmp = IDENT_scope(*ToStr($2), "0", DEEP, 0);    //是Const,表示无返回值
+        tmp.IDENT_if_ret_int = 0;
         //tmp.IDENT_func_param_num = 0;      //没有参数
         Scope.push_back(tmp);
         //out << "f_" << *ToStr($2) << " [" << tmp.IDENT_func_param_num << "]" << endl;
@@ -1009,7 +1038,44 @@ Stmt:
 
         //out << "test" << endl;
     }
+    | Exp SEMI
+    {
+        //类似于 直接调用void函数，如f(1,2);
+    }
 ;
+
+FuncRParams:
+    {
+        //表示函数调用中没有参数的情况
+    }
+    | Exp
+    {
+        Ptr_num* param_tmp = ToPtrnum($1);
+        if(param_tmp->IF_ptr_int){       //如果是常量
+            out << IF_DEEP() + "param " << param_tmp->ptr_int << endl;
+        }
+        else{
+            out << IF_DEEP() + "param " + param_tmp->ptr_str << endl;
+        }
+
+    }
+    | FuncRParams COMMA Exp
+    {
+        Ptr_num* param_tmp = ToPtrnum($3);
+        if(param_tmp->IF_ptr_int){       //如果是常量
+            out << IF_DEEP() + "param " << param_tmp->ptr_int << endl;
+        }
+        else{
+            out << IF_DEEP() + "param " + param_tmp->ptr_str << endl;
+        }
+    }
+;
+
+
+
+
+
+
 
 
 

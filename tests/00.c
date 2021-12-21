@@ -1,8 +1,11 @@
-const int c = 1;
-int b[2][3];
-int d(int d[],int m){
-    int b;
-    int h;
-    int j = d[1];
-    return d[1];
+int f(int a,int b){
+    int d = 1;
+    return d;
+}
+
+void main(){
+    int b = 1;
+    int c = 2;
+    //int c = f(b,1);
+    int h = f(b,1) + b + 1;
 }
