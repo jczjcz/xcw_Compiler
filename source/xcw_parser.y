@@ -25,7 +25,7 @@ int VAR_T_num = 0, VAR_t_num = 0, VAR_p_num = 0;       //这三个全局变量�
 struct Ptr_num{             // 用来传递参数，用IF_ptr_int表示传上来的是否为常量
     int ptr_int;
     string ptr_str;
-    bool IF_ptr_int;
+    int IF_ptr_int;
     Ptr_num(int p_int){
         ptr_int = p_int;
         IF_ptr_int = 1; 
@@ -35,6 +35,19 @@ struct Ptr_num{             // 用来传递参数，用IF_ptr_int表示传上来
         IF_ptr_int = 0; 
     }
     Ptr_num(){}
+    void Print(){       //打印出数值，用于调试
+        out << "-------------Ptr_print_in------------"<<endl;
+        if(IF_ptr_int){
+            out << "IF_ptr_int = " << IF_ptr_int << endl;
+            out << ptr_int;
+        }
+        else{
+            out << "IF_ptr_int = " << IF_ptr_int << endl;
+            out << ptr_str;
+        }
+        out << endl;
+        out << "-------------Ptr_print_out------------"<<endl;
+    }
 };
 
 struct Params_num{      //函数参数的元素类型，需要包括 INT型变量和INT型数组指针
@@ -501,6 +514,20 @@ InitVal:
 
 Exp:
     AddExp
+    {
+        $$ = $1;
+        //ToPtrnum($1)->Print();
+        // out << IF_DEEP() + "++++if_int = " << ToPtrnum($1)->IF_ptr_int << endl;
+        // if(ToPtrnum($1)->IF_ptr_int)
+        //     out << IF_DEEP() + "aaaaaa " << ToPtrnum($1)->ptr_int << endl;
+        // else{
+        //     out << "test" << endl;
+        //     ToPtrnum($1)->Print();
+        //     out << IF_DEEP() + "bbbbbb " << endl;
+        //     out << ToPtrnum($1)->ptr_str << endl;
+        // }
+            
+    }
 ;
 
 AddExp:
@@ -577,6 +604,10 @@ AddExp:
 
 MulExp:
     UnaryExp
+    {
+        $$ = $1;
+//        ToPtrnum($1)->Print();
+    }
     | MulExp MUL UnaryExp
     {
         Ptr_num* add_1 = ToPtrnum($1);
@@ -697,6 +728,7 @@ UnaryExp:
     PrimaryExp
     {
         $$ = $1;
+//        ToPtrnum($1)->Print();
     }
     | IDENT LPAREN FuncRParams RPAREN
     {
@@ -736,9 +768,10 @@ PrimaryExp:
     }
     | LVal
     {
-        // out << "LVAL end"<<endl;
+        // out << "LVaL end"<<endl;
         // out << "IF_ptr_str = "<<ToPtrnum($1)->ptr_str<<endl;
         $$ = $1;
+        //ToPtrnum($1)->Print();
     }
 ;
 
@@ -771,71 +804,78 @@ LVal:
             Array_dim.push_back((*(*tmp).IDENT_dim_array)[i]);
         }
     }
-    ArrayLVals
-    {        //a[2][3]     a[1][b]  
-        //out << "Left = ArrayLVals " << endl;
-        // IDENT_scope* tmp = ((IDENT_scope*)$$); 
-        Ptr_num tmp_ptr, tmp_ptr_new, tmp_ptr_old;
-        int ptr_size = INTSIZE;
+        ArrayLVals
+        {        //a[2][3]     a[1][b]  
+            //out << "Left = ArrayLVals " << endl;
+            // IDENT_scope* tmp = ((IDENT_scope*)$$); 
+            Ptr_num tmp_ptr, tmp_ptr_new, tmp_ptr_old;
+            int ptr_size = INTSIZE;
+            //out << "in ArrayLVals--------------" << endl;
 
-        for(int i = Array_LVal_dim.size()-1; i >= 0 ;i --){
-            //out << "i = "<<i << endl;
-            // tmp_ptr_old = tmp_ptr_new;
-            tmp_ptr = Array_LVal_dim[i];
-            //out << "int = " << tmp_ptr.ptr_int << endl;
-            if(tmp_ptr.IF_ptr_int){     //是整数
-                //out << "tmp_ptr.IF_ptr_int = 1" << endl;
-                tmp_ptr_new.IF_ptr_int = 1;
-                tmp_ptr_new.ptr_int = tmp_ptr.ptr_int * ptr_size;
-                //out << "tmp_ptr_new.ptr_int = " << tmp_ptr_new.ptr_int << endl;
-                if(i != Array_LVal_dim.size()-1){     //第一次，不用考虑和之前相加
-                    if(tmp_ptr_old.IF_ptr_int){     //如果前面的也是INT
-                        tmp_ptr_old.ptr_int += tmp_ptr_old.ptr_int;
+            for(int i = Array_LVal_dim.size()-1; i >= 0 ;i --){
+                //out << "i = "<<i << endl;
+                // tmp_ptr_old = tmp_ptr_new;
+                tmp_ptr = Array_LVal_dim[i];
+                //out << "int = " << tmp_ptr.ptr_int << endl;
+                if(tmp_ptr.IF_ptr_int){     //是整数
+                    //out << "tmp_ptr.IF_ptr_int = 1" << endl;
+                    tmp_ptr_new.IF_ptr_int = 1;
+                    tmp_ptr_new.ptr_int = tmp_ptr.ptr_int * ptr_size;
+                    //out << "tmp_ptr_new.ptr_int = " << tmp_ptr_new.ptr_int << endl;
+                    if(i != Array_LVal_dim.size()-1){     //第一次，不用考虑和之前相加
+                        if(tmp_ptr_old.IF_ptr_int){     //如果前面的也是INT
+                            tmp_ptr_old.ptr_int += tmp_ptr_old.ptr_int;
+                        }
+                        else{
+                            out << IF_DEEP() + "t" + to_string(VAR_t_num ) << " = "<< tmp_ptr_new.ptr_int << " + " << tmp_ptr_old.ptr_str << endl;
+                            tmp_ptr_old.ptr_str = "t" + to_string(VAR_t_num);
+                            VAR_t_num ++;
+                        }
                     }
                     else{
-                        out << IF_DEEP() + "t" + to_string(VAR_t_num ) << " = "<< tmp_ptr_new.ptr_int << " + " << tmp_ptr_old.ptr_str << endl;
+                        tmp_ptr_old = tmp_ptr_new;
+                    }
+                }
+                else{
+                    //out << "tmp_ptr.IF_ptr_int = 0" << endl;
+                    tmp_ptr_new.IF_ptr_int = 0;
+                    tmp_ptr_new.ptr_str = "t" + to_string(VAR_t_num);
+                    tmp_ptr_old.ptr_str = to_string(tmp_ptr_old.ptr_int);    //强制转换为string类型
+                    tmp_ptr_old.IF_ptr_int = 0;
+                    VAR_t_num ++;
+                    out << IF_DEEP() + tmp_ptr_new.ptr_str << " = " << tmp_ptr.ptr_str << " * " << ptr_size << endl;
+                    if(i != Array_LVal_dim.size()-1){     //第一次不用考虑和之前相加
+                        //out << "tmp_ptr_old.ptr_int = " << tmp_ptr_old.ptr_int << endl;
+                        out <<IF_DEEP() + "t" + to_string(VAR_t_num ) << " = "<< tmp_ptr_new.ptr_str << " + " << tmp_ptr_old.ptr_str << endl;
                         tmp_ptr_old.ptr_str = "t" + to_string(VAR_t_num);
                         VAR_t_num ++;
                     }
+                    else{
+                        tmp_ptr_old = tmp_ptr_new;
+                    }
                 }
-                else{
-                    tmp_ptr_old = tmp_ptr_new;
-                }
+                ptr_size *= Array_dim[i];
+                // out << "test ptr_size" << endl;
+                // out << (*(tmp->IDENT_dim_array)) << endl;
+                // out << "test ptr_size" << endl;
+            }
+            Array_LVal_dim.clear();
+            //out << "Arrayend " << endl;
+            if(tmp_ptr_old.IF_ptr_int){
+                tmp_ptr_old.ptr_str = Array_name + "[" + to_string(tmp_ptr_old.ptr_int) + "]";
+                tmp_ptr_old.IF_ptr_int = 0;     //最后的结果一定是一个字符串类型
+                //out << "tmp_ptr_old.ptr_str = " <<  tmp_ptr_old.ptr_str << endl;
             }
             else{
-                //out << "tmp_ptr.IF_ptr_int = 0" << endl;
-                tmp_ptr_new.IF_ptr_int = 0;
-                tmp_ptr_new.ptr_str = "t" + to_string(VAR_t_num);
-                tmp_ptr_old.ptr_str = to_string(tmp_ptr_old.ptr_int);    //强制转换为string类型
+                tmp_ptr_old.ptr_str = Array_name + "[" + tmp_ptr_old.ptr_str + "]";
                 tmp_ptr_old.IF_ptr_int = 0;
-                VAR_t_num ++;
-                out << IF_DEEP() + tmp_ptr_new.ptr_str << " = " << tmp_ptr.ptr_str << " * " << ptr_size << endl;
-                if(i != Array_LVal_dim.size()-1){     //第一次不用考虑和之前相加
-                    //out << "tmp_ptr_old.ptr_int = " << tmp_ptr_old.ptr_int << endl;
-                    out <<IF_DEEP() + "t" + to_string(VAR_t_num ) << " = "<< tmp_ptr_new.ptr_str << " + " << tmp_ptr_old.ptr_str << endl;
-                    tmp_ptr_old.ptr_str = "t" + to_string(VAR_t_num);
-                    VAR_t_num ++;
-                }
-                else{
-                    tmp_ptr_old = tmp_ptr_new;
-                }
-            }
-            ptr_size *= Array_dim[i];
-            // out << "test ptr_size" << endl;
-            // out << (*(tmp->IDENT_dim_array)) << endl;
-            // out << "test ptr_size" << endl;
+                //out << "tmp_ptr_old.ptr_str = " <<  tmp_ptr_old.ptr_str << endl;
+            }    
+            //out << "tmp_ptr_old.ptr_str = " << tmp_ptr_old.ptr_str << endl; 
+            $$ = & tmp_ptr_old;
+            //out << "tmp_ptr_old.ptr_str = " <<  tmp_ptr_old.ptr_str << endl;
+            //out << "out ArrayLVals--------------" << endl;
         }
-        Array_LVal_dim.clear();
-        //out << "Arrayend " << endl;
-        if(tmp_ptr_old.IF_ptr_int){
-            tmp_ptr_old.ptr_str = Array_name + "[" + to_string(tmp_ptr_old.ptr_int) + "]";
-            tmp_ptr_old.IF_ptr_int = 0;
-        }
-        else    
-            tmp_ptr_old.ptr_str = Array_name + "[" + tmp_ptr_old.ptr_str + "]";
-        //out << "tmp_ptr_old.ptr_str = " << tmp_ptr_old.ptr_str << endl; 
-        $$ = & tmp_ptr_old;
-    }
 ;
 
 ArrayLVals:
@@ -867,27 +907,27 @@ FuncDef:
         Scope.push_back(tmp);
         
     }
-    LPAREN 
-    {
-        DEEP ++;
-    }
-    FuncFParams RPAREN
-    {
-        DEEP --;
-        //IDENT_scope* tmp_ptr = find_define(*ToStr($2));    //找到函数变量的指针
-        //tmp_ptr->IDENT_func_param_num = 
-        out << "f_" << *ToStr($2) << " [" << VAR_p_num << "]" << endl;  
-    }
-    Block
-    {
-        
-        out << "\treturn 0" << endl;
-        out << "end " << "f_" << *ToStr($2) << endl;
+        LPAREN 
+        {
+            DEEP ++;
+        }
+        FuncFParams RPAREN
+        {
+            DEEP --;
+            //IDENT_scope* tmp_ptr = find_define(*ToStr($2));    //找到函数变量的指针
+            //tmp_ptr->IDENT_func_param_num = 
+            out << "f_" << *ToStr($2) << " [" << VAR_p_num << "]" << endl;  
+        }
+        Block
+        {
+            
+            out << "\treturn 0" << endl;
+            out << "end " << "f_" << *ToStr($2) << endl;
 
-        //声明结束后，把记录参数数量的 VAR_p_num 初始化
-        VAR_p_num = 0;
-        
-    }
+            //声明结束后，把记录参数数量的 VAR_p_num 初始化
+            VAR_p_num = 0;
+            
+        }
     | VOID IDENT
     {
         //首先检查当前域中是否出现
@@ -902,23 +942,23 @@ FuncDef:
         Scope.push_back(tmp);
         //out << "f_" << *ToStr($2) << " [" << tmp.IDENT_func_param_num << "]" << endl;
     }
-    LPAREN
-    {
-        DEEP ++;
-    }
-    FuncFParams RPAREN
-    {
-        DEEP --;
-        out << "f_" << *ToStr($2) << " [" << VAR_p_num << "]" << endl;
-    }
-    Block
-    {
-        
-        out << "\treturn" << endl;
-        out << "end " << "f_" << *ToStr($2) << endl;
+        LPAREN
+        {
+            DEEP ++;
+        }
+        FuncFParams RPAREN
+        {
+            DEEP --;
+            out << "f_" << *ToStr($2) << " [" << VAR_p_num << "]" << endl;
+        }
+        Block
+        {
+            
+            out << "\treturn" << endl;
+            out << "end " << "f_" << *ToStr($2) << endl;
 
-        
-    }
+            
+        }
 ;
 
 
@@ -1028,6 +1068,11 @@ Stmt:
     }
     | RETURN Exp SEMI
     {
+        // out << IF_DEEP() + "return ";
+        ToPtrnum($2)->Print();
+        // out << endl;
+        out << IF_DEEP() + "ToPtrnum($2)->IF_ptr_int = " << ToPtrnum($2)->IF_ptr_int<< endl;
+        out << IF_DEEP() + "ToPtrnum($2)->ptr_str = " << ToPtrnum($2)->ptr_str<< endl;
         if(ToPtrnum($2)->IF_ptr_int){       //为常量
             out << IF_DEEP() + "return " << ToPtrnum($2)->ptr_int << endl;
         }
@@ -1041,6 +1086,38 @@ Stmt:
     | Exp SEMI
     {
         //类似于 直接调用void函数，如f(1,2);
+    }
+    | SEMI
+    {
+        // 一个;的情况
+    }
+    | Block
+    {
+        // 内部还是一个语句块
+    }
+    | LVal 
+    {
+        out << IF_DEEP() + ToPtrnum($1)->ptr_str;
+    }
+    ASSIGN Exp SEMI
+    {
+        // out << IF_DEEP() + "if_int = " << ToPtrnum($4)->IF_ptr_int << endl;
+        // out << IF_DEEP() + "aaaaaa " << ToPtrnum($4)->ptr_int << endl;
+        //类似于 a = b   LVal 返回一个 Ptr_num类型的指针tmp_ptr，此时LVal传上来的必定是一个ptr_str
+        
+
+        if(ToPtrnum($4)->IF_ptr_int == 1){       //传递的是常量
+            int num = ToPtrnum($4)->ptr_int;
+            out << " = " << num << endl;
+        }
+        else{              //Exp传递的是变量
+            // out << "in else" << endl;
+            string num = ToPtrnum($4)->ptr_str;
+            // out << "after string" <<endl;
+            out << " = " << num << endl;
+            // out << "after out" <<endl;
+        }
+
     }
 ;
 

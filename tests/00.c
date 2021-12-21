@@ -1,8 +1,8 @@
-int a[10];
+int b[10];
+int c;
 
-int main(int a[]){
-    int b = a[1];
-    return b;
+int main(){
+    return b[1];
 }
 
-int t = main(a[1]);
+
