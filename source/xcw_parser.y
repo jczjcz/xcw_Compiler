@@ -1069,10 +1069,10 @@ Stmt:
     | RETURN Exp SEMI
     {
         // out << IF_DEEP() + "return ";
-        ToPtrnum($2)->Print();
+        //ToPtrnum($2)->Print();
         // out << endl;
-        out << IF_DEEP() + "ToPtrnum($2)->IF_ptr_int = " << ToPtrnum($2)->IF_ptr_int<< endl;
-        out << IF_DEEP() + "ToPtrnum($2)->ptr_str = " << ToPtrnum($2)->ptr_str<< endl;
+        //out << IF_DEEP() + "ToPtrnum($2)->IF_ptr_int = " << ToPtrnum($2)->IF_ptr_int<< endl;
+        //out << IF_DEEP() + "ToPtrnum($2)->ptr_str = " << ToPtrnum($2)->ptr_str<< endl;
         if(ToPtrnum($2)->IF_ptr_int){       //为常量
             out << IF_DEEP() + "return " << ToPtrnum($2)->ptr_int << endl;
         }

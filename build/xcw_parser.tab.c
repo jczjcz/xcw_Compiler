@@ -1,8 +1,9 @@
-/* A Bison parser, made by GNU Bison 3.0.4.  */
+/* A Bison parser, made by GNU Bison 3.3.2.  */
 
 /* Bison implementation for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2019 Free Software Foundation,
+   Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -40,11 +41,14 @@
    define necessary library symbols; they are noted "INFRINGES ON
    USER NAME SPACE" below.  */
 
+/* Undocumented macros, especially those whose name start with YY_,
+   are private implementation details.  Do not rely on them.  */
+
 /* Identify Bison output.  */
 #define YYBISON 1
 
 /* Bison version.  */
-#define YYBISON_VERSION "3.0.4"
+#define YYBISON_VERSION "3.3.2"
 
 /* Skeleton name.  */
 #define YYSKELETON_NAME "yacc.c"
@@ -61,8 +65,8 @@
 
 
 
-/* Copy the first part of user declarations.  */
-#line 1 "source/xcw_parser.y" /* yacc.c:339  */
+/* First part of user prologue.  */
+#line 1 "source/xcw_parser.y" /* yacc.c:337  */
 
 #define YYSTYPE void*
 #define INTSIZE 4
@@ -219,13 +223,16 @@ string Array_name;
 //----------------------------------------------------------
 
 
-#line 223 "build/xcw_parser.tab.c" /* yacc.c:339  */
-
+#line 227 "build/xcw_parser.tab.c" /* yacc.c:337  */
 # ifndef YY_NULLPTR
-#  if defined __cplusplus && 201103L <= __cplusplus
-#   define YY_NULLPTR nullptr
+#  if defined __cplusplus
+#   if 201103L <= __cplusplus
+#    define YY_NULLPTR nullptr
+#   else
+#    define YY_NULLPTR 0
+#   endif
 #  else
-#   define YY_NULLPTR 0
+#   define YY_NULLPTR ((void*)0)
 #  endif
 # endif
 
@@ -342,9 +349,7 @@ int yyparse (void);
 
 #endif /* !YY_YY_BUILD_XCW_PARSER_TAB_H_INCLUDED  */
 
-/* Copy the second part of user declarations.  */
 
-#line 348 "build/xcw_parser.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -365,13 +370,13 @@ typedef signed char yytype_int8;
 #ifdef YYTYPE_UINT16
 typedef YYTYPE_UINT16 yytype_uint16;
 #else
-typedef unsigned short int yytype_uint16;
+typedef unsigned short yytype_uint16;
 #endif
 
 #ifdef YYTYPE_INT16
 typedef YYTYPE_INT16 yytype_int16;
 #else
-typedef short int yytype_int16;
+typedef short yytype_int16;
 #endif
 
 #ifndef YYSIZE_T
@@ -383,7 +388,7 @@ typedef short int yytype_int16;
 #  include <stddef.h> /* INFRINGES ON USER NAME SPACE */
 #  define YYSIZE_T size_t
 # else
-#  define YYSIZE_T unsigned int
+#  define YYSIZE_T unsigned
 # endif
 #endif
 
@@ -419,15 +424,6 @@ typedef short int yytype_int16;
 # define YY_ATTRIBUTE_UNUSED YY_ATTRIBUTE ((__unused__))
 #endif
 
-#if !defined _Noreturn \
-     && (!defined __STDC_VERSION__ || __STDC_VERSION__ < 201112)
-# if defined _MSC_VER && 1200 <= _MSC_VER
-#  define _Noreturn __declspec (noreturn)
-# else
-#  define _Noreturn YY_ATTRIBUTE ((__noreturn__))
-# endif
-#endif
-
 /* Suppress unused-variable warnings by "using" E.  */
 #if ! defined lint || defined __GNUC__
 # define YYUSE(E) ((void) (E))
@@ -435,7 +431,7 @@ typedef short int yytype_int16;
 # define YYUSE(E) /* empty */
 #endif
 
-#if defined __GNUC__ && 407 <= __GNUC__ * 100 + __GNUC_MINOR__
+#if defined __GNUC__ && ! defined __ICC && 407 <= __GNUC__ * 100 + __GNUC_MINOR__
 /* Suppress an incorrect diagnostic about yylval being uninitialized.  */
 # define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN \
     _Pragma ("GCC diagnostic push") \
@@ -597,16 +593,16 @@ union yyalloc
 /* YYNSTATES -- Number of states.  */
 #define YYNSTATES  138
 
-/* YYTRANSLATE[YYX] -- Symbol number corresponding to YYX as returned
-   by yylex, with out-of-bounds checking.  */
 #define YYUNDEFTOK  2
 #define YYMAXUTOK   292
 
+/* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
+   as returned by yylex, with out-of-bounds checking.  */
 #define YYTRANSLATE(YYX)                                                \
-  ((unsigned int) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
+  ((unsigned) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
 
 /* YYTRANSLATE[TOKEN-NUM] -- Symbol number corresponding to TOKEN-NUM
-   as returned by yylex, without out-of-bounds checking.  */
+   as returned by yylex.  */
 static const yytype_uint8 yytranslate[] =
 {
        0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -858,22 +854,22 @@ static const yytype_uint8 yyr2[] =
 
 #define YYRECOVERING()  (!!yyerrstatus)
 
-#define YYBACKUP(Token, Value)                                  \
-do                                                              \
-  if (yychar == YYEMPTY)                                        \
-    {                                                           \
-      yychar = (Token);                                         \
-      yylval = (Value);                                         \
-      YYPOPSTACK (yylen);                                       \
-      yystate = *yyssp;                                         \
-      goto yybackup;                                            \
-    }                                                           \
-  else                                                          \
-    {                                                           \
-      yyerror (YY_("syntax error: cannot back up")); \
-      YYERROR;                                                  \
-    }                                                           \
-while (0)
+#define YYBACKUP(Token, Value)                                    \
+  do                                                              \
+    if (yychar == YYEMPTY)                                        \
+      {                                                           \
+        yychar = (Token);                                         \
+        yylval = (Value);                                         \
+        YYPOPSTACK (yylen);                                       \
+        yystate = *yyssp;                                         \
+        goto yybackup;                                            \
+      }                                                           \
+    else                                                          \
+      {                                                           \
+        yyerror (YY_("syntax error: cannot back up")); \
+        YYERROR;                                                  \
+      }                                                           \
+  while (0)
 
 /* Error token number */
 #define YYTERROR        1
@@ -913,37 +909,37 @@ do {                                                                      \
 } while (0)
 
 
-/*----------------------------------------.
-| Print this symbol's value on YYOUTPUT.  |
-`----------------------------------------*/
+/*-----------------------------------.
+| Print this symbol's value on YYO.  |
+`-----------------------------------*/
 
 static void
-yy_symbol_value_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep)
+yy_symbol_value_print (FILE *yyo, int yytype, YYSTYPE const * const yyvaluep)
 {
-  FILE *yyo = yyoutput;
-  YYUSE (yyo);
+  FILE *yyoutput = yyo;
+  YYUSE (yyoutput);
   if (!yyvaluep)
     return;
 # ifdef YYPRINT
   if (yytype < YYNTOKENS)
-    YYPRINT (yyoutput, yytoknum[yytype], *yyvaluep);
+    YYPRINT (yyo, yytoknum[yytype], *yyvaluep);
 # endif
   YYUSE (yytype);
 }
 
 
-/*--------------------------------.
-| Print this symbol on YYOUTPUT.  |
-`--------------------------------*/
+/*---------------------------.
+| Print this symbol on YYO.  |
+`---------------------------*/
 
 static void
-yy_symbol_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep)
+yy_symbol_print (FILE *yyo, int yytype, YYSTYPE const * const yyvaluep)
 {
-  YYFPRINTF (yyoutput, "%s %s (",
+  YYFPRINTF (yyo, "%s %s (",
              yytype < YYNTOKENS ? "token" : "nterm", yytname[yytype]);
 
-  yy_symbol_value_print (yyoutput, yytype, yyvaluep);
-  YYFPRINTF (yyoutput, ")");
+  yy_symbol_value_print (yyo, yytype, yyvaluep);
+  YYFPRINTF (yyo, ")");
 }
 
 /*------------------------------------------------------------------.
@@ -977,7 +973,7 @@ do {                                                            \
 static void
 yy_reduce_print (yytype_int16 *yyssp, YYSTYPE *yyvsp, int yyrule)
 {
-  unsigned long int yylno = yyrline[yyrule];
+  unsigned long yylno = yyrline[yyrule];
   int yynrhs = yyr2[yyrule];
   int yyi;
   YYFPRINTF (stderr, "Reducing stack by rule %d (line %lu):\n",
@@ -988,7 +984,7 @@ yy_reduce_print (yytype_int16 *yyssp, YYSTYPE *yyvsp, int yyrule)
       YYFPRINTF (stderr, "   $%d = ", yyi + 1);
       yy_symbol_print (stderr,
                        yystos[yyssp[yyi + 1 - yynrhs]],
-                       &(yyvsp[(yyi + 1) - (yynrhs)])
+                       &yyvsp[(yyi + 1) - (yynrhs)]
                                               );
       YYFPRINTF (stderr, "\n");
     }
@@ -1092,7 +1088,10 @@ yytnamerr (char *yyres, const char *yystr)
           case '\\':
             if (*++yyp != '\\')
               goto do_not_strip_quotes;
-            /* Fall through.  */
+            else
+              goto append;
+
+          append:
           default:
             if (yyres)
               yyres[yyn] = *yyp;
@@ -1110,7 +1109,7 @@ yytnamerr (char *yyres, const char *yystr)
   if (! yyres)
     return yystrlen (yystr);
 
-  return yystpcpy (yyres, yystr) - yyres;
+  return (YYSIZE_T) (yystpcpy (yyres, yystr) - yyres);
 }
 # endif
 
@@ -1188,10 +1187,10 @@ yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
                 yyarg[yycount++] = yytname[yyx];
                 {
                   YYSIZE_T yysize1 = yysize + yytnamerr (YY_NULLPTR, yytname[yyx]);
-                  if (! (yysize <= yysize1
-                         && yysize1 <= YYSTACK_ALLOC_MAXIMUM))
+                  if (yysize <= yysize1 && yysize1 <= YYSTACK_ALLOC_MAXIMUM)
+                    yysize = yysize1;
+                  else
                     return 2;
-                  yysize = yysize1;
                 }
               }
         }
@@ -1203,6 +1202,7 @@ yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
       case N:                               \
         yyformat = S;                       \
       break
+    default: /* Avoid compiler warnings. */
       YYCASE_(0, YY_("syntax error"));
       YYCASE_(1, YY_("syntax error, unexpected %s"));
       YYCASE_(2, YY_("syntax error, unexpected %s, expecting %s"));
@@ -1214,9 +1214,10 @@ yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
 
   {
     YYSIZE_T yysize1 = yysize + yystrlen (yyformat);
-    if (! (yysize <= yysize1 && yysize1 <= YYSTACK_ALLOC_MAXIMUM))
+    if (yysize <= yysize1 && yysize1 <= YYSTACK_ALLOC_MAXIMUM)
+      yysize = yysize1;
+    else
       return 2;
-    yysize = yysize1;
   }
 
   if (*yymsg_alloc < yysize)
@@ -1342,23 +1343,31 @@ yyparse (void)
   yychar = YYEMPTY; /* Cause a token to be read.  */
   goto yysetstate;
 
+
 /*------------------------------------------------------------.
-| yynewstate -- Push a new state, which is found in yystate.  |
+| yynewstate -- push a new state, which is found in yystate.  |
 `------------------------------------------------------------*/
- yynewstate:
+yynewstate:
   /* In all cases, when you get here, the value and location stacks
      have just been pushed.  So pushing a state here evens the stacks.  */
   yyssp++;
 
- yysetstate:
-  *yyssp = yystate;
+
+/*--------------------------------------------------------------------.
+| yynewstate -- set current state (the top of the stack) to yystate.  |
+`--------------------------------------------------------------------*/
+yysetstate:
+  *yyssp = (yytype_int16) yystate;
 
   if (yyss + yystacksize - 1 <= yyssp)
+#if !defined yyoverflow && !defined YYSTACK_RELOCATE
+    goto yyexhaustedlab;
+#else
     {
       /* Get the current used size of the three stacks, in elements.  */
-      YYSIZE_T yysize = yyssp - yyss + 1;
+      YYSIZE_T yysize = (YYSIZE_T) (yyssp - yyss + 1);
 
-#ifdef yyoverflow
+# if defined yyoverflow
       {
         /* Give user a chance to reallocate the stack.  Use copies of
            these so that the &'s don't force the real ones into
@@ -1374,14 +1383,10 @@ yyparse (void)
                     &yyss1, yysize * sizeof (*yyssp),
                     &yyvs1, yysize * sizeof (*yyvsp),
                     &yystacksize);
-
         yyss = yyss1;
         yyvs = yyvs1;
       }
-#else /* no yyoverflow */
-# ifndef YYSTACK_RELOCATE
-      goto yyexhaustedlab;
-# else
+# else /* defined YYSTACK_RELOCATE */
       /* Extend the stack our own way.  */
       if (YYMAXDEPTH <= yystacksize)
         goto yyexhaustedlab;
@@ -1397,22 +1402,22 @@ yyparse (void)
           goto yyexhaustedlab;
         YYSTACK_RELOCATE (yyss_alloc, yyss);
         YYSTACK_RELOCATE (yyvs_alloc, yyvs);
-#  undef YYSTACK_RELOCATE
+# undef YYSTACK_RELOCATE
         if (yyss1 != yyssa)
           YYSTACK_FREE (yyss1);
       }
 # endif
-#endif /* no yyoverflow */
 
       yyssp = yyss + yysize - 1;
       yyvsp = yyvs + yysize - 1;
 
       YYDPRINTF ((stderr, "Stack size increased to %lu\n",
-                  (unsigned long int) yystacksize));
+                  (unsigned long) yystacksize));
 
       if (yyss + yystacksize - 1 <= yyssp)
         YYABORT;
     }
+#endif /* !defined yyoverflow && !defined YYSTACK_RELOCATE */
 
   YYDPRINTF ((stderr, "Entering state %d\n", yystate));
 
@@ -1421,11 +1426,11 @@ yyparse (void)
 
   goto yybackup;
 
+
 /*-----------.
 | yybackup.  |
 `-----------*/
 yybackup:
-
   /* Do appropriate processing given the current state.  Read a
      lookahead token if we need one and don't already have one.  */
 
@@ -1498,7 +1503,7 @@ yydefault:
 
 
 /*-----------------------------.
-| yyreduce -- Do a reduction.  |
+| yyreduce -- do a reduction.  |
 `-----------------------------*/
 yyreduce:
   /* yyn is the number of a rule to reduce with.  */
@@ -1519,44 +1524,44 @@ yyreduce:
   switch (yyn)
     {
         case 11:
-#line 198 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 198 "source/xcw_parser.y" /* yacc.c:1652  */
     {
-        int num = *ToInt((yyvsp[0]));
-        IDENT_scope tmp = IDENT_scope(*ToStr((yyvsp[-2])), num, DEEP, 1);
+        int num = *ToInt(yyvsp[0]);
+        IDENT_scope tmp = IDENT_scope(*ToStr(yyvsp[-2]), num, DEEP, 1);
         //tmp.Print_IDENT();
-        if(check_define(*ToStr((yyvsp[-2])))){       //如果在当前域中未被定义过
+        if(check_define(*ToStr(yyvsp[-2]))){       //如果在当前域中未被定义过
             //out << "11111" << endl;
             Scope.push_back(tmp);
             //VAR_T_num ++ ;
         }
         else{
-            string err = "\"" +  *ToStr((yyvsp[-2])) + "\" already defined in this scope.";
+            string err = "\"" +  *ToStr(yyvsp[-2]) + "\" already defined in this scope.";
             yyerror(err);
         }
     }
-#line 1538 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 1543 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 12:
-#line 213 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 213 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         // 因为常量数组的下标仍有可能是变量，因此考虑将其用变量数组的形式做
         Array_deep = 0;    //将深度初始化为0
         Array_loc = 0;    //将下标初始化为0，path_length是整个数组的长度
         old_Array_dest = 0;
-        path_length = ToPtrnum((yyvsp[-1]))->ptr_int;
+        path_length = ToPtrnum(yyvsp[-1])->ptr_int;
         //首先检查当前域中是否出现
-        if(!check_define(*ToStr((yyvsp[-2])))){
-            string err = "\"" +  *ToStr((yyvsp[-2])) + "\" already defined in this scope.";
+        if(!check_define(*ToStr(yyvsp[-2]))){
+            string err = "\"" +  *ToStr(yyvsp[-2]) + "\" already defined in this scope.";
             yyerror(err);
         }
-        int n = ToPtrnum((yyvsp[-1]))->ptr_int;      //当前数组的元素总数，例如a[2][3], n=6
+        int n = ToPtrnum(yyvsp[-1])->ptr_int;      //当前数组的元素总数，例如a[2][3], n=6
         // 输出 var 24 T0 
         out << "var " << n*INTSIZE << " T" << to_string(VAR_T_num) <<endl;
 
         vector<Ptr_num>* Ident_array = new vector<Ptr_num>;
         vector<int>* Ident_dim_array = new vector<int>;
-        IDENT_scope tmp = IDENT_scope(*ToStr((yyvsp[-2])), "0", DEEP, 1);      //这个是常量数组
+        IDENT_scope tmp = IDENT_scope(*ToStr(yyvsp[-2]), "0", DEEP, 1);      //这个是常量数组
         tmp.IDENT_if_array = 1;      //表示这个量是数组
         tmp.IDENT_array = Ident_array;     //指向这个新生成的vector数组
         tmp.Array_size = n;
@@ -1567,21 +1572,21 @@ yyreduce:
         tmp.IDENT_dim_array = Ident_dim_array;
         Scope.push_back(tmp);
     }
-#line 1571 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 1576 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 13:
-#line 242 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 242 "source/xcw_parser.y" /* yacc.c:1652  */
     {
             Array_deep = 0;    //将深度初始化为0
             Array_loc = 0;    //将下标初始化为0，path_length是整个数组的长度
             Array_dest = Array_loc + path_length;
         }
-#line 1581 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 1586 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 14:
-#line 248 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 248 "source/xcw_parser.y" /* yacc.c:1652  */
     {
             //没填满的元素用0填充
             //out << "------- Array_dest = "<<Array_dest<<endl;
@@ -1595,45 +1600,45 @@ yyreduce:
             VAR_T_num ++;     //定义结束后，把变量名数字 + 1
             Array_dim.clear();     //初始化数组维度
         }
-#line 1599 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 1604 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 16:
-#line 269 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 269 "source/xcw_parser.y" /* yacc.c:1652  */
     {
-        (yyval) = (yyvsp[0]);
+        yyval = yyvsp[0];
         //out << "ADD EXP" << endl;
     }
-#line 1608 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 1613 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 20:
-#line 288 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 288 "source/xcw_parser.y" /* yacc.c:1652  */
     {
-        IDENT_scope tmp = IDENT_scope(*ToStr((yyvsp[0])), "0", DEEP, 0);
+        IDENT_scope tmp = IDENT_scope(*ToStr(yyvsp[0]), "0", DEEP, 0);
         tmp.IR_name = "T" + to_string(VAR_T_num);
         //tmp.Print_IDENT();
-        if(check_define(*ToStr((yyvsp[0])))){       //如果在当前域中未被定义过
+        if(check_define(*ToStr(yyvsp[0]))){       //如果在当前域中未被定义过
             Scope.push_back(tmp);
             out << IF_DEEP() + "var T" << VAR_T_num << endl;
             out << IF_DEEP() + "T" << VAR_T_num << " = " << 0 << endl;
             VAR_T_num ++ ;
         }
         else{
-            string err = "\"" +  *ToStr((yyvsp[0])) + "\" already defined in this scope.";
+            string err = "\"" +  *ToStr(yyvsp[0]) + "\" already defined in this scope.";
             yyerror(err);
         }
     }
-#line 1628 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 1633 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 21:
-#line 304 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 304 "source/xcw_parser.y" /* yacc.c:1652  */
     {
 
-        if(ToPtrnum((yyvsp[0]))->IF_ptr_int == 1){       //传递的是常量
-            int num = ToPtrnum((yyvsp[0]))->ptr_int;
-            IDENT_scope tmp = IDENT_scope(*ToStr((yyvsp[-2])), to_string(num), DEEP, 0);  
+        if(ToPtrnum(yyvsp[0])->IF_ptr_int == 1){       //传递的是常量
+            int num = ToPtrnum(yyvsp[0])->ptr_int;
+            IDENT_scope tmp = IDENT_scope(*ToStr(yyvsp[-2]), to_string(num), DEEP, 0);  
             tmp.IR_name = "T" + to_string(VAR_T_num);   
             Scope.push_back(tmp);
             out << IF_DEEP() + "var T" << VAR_T_num << endl;
@@ -1643,10 +1648,10 @@ yyreduce:
         else{              //传递的是变量
             // out << "in the else " << endl;
             // out << "----------IF_ptr_str = " << ToPtrnum($3)->ptr_str << endl;
-            string num = ToPtrnum((yyvsp[0]))->ptr_str;
+            string num = ToPtrnum(yyvsp[0])->ptr_str;
 
             // out << "------------num = " << num << endl;
-            IDENT_scope tmp = IDENT_scope(*ToStr((yyvsp[-2])), num, DEEP, 0);
+            IDENT_scope tmp = IDENT_scope(*ToStr(yyvsp[-2]), num, DEEP, 0);
             tmp.IR_name = "T" + to_string(VAR_T_num);   
             Scope.push_back(tmp);
             out << IF_DEEP() + "var T" << VAR_T_num << endl;
@@ -1656,27 +1661,27 @@ yyreduce:
         
         //tmp.Print_IDENT();
     }
-#line 1660 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 1665 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 22:
-#line 332 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 332 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         //首先检查当前域中是否出现
-        if(!check_define(*ToStr((yyvsp[-1])))){
-            string err = "\"" +  *ToStr((yyvsp[-1])) + "\" already defined in this scope.";
+        if(!check_define(*ToStr(yyvsp[-1]))){
+            string err = "\"" +  *ToStr(yyvsp[-1]) + "\" already defined in this scope.";
             yyerror(err);
         }
 
         // out << "Array num = " << ToPtrnum($2)->ptr_int << endl;
         // yyerror("test");
-        int n = ToPtrnum((yyvsp[0]))->ptr_int;      //当前数组的元素总数，例如a[2][3], n=6
+        int n = ToPtrnum(yyvsp[0])->ptr_int;      //当前数组的元素总数，例如a[2][3], n=6
         // 输出 var 24 T0 
         out << IF_DEEP() + "var " << n*INTSIZE << " T" << to_string(VAR_T_num) <<endl;
         
         vector<Ptr_num>* Ident_array = new vector<Ptr_num>;
         vector<int>* Ident_dim_array = new vector<int>;
-        IDENT_scope tmp = IDENT_scope(*ToStr((yyvsp[-1])), "0", DEEP, 0);
+        IDENT_scope tmp = IDENT_scope(*ToStr(yyvsp[-1]), "0", DEEP, 0);
         tmp.IDENT_if_array = 1;      //表示这个量是数组
         tmp.IDENT_array = Ident_array;     //指向这个新生成的vector数组
         tmp.Array_size = n;
@@ -1695,32 +1700,32 @@ yyreduce:
         }
         VAR_T_num ++;
     }
-#line 1699 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 1704 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 23:
-#line 367 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 367 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         
         // 先进行初始化
         Array_deep = 0;    //将深度初始化为0
         Array_loc = 0;    //将下标初始化为0，path_length是整个数组的长度
         old_Array_dest = 0;
-        path_length = ToPtrnum((yyvsp[-1]))->ptr_int;
+        path_length = ToPtrnum(yyvsp[-1])->ptr_int;
         // 对应 a[4][2] = {1,2,{3},{5},7,8} 这些情况
 
         //首先检查当前域中是否出现
-        if(!check_define(*ToStr((yyvsp[-2])))){
-            string err = "\"" +  *ToStr((yyvsp[-2])) + "\" already defined in this scope.";
+        if(!check_define(*ToStr(yyvsp[-2]))){
+            string err = "\"" +  *ToStr(yyvsp[-2]) + "\" already defined in this scope.";
             yyerror(err);
         }
-        int n = ToPtrnum((yyvsp[-1]))->ptr_int;      //当前数组的元素总数，例如a[2][3], n=6
+        int n = ToPtrnum(yyvsp[-1])->ptr_int;      //当前数组的元素总数，例如a[2][3], n=6
         // 输出 var 24 T0 
         out << IF_DEEP() + "var " << n*INTSIZE << " T" << to_string(VAR_T_num) <<endl;
 
         vector<Ptr_num>* Ident_array = new vector<Ptr_num>;
         vector<int>* Ident_dim_array = new vector<int>;
-        IDENT_scope tmp = IDENT_scope(*ToStr((yyvsp[-2])), "0", DEEP, 0);
+        IDENT_scope tmp = IDENT_scope(*ToStr(yyvsp[-2]), "0", DEEP, 0);
         tmp.IDENT_if_array = 1;      //表示这个量是数组
         tmp.IDENT_array = Ident_array;     //指向这个新生成的vector数组
         tmp.Array_size = n;
@@ -1732,19 +1737,19 @@ yyreduce:
         tmp.IDENT_dim_array = Ident_dim_array;
         Scope.push_back(tmp);
     }
-#line 1736 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 1741 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 24:
-#line 400 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 400 "source/xcw_parser.y" /* yacc.c:1652  */
     {
             Array_dest = Array_loc + path_length;
         }
-#line 1744 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 1749 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 25:
-#line 404 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 404 "source/xcw_parser.y" /* yacc.c:1652  */
     {
             //没填满的元素用0填充
             //out << "------- Array_dest = "<<Array_dest<<endl;
@@ -1758,51 +1763,51 @@ yyreduce:
             VAR_T_num ++;     //定义结束后，把变量名数字 + 1
             Array_dim.clear();     //初始化数组维度
         }
-#line 1762 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 1767 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 26:
-#line 420 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 420 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         // 类似于{}的情况，推出空值
     }
-#line 1770 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 1775 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 27:
-#line 424 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 424 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         //类似于 {1},{1,2}
        // out << "ArrayExps " << endl;
-        (yyval) = (yyvsp[0]);
+        yyval = yyvsp[0];
     }
-#line 1780 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 1785 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 30:
-#line 438 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 438 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         //out << "Array_loc = " << Array_loc << endl;
         //out << "EXP" << endl;
-        if(ToPtrnum((yyvsp[0]))->IF_ptr_int){    //为常量，加入到数组中
-            Ptr_num tmp_ptr = Ptr_num(ToPtrnum((yyvsp[0]))->ptr_int);     //构造vector中的元素
+        if(ToPtrnum(yyvsp[0])->IF_ptr_int){    //为常量，加入到数组中
+            Ptr_num tmp_ptr = Ptr_num(ToPtrnum(yyvsp[0])->ptr_int);     //构造vector中的元素
             string ir_name = "T" + to_string(VAR_T_num) + "[" + to_string(4 * Array_loc) + "]";
             Scope.back().IDENT_array->push_back(tmp_ptr);
-            out << IF_DEEP() + ir_name << " = " << ToPtrnum((yyvsp[0]))->ptr_int << endl;
+            out << IF_DEEP() + ir_name << " = " << ToPtrnum(yyvsp[0])->ptr_int << endl;
         }       
         else{          //为变量，加入到数组中
-            Ptr_num tmp_ptr = Ptr_num(ToPtrnum((yyvsp[0]))->ptr_str);     //构造vector中的元素
+            Ptr_num tmp_ptr = Ptr_num(ToPtrnum(yyvsp[0])->ptr_str);     //构造vector中的元素
             string ir_name = "T" + to_string(VAR_T_num) + "[" + to_string(4 * Array_loc) + "]";
             Scope.back().IDENT_array->push_back(tmp_ptr);
-            out << IF_DEEP() + ir_name << " = " << ToPtrnum((yyvsp[0]))->ptr_str << endl;
+            out << IF_DEEP() + ir_name << " = " << ToPtrnum(yyvsp[0])->ptr_str << endl;
         }
         Array_loc ++;     //位置向前进1
     }
-#line 1802 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 1807 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 31:
-#line 456 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 456 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         //out << "LCURLY" << endl;
         path_length = path_length / Array_dim[Array_deep];
@@ -1810,11 +1815,11 @@ yyreduce:
         old_Array_dest = Array_dest;
         Array_dest = Array_loc + path_length;
     }
-#line 1814 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 1819 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 32:
-#line 464 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 464 "source/xcw_parser.y" /* yacc.c:1652  */
     {
             //out << "RCURLY" << endl;
             //out << "------- Array_dest = "<<Array_dest<<endl;
@@ -1829,52 +1834,52 @@ yyreduce:
             Array_deep --;      //遇到右括号，深度-1
             path_length = path_length * Array_dim[Array_deep];
         }
-#line 1833 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 1838 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 33:
-#line 485 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 485 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         //out << "Array num1111 = " << ToPtrnum($1)->ptr_int << endl;
-        (yyval) = (yyvsp[0]);
+        yyval = yyvsp[0];
     }
-#line 1842 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 1847 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 34:
-#line 490 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 490 "source/xcw_parser.y" /* yacc.c:1652  */
     {
-        ToPtrnum((yyvsp[-1]))->ptr_int = ToPtrnum((yyvsp[-1]))->ptr_int * ToPtrnum((yyvsp[0]))->ptr_int;
-        (yyval) = (yyvsp[-1]);
+        ToPtrnum(yyvsp[-1])->ptr_int = ToPtrnum(yyvsp[-1])->ptr_int * ToPtrnum(yyvsp[0])->ptr_int;
+        yyval = yyvsp[-1];
     }
-#line 1851 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 1856 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 35:
-#line 498 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 498 "source/xcw_parser.y" /* yacc.c:1652  */
     {
-        (yyval) = (yyvsp[-1]);
+        yyval = yyvsp[-1];
         //out << "dim = " << ToPtrnum($2)->ptr_int << endl;
-        Array_dim.push_back(ToPtrnum((yyvsp[-1]))->ptr_int);      //把数组数据放到Array_dim中，记录数组维度信息
+        Array_dim.push_back(ToPtrnum(yyvsp[-1])->ptr_int);      //把数组数据放到Array_dim中，记录数组维度信息
         
     }
-#line 1862 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 1867 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 36:
-#line 508 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 508 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         // out << "LVAL end"<<endl;
         // out << "IF_ptr_str = "<<ToPtrnum($1)->ptr_str<<endl;
         // $$ = $1;
     }
-#line 1872 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 1877 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 37:
-#line 517 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 517 "source/xcw_parser.y" /* yacc.c:1652  */
     {
-        (yyval) = (yyvsp[0]);
+        yyval = yyvsp[0];
         //ToPtrnum($1)->Print();
         // out << IF_DEEP() + "++++if_int = " << ToPtrnum($1)->IF_ptr_int << endl;
         // if(ToPtrnum($1)->IF_ptr_int)
@@ -1887,14 +1892,14 @@ yyreduce:
         // }
             
     }
-#line 1891 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 1896 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 39:
-#line 536 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 536 "source/xcw_parser.y" /* yacc.c:1652  */
     {
-        Ptr_num* add_1 = ToPtrnum((yyvsp[-2]));
-        Ptr_num* mul_1 = ToPtrnum((yyvsp[0]));
+        Ptr_num* add_1 = ToPtrnum(yyvsp[-2]);
+        Ptr_num* mul_1 = ToPtrnum(yyvsp[0]);
         Ptr_num* tmp_ptr = new Ptr_num;
         if(add_1->IF_ptr_int && mul_1->IF_ptr_int){      //两个都是常量
             tmp_ptr->ptr_int = add_1->ptr_int + mul_1->ptr_int;
@@ -1923,16 +1928,16 @@ yyreduce:
             out << IF_DEEP() + tmp_ptr->ptr_str << " = " << str1 << " + " << str2 << endl;      // 输出类似于 t0 = T0 + 1
         }
         //out << "AddExp ADD MulExp" << *ToInt($1) << "+" << *ToInt($3) << endl;
-        (yyval) = tmp_ptr; 
+        yyval = tmp_ptr; 
     }
-#line 1929 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 1934 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 40:
-#line 570 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 570 "source/xcw_parser.y" /* yacc.c:1652  */
     {
-        Ptr_num* add_1 = ToPtrnum((yyvsp[-2]));
-        Ptr_num* mul_1 = ToPtrnum((yyvsp[0]));
+        Ptr_num* add_1 = ToPtrnum(yyvsp[-2]);
+        Ptr_num* mul_1 = ToPtrnum(yyvsp[0]);
         Ptr_num* tmp_ptr = new Ptr_num;
         if(add_1->IF_ptr_int && mul_1->IF_ptr_int){      //两个都是常量
             tmp_ptr->ptr_int = add_1->ptr_int - mul_1->ptr_int;
@@ -1960,25 +1965,25 @@ yyreduce:
             tmp_ptr->IF_ptr_int = 0;
             out << IF_DEEP() + tmp_ptr->ptr_str << " = " << str1 << " - " << str2 << endl;      // 输出类似于 t0 = T0 + 1
         }
-        (yyval) = tmp_ptr; 
+        yyval = tmp_ptr; 
     }
-#line 1966 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 1971 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 41:
-#line 607 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 607 "source/xcw_parser.y" /* yacc.c:1652  */
     {
-        (yyval) = (yyvsp[0]);
+        yyval = yyvsp[0];
 //        ToPtrnum($1)->Print();
     }
-#line 1975 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 1980 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 42:
-#line 612 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 612 "source/xcw_parser.y" /* yacc.c:1652  */
     {
-        Ptr_num* add_1 = ToPtrnum((yyvsp[-2]));
-        Ptr_num* mul_1 = ToPtrnum((yyvsp[0]));
+        Ptr_num* add_1 = ToPtrnum(yyvsp[-2]);
+        Ptr_num* mul_1 = ToPtrnum(yyvsp[0]);
         Ptr_num* tmp_ptr = new Ptr_num;
         if(add_1->IF_ptr_int && mul_1->IF_ptr_int){      //两个都是常量
             tmp_ptr->ptr_int = add_1->ptr_int * mul_1->ptr_int;
@@ -2007,16 +2012,16 @@ yyreduce:
             out << IF_DEEP() + tmp_ptr->ptr_str << " = " << str1 << " * " << str2 << endl;      // 输出类似于 t0 = T0 + 1
         }
         //out << "AddExp ADD MulExp" << *ToInt($1) << "+" << *ToInt($3) << endl;
-        (yyval) = tmp_ptr; 
+        yyval = tmp_ptr; 
     }
-#line 2013 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 2018 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 43:
-#line 646 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 646 "source/xcw_parser.y" /* yacc.c:1652  */
     {
-        Ptr_num* add_1 = ToPtrnum((yyvsp[-2]));
-        Ptr_num* mul_1 = ToPtrnum((yyvsp[0]));
+        Ptr_num* add_1 = ToPtrnum(yyvsp[-2]);
+        Ptr_num* mul_1 = ToPtrnum(yyvsp[0]);
         Ptr_num* tmp_ptr = new Ptr_num;
         if(add_1->IF_ptr_int && mul_1->IF_ptr_int){      //两个都是常量
             if(mul_1->ptr_int == 0){       //除0报错
@@ -2051,16 +2056,16 @@ yyreduce:
             out << IF_DEEP() + tmp_ptr->ptr_str << " = " << str1 << " / " << str2 << endl;      // 输出类似于 t0 = T0 + 1
         }
         //out << "AddExp ADD MulExp" << *ToInt($1) << "+" << *ToInt($3) << endl;
-        (yyval) = tmp_ptr; 
+        yyval = tmp_ptr; 
     }
-#line 2057 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 2062 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 44:
-#line 686 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 686 "source/xcw_parser.y" /* yacc.c:1652  */
     {
-        Ptr_num* add_1 = ToPtrnum((yyvsp[-2]));
-        Ptr_num* mul_1 = ToPtrnum((yyvsp[0]));
+        Ptr_num* add_1 = ToPtrnum(yyvsp[-2]);
+        Ptr_num* mul_1 = ToPtrnum(yyvsp[0]);
         Ptr_num* tmp_ptr = new Ptr_num;
         if(add_1->IF_ptr_int && mul_1->IF_ptr_int){      //两个都是常量
             if(mul_1->ptr_int == 0){       //除0报错
@@ -2095,38 +2100,38 @@ yyreduce:
             out << IF_DEEP() + tmp_ptr->ptr_str << " = " << str1 << " % " << str2 << endl;      // 输出类似于 t0 = T0 + 1
         }
         //out << "AddExp ADD MulExp" << *ToInt($1) << "+" << *ToInt($3) << endl;
-        (yyval) = tmp_ptr; 
+        yyval = tmp_ptr; 
     }
-#line 2101 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 2106 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 45:
-#line 729 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 729 "source/xcw_parser.y" /* yacc.c:1652  */
     {
-        (yyval) = (yyvsp[0]);
+        yyval = yyvsp[0];
 //        ToPtrnum($1)->Print();
     }
-#line 2110 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 2115 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 46:
-#line 734 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 734 "source/xcw_parser.y" /* yacc.c:1652  */
     {
-        IDENT_scope* tmp = find_define(*ToStr((yyvsp[-3])));
+        IDENT_scope* tmp = find_define(*ToStr(yyvsp[-3]));
 
         if( tmp == nullptr){          //变量尚未定义
-            string err = "\"" +  *ToStr((yyvsp[-3])) + "\" was not declared in this scope.";
+            string err = "\"" +  *ToStr(yyvsp[-3]) + "\" was not declared in this scope.";
             yyerror(err);
         }
 
-        out << IF_DEEP() + "t" + to_string(VAR_t_num) + " = call f_" + *(ToStr((yyvsp[-3]))) << endl;
+        out << IF_DEEP() + "t" + to_string(VAR_t_num) + " = call f_" + *(ToStr(yyvsp[-3])) << endl;
 
         Ptr_num* tmp_ptr = new Ptr_num;
         tmp_ptr->ptr_str = "t" + to_string(VAR_t_num);
         tmp_ptr->IF_ptr_int = 0;
 
         VAR_t_num ++;
-        (yyval) = tmp_ptr;
+        yyval = tmp_ptr;
         //出现在左边,函数必然为INT型，有返回值
         // IDENT_scope tmp_ret = IDENT_scope("ret"+*ToStr($1),"0",DEEP,0);
         // tmp_ret.IR_name = "T" + to_string(VAR_T_num);
@@ -2136,38 +2141,38 @@ yyreduce:
 
         // 类似于 a(1,3)这样，表示调用函数
     }
-#line 2140 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 2145 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 47:
-#line 763 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 763 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         Ptr_num* tmp_ptr = new Ptr_num;
-        tmp_ptr->ptr_int = *ToInt((yyvsp[0]));
+        tmp_ptr->ptr_int = *ToInt(yyvsp[0]);
         tmp_ptr->IF_ptr_int = 1;
-        (yyval) = tmp_ptr;
+        yyval = tmp_ptr;
     }
-#line 2151 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 2156 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 48:
-#line 770 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 770 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         // out << "LVaL end"<<endl;
         // out << "IF_ptr_str = "<<ToPtrnum($1)->ptr_str<<endl;
-        (yyval) = (yyvsp[0]);
+        yyval = yyvsp[0];
         //ToPtrnum($1)->Print();
     }
-#line 2162 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 2167 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 49:
-#line 780 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 780 "source/xcw_parser.y" /* yacc.c:1652  */
     {
-        IDENT_scope* tmp = find_define(*ToStr((yyvsp[0])));
+        IDENT_scope* tmp = find_define(*ToStr(yyvsp[0]));
         //out << "ToStr -> " << *ToStr($1) << endl;
         if( tmp == nullptr){          //变量尚未定义
-            string err = "\"" +  *ToStr((yyvsp[0])) + "\" was not declared in this scope.";
+            string err = "\"" +  *ToStr(yyvsp[0]) + "\" was not declared in this scope.";
             yyerror(err);
         }
         Ptr_num* tmp_ptr = new Ptr_num;
@@ -2179,26 +2184,26 @@ yyreduce:
             tmp_ptr->ptr_str = tmp->IR_name;
             tmp_ptr->IF_ptr_int = 0;
         }   
-        (yyval) = tmp_ptr;
+        yyval = tmp_ptr;
     }
-#line 2185 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 2190 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 50:
-#line 799 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 799 "source/xcw_parser.y" /* yacc.c:1652  */
     {
-        IDENT_scope* tmp = find_define(*ToStr((yyvsp[0])));    //搜索这个数组的定义
+        IDENT_scope* tmp = find_define(*ToStr(yyvsp[0]));    //搜索这个数组的定义
         Array_name = tmp->IR_name;
         Array_dim.clear();
         for(int i = 0;i < (*tmp).IDENT_dim_array->size();i++){
             Array_dim.push_back((*(*tmp).IDENT_dim_array)[i]);
         }
     }
-#line 2198 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 2203 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 51:
-#line 808 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 808 "source/xcw_parser.y" /* yacc.c:1652  */
     {        //a[2][3]     a[1][b]  
             //out << "Left = ArrayLVals " << endl;
             // IDENT_scope* tmp = ((IDENT_scope*)$$); 
@@ -2266,211 +2271,211 @@ yyreduce:
                 //out << "tmp_ptr_old.ptr_str = " <<  tmp_ptr_old.ptr_str << endl;
             }    
             //out << "tmp_ptr_old.ptr_str = " << tmp_ptr_old.ptr_str << endl; 
-            (yyval) = & tmp_ptr_old;
+            yyval = & tmp_ptr_old;
             //out << "tmp_ptr_old.ptr_str = " <<  tmp_ptr_old.ptr_str << endl;
             //out << "out ArrayLVals--------------" << endl;
         }
-#line 2274 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 2279 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 54:
-#line 888 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 888 "source/xcw_parser.y" /* yacc.c:1652  */
     {
-        Array_LVal_dim.push_back(*(ToPtrnum((yyvsp[-1]))));    //存入进行引用的维度
+        Array_LVal_dim.push_back(*(ToPtrnum(yyvsp[-1])));    //存入进行引用的维度
     }
-#line 2282 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 2287 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 55:
-#line 896 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 896 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         //out << " This is a INT Func" << endl;
         //首先检查当前域中是否出现
-        if(!check_define(*ToStr((yyvsp[0])))){
-            string err = "\"" +  *ToStr((yyvsp[-1])) + "\" already defined in this scope.";
+        if(!check_define(*ToStr(yyvsp[0]))){
+            string err = "\"" +  *ToStr(yyvsp[-1]) + "\" already defined in this scope.";
             yyerror(err);
         }
         //  开始函数定义
-        IDENT_scope tmp = IDENT_scope(*ToStr((yyvsp[0])), "0", DEEP, 0);    //不是Const
+        IDENT_scope tmp = IDENT_scope(*ToStr(yyvsp[0]), "0", DEEP, 0);    //不是Const
         tmp.IDENT_if_ret_int = 1;
         //tmp.IDENT_func_param_num = 0;      //没有参数
         Scope.push_back(tmp);
         
     }
-#line 2301 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 2306 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 56:
-#line 911 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 911 "source/xcw_parser.y" /* yacc.c:1652  */
     {
             DEEP ++;
         }
-#line 2309 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 2314 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 57:
-#line 915 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 915 "source/xcw_parser.y" /* yacc.c:1652  */
     {
             DEEP --;
             //IDENT_scope* tmp_ptr = find_define(*ToStr($2));    //找到函数变量的指针
             //tmp_ptr->IDENT_func_param_num = 
-            out << "f_" << *ToStr((yyvsp[-5])) << " [" << VAR_p_num << "]" << endl;  
+            out << "f_" << *ToStr(yyvsp[-5]) << " [" << VAR_p_num << "]" << endl;  
         }
-#line 2320 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 2325 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 58:
-#line 922 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 922 "source/xcw_parser.y" /* yacc.c:1652  */
     {
             
             out << "\treturn 0" << endl;
-            out << "end " << "f_" << *ToStr((yyvsp[-7])) << endl;
+            out << "end " << "f_" << *ToStr(yyvsp[-7]) << endl;
 
             //声明结束后，把记录参数数量的 VAR_p_num 初始化
             VAR_p_num = 0;
             
         }
-#line 2334 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 2339 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 59:
-#line 932 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 932 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         //首先检查当前域中是否出现
-        if(!check_define(*ToStr((yyvsp[0])))){
-            string err = "\"" +  *ToStr((yyvsp[-1])) + "\" already defined in this scope.";
+        if(!check_define(*ToStr(yyvsp[0]))){
+            string err = "\"" +  *ToStr(yyvsp[-1]) + "\" already defined in this scope.";
             yyerror(err);
         }
         //  开始函数定义
-        IDENT_scope tmp = IDENT_scope(*ToStr((yyvsp[0])), "0", DEEP, 0);    //是Const,表示无返回值
+        IDENT_scope tmp = IDENT_scope(*ToStr(yyvsp[0]), "0", DEEP, 0);    //是Const,表示无返回值
         tmp.IDENT_if_ret_int = 0;
         //tmp.IDENT_func_param_num = 0;      //没有参数
         Scope.push_back(tmp);
         //out << "f_" << *ToStr($2) << " [" << tmp.IDENT_func_param_num << "]" << endl;
     }
-#line 2352 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 2357 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 60:
-#line 946 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 946 "source/xcw_parser.y" /* yacc.c:1652  */
     {
             DEEP ++;
         }
-#line 2360 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 2365 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 61:
-#line 950 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 950 "source/xcw_parser.y" /* yacc.c:1652  */
     {
             DEEP --;
-            out << "f_" << *ToStr((yyvsp[-5])) << " [" << VAR_p_num << "]" << endl;
+            out << "f_" << *ToStr(yyvsp[-5]) << " [" << VAR_p_num << "]" << endl;
         }
-#line 2369 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 2374 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 62:
-#line 955 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 955 "source/xcw_parser.y" /* yacc.c:1652  */
     {
             
             out << "\treturn" << endl;
-            out << "end " << "f_" << *ToStr((yyvsp[-7])) << endl;
+            out << "end " << "f_" << *ToStr(yyvsp[-7]) << endl;
 
             
         }
-#line 2381 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 2386 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 63:
-#line 966 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 966 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         //表示没有参数的情况
     }
-#line 2389 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 2394 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 64:
-#line 970 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 970 "source/xcw_parser.y" /* yacc.c:1652  */
     {
 
     }
-#line 2397 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 2402 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 66:
-#line 978 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 978 "source/xcw_parser.y" /* yacc.c:1652  */
     {        //a(int b){}
         //out << "INT IDENT" << endl;
         // 检查是否出现过
-        if(!check_define(*ToStr((yyvsp[0])))){
-            string err = "\"" +  *ToStr((yyvsp[-1])) + "\" already defined in this scope.";
+        if(!check_define(*ToStr(yyvsp[0]))){
+            string err = "\"" +  *ToStr(yyvsp[-1]) + "\" already defined in this scope.";
             yyerror(err);
         }
         
-        IDENT_scope tmp = IDENT_scope(*ToStr((yyvsp[0])), "0", DEEP, 0);    //是一个变量
+        IDENT_scope tmp = IDENT_scope(*ToStr(yyvsp[0]), "0", DEEP, 0);    //是一个变量
         tmp.IDENT_if_array = 0;    //不是数组
         tmp.IR_name = "p" + to_string(VAR_p_num);
         //tmp.Print_IDENT();
         VAR_p_num ++;
         Scope.push_back(tmp);
     }
-#line 2417 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 2422 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 67:
-#line 994 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 994 "source/xcw_parser.y" /* yacc.c:1652  */
     {      //void d(int d[])
         // 检查是否出现过
-        if(!check_define(*ToStr((yyvsp[-3])))){
-            string err = "\"" +  *ToStr((yyvsp[-4])) + "\" already defined in this scope.";
+        if(!check_define(*ToStr(yyvsp[-3]))){
+            string err = "\"" +  *ToStr(yyvsp[-4]) + "\" already defined in this scope.";
             yyerror(err);
         }
 
-        IDENT_scope tmp = IDENT_scope(*ToStr((yyvsp[-3])), "0", DEEP, 0);    //是一个变量
+        IDENT_scope tmp = IDENT_scope(*ToStr(yyvsp[-3]), "0", DEEP, 0);    //是一个变量
         tmp.IDENT_if_array = 1;    //是数组
         tmp.IR_name = "p" + to_string(VAR_p_num);
         //tmp.Print_IDENT();
         VAR_p_num ++;
         Scope.push_back(tmp);
     }
-#line 2436 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 2441 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 68:
-#line 1012 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 1012 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         //out << "Array num1111 = " << ToPtrnum($1)->ptr_int << endl;
-        (yyval) = (yyvsp[0]);
+        yyval = yyvsp[0];
     }
-#line 2445 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 2450 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 69:
-#line 1017 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 1017 "source/xcw_parser.y" /* yacc.c:1652  */
     {
-        ToPtrnum((yyvsp[-1]))->ptr_int = ToPtrnum((yyvsp[-1]))->ptr_int * ToPtrnum((yyvsp[0]))->ptr_int;
-        (yyval) = (yyvsp[-1]);
+        ToPtrnum(yyvsp[-1])->ptr_int = ToPtrnum(yyvsp[-1])->ptr_int * ToPtrnum(yyvsp[0])->ptr_int;
+        yyval = yyvsp[-1];
     }
-#line 2454 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 2459 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 70:
-#line 1022 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 1022 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         //也有可能为空
     }
-#line 2462 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 2467 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 71:
-#line 1029 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 1029 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         DEEP ++;     // 深度+1，保证这些新加入的元素属于当前域中
     }
-#line 2470 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 2475 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 72:
-#line 1033 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 1033 "source/xcw_parser.y" /* yacc.c:1652  */
     {
             //结束以后，删除在其中定义过的变量,因为这些实际上是局部变量，但方便起见输出成原生变量
             //在这里正好也同时删除了参数变量（因为事实上声明时并不会用到）
@@ -2481,131 +2486,131 @@ yyreduce:
             }
             DEEP --;     //还原
         }
-#line 2485 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 2490 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 75:
-#line 1050 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 1050 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         // out << "BlockItem"<<endl;
         //暂时先考虑内容为空的情况
     }
-#line 2494 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 2499 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 76:
-#line 1055 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 1055 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         //out << "this is decl " << endl;
     }
-#line 2502 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 2507 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 77:
-#line 1059 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 1059 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         //out << "this is stmt " << endl;
     }
-#line 2510 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 2515 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 78:
-#line 1066 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 1066 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         //out << IF_DEEP() + "return" << endl;
     }
-#line 2518 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 2523 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 79:
-#line 1070 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 1070 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         // out << IF_DEEP() + "return ";
-        ToPtrnum((yyvsp[-1]))->Print();
+        //ToPtrnum($2)->Print();
         // out << endl;
-        out << IF_DEEP() + "ToPtrnum($2)->IF_ptr_int = " << ToPtrnum((yyvsp[-1]))->IF_ptr_int<< endl;
-        out << IF_DEEP() + "ToPtrnum($2)->ptr_str = " << ToPtrnum((yyvsp[-1]))->ptr_str<< endl;
-        if(ToPtrnum((yyvsp[-1]))->IF_ptr_int){       //为常量
-            out << IF_DEEP() + "return " << ToPtrnum((yyvsp[-1]))->ptr_int << endl;
+        //out << IF_DEEP() + "ToPtrnum($2)->IF_ptr_int = " << ToPtrnum($2)->IF_ptr_int<< endl;
+        //out << IF_DEEP() + "ToPtrnum($2)->ptr_str = " << ToPtrnum($2)->ptr_str<< endl;
+        if(ToPtrnum(yyvsp[-1])->IF_ptr_int){       //为常量
+            out << IF_DEEP() + "return " << ToPtrnum(yyvsp[-1])->ptr_int << endl;
         }
         else{
             //out << "ToPtrnum($2)->ptr_str = " << ToPtrnum($2)->ptr_str << endl;
-            out << IF_DEEP() + "return " + ToPtrnum((yyvsp[-1]))->ptr_str << endl;
+            out << IF_DEEP() + "return " + ToPtrnum(yyvsp[-1])->ptr_str << endl;
         }
 
         //out << "test" << endl;
     }
-#line 2539 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 2544 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 80:
-#line 1087 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 1087 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         //类似于 直接调用void函数，如f(1,2);
     }
-#line 2547 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 2552 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 81:
-#line 1091 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 1091 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         // 一个;的情况
     }
-#line 2555 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 2560 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 82:
-#line 1095 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 1095 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         // 内部还是一个语句块
     }
-#line 2563 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 2568 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 83:
-#line 1099 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 1099 "source/xcw_parser.y" /* yacc.c:1652  */
     {
-        out << IF_DEEP() + ToPtrnum((yyvsp[0]))->ptr_str;
+        out << IF_DEEP() + ToPtrnum(yyvsp[0])->ptr_str;
     }
-#line 2571 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 2576 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 84:
-#line 1103 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 1103 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         // out << IF_DEEP() + "if_int = " << ToPtrnum($4)->IF_ptr_int << endl;
         // out << IF_DEEP() + "aaaaaa " << ToPtrnum($4)->ptr_int << endl;
         //类似于 a = b   LVal 返回一个 Ptr_num类型的指针tmp_ptr，此时LVal传上来的必定是一个ptr_str
         
 
-        if(ToPtrnum((yyvsp[-1]))->IF_ptr_int == 1){       //传递的是常量
-            int num = ToPtrnum((yyvsp[-1]))->ptr_int;
+        if(ToPtrnum(yyvsp[-1])->IF_ptr_int == 1){       //传递的是常量
+            int num = ToPtrnum(yyvsp[-1])->ptr_int;
             out << " = " << num << endl;
         }
         else{              //Exp传递的是变量
             // out << "in else" << endl;
-            string num = ToPtrnum((yyvsp[-1]))->ptr_str;
+            string num = ToPtrnum(yyvsp[-1])->ptr_str;
             // out << "after string" <<endl;
             out << " = " << num << endl;
             // out << "after out" <<endl;
         }
 
     }
-#line 2595 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 2600 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 85:
-#line 1125 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 1125 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         //表示函数调用中没有参数的情况
     }
-#line 2603 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 2608 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 86:
-#line 1129 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 1129 "source/xcw_parser.y" /* yacc.c:1652  */
     {
-        Ptr_num* param_tmp = ToPtrnum((yyvsp[0]));
+        Ptr_num* param_tmp = ToPtrnum(yyvsp[0]);
         if(param_tmp->IF_ptr_int){       //如果是常量
             out << IF_DEEP() + "param " << param_tmp->ptr_int << endl;
         }
@@ -2614,13 +2619,13 @@ yyreduce:
         }
 
     }
-#line 2618 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 2623 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 87:
-#line 1140 "source/xcw_parser.y" /* yacc.c:1646  */
+#line 1140 "source/xcw_parser.y" /* yacc.c:1652  */
     {
-        Ptr_num* param_tmp = ToPtrnum((yyvsp[0]));
+        Ptr_num* param_tmp = ToPtrnum(yyvsp[0]);
         if(param_tmp->IF_ptr_int){       //如果是常量
             out << IF_DEEP() + "param " << param_tmp->ptr_int << endl;
         }
@@ -2628,11 +2633,11 @@ yyreduce:
             out << IF_DEEP() + "param " + param_tmp->ptr_str << endl;
         }
     }
-#line 2632 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 2637 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
 
-#line 2636 "build/xcw_parser.tab.c" /* yacc.c:1646  */
+#line 2641 "build/xcw_parser.tab.c" /* yacc.c:1652  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2657,14 +2662,13 @@ yyreduce:
   /* Now 'shift' the result of the reduction.  Determine what state
      that goes to, based on the state we popped back to and the rule
      number reduced by.  */
-
-  yyn = yyr1[yyn];
-
-  yystate = yypgoto[yyn - YYNTOKENS] + *yyssp;
-  if (0 <= yystate && yystate <= YYLAST && yycheck[yystate] == *yyssp)
-    yystate = yytable[yystate];
-  else
-    yystate = yydefgoto[yyn - YYNTOKENS];
+  {
+    const int yylhs = yyr1[yyn] - YYNTOKENS;
+    const int yyi = yypgoto[yylhs] + *yyssp;
+    yystate = (0 <= yyi && yyi <= YYLAST && yycheck[yyi] == *yyssp
+               ? yytable[yyi]
+               : yydefgoto[yylhs]);
+  }
 
   goto yynewstate;
 
@@ -2747,12 +2751,10 @@ yyerrlab:
 | yyerrorlab -- error raised explicitly by YYERROR.  |
 `---------------------------------------------------*/
 yyerrorlab:
-
-  /* Pacify compilers like GCC when the user code never invokes
-     YYERROR and the label yyerrorlab therefore never appears in user
-     code.  */
-  if (/*CONSTCOND*/ 0)
-     goto yyerrorlab;
+  /* Pacify compilers when the user code never invokes YYERROR and the
+     label yyerrorlab therefore never appears in user code.  */
+  if (0)
+    YYERROR;
 
   /* Do not reclaim the symbols of the rule whose action triggered
      this YYERROR.  */
@@ -2814,12 +2816,14 @@ yyacceptlab:
   yyresult = 0;
   goto yyreturn;
 
+
 /*-----------------------------------.
 | yyabortlab -- YYABORT comes here.  |
 `-----------------------------------*/
 yyabortlab:
   yyresult = 1;
   goto yyreturn;
+
 
 #if !defined yyoverflow || YYERROR_VERBOSE
 /*-------------------------------------------------.
@@ -2831,6 +2835,10 @@ yyexhaustedlab:
   /* Fall through.  */
 #endif
 
+
+/*-----------------------------------------------------.
+| yyreturn -- parsing is finished, return the result.  |
+`-----------------------------------------------------*/
 yyreturn:
   if (yychar != YYEMPTY)
     {
@@ -2860,7 +2868,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 1160 "source/xcw_parser.y" /* yacc.c:1906  */
+#line 1160 "source/xcw_parser.y" /* yacc.c:1918  */
 
 
 void yyerror(const char *s) {
