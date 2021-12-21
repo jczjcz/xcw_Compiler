@@ -824,7 +824,7 @@ LVal:
                     //out << "tmp_ptr_new.ptr_int = " << tmp_ptr_new.ptr_int << endl;
                     if(i != Array_LVal_dim.size()-1){     //第一次，不用考虑和之前相加
                         if(tmp_ptr_old.IF_ptr_int){     //如果前面的也是INT
-                            tmp_ptr_old.ptr_int += tmp_ptr_old.ptr_int;
+                            tmp_ptr_old.ptr_int += tmp_ptr_new.ptr_int;
                         }
                         else{
                             out << IF_DEEP() + "t" + to_string(VAR_t_num ) << " = "<< tmp_ptr_new.ptr_int << " + " << tmp_ptr_old.ptr_str << endl;
@@ -854,7 +854,8 @@ LVal:
                         tmp_ptr_old = tmp_ptr_new;
                     }
                 }
-                ptr_size *= Array_dim[i];
+                ptr_size *= Array_dim[i];     //更新ptr_size
+                //out << endl << "ptr_size = "<< ptr_size << endl;
                 // out << "test ptr_size" << endl;
                 // out << (*(tmp->IDENT_dim_array)) << endl;
                 // out << "test ptr_size" << endl;
