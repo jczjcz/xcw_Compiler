@@ -984,7 +984,30 @@ BlockItem:
     }
     | Decl
     {
+        //out << "this is decl " << endl;
+    }
+    | Stmt
+    {
+        //out << "this is stmt " << endl;
+    }
+;
 
+Stmt:
+    RETURN SEMI
+    {
+        //out << IF_DEEP() + "return" << endl;
+    }
+    | RETURN Exp SEMI
+    {
+        if(ToPtrnum($2)->IF_ptr_int){       //为常量
+            out << IF_DEEP() + "return " << ToPtrnum($2)->ptr_int << endl;
+        }
+        else{
+            //out << "ToPtrnum($2)->ptr_str = " << ToPtrnum($2)->ptr_str << endl;
+            out << IF_DEEP() + "return " + ToPtrnum($2)->ptr_str << endl;
+        }
+
+        //out << "test" << endl;
     }
 ;
 

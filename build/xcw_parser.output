@@ -14,13 +14,12 @@ Terminals unused in grammar
    WHILE
    BREAK
    CONT
-   RETURN
    PERIOD
 
 
 State 99 conflicts: 1 shift/reduce
-State 108 conflicts: 2 shift/reduce
-State 114 conflicts: 3 shift/reduce
+State 108 conflicts: 3 shift/reduce
+State 115 conflicts: 4 shift/reduce
 
 
 Grammar
@@ -150,6 +149,10 @@ Grammar
 
    73 BlockItem: %empty
    74          | Decl
+   75          | Stmt
+
+   76 Stmt: RETURN SEMI
+   77     | RETURN Exp SEMI
 
 
 Terminals, with rules where they appear
@@ -185,9 +188,9 @@ ELSE (283)
 WHILE (284)
 BREAK (285)
 CONT (286)
-RETURN (287)
+RETURN (287) 76 77
 ASSIGN (288) 10 13 20 24
-SEMI (289) 7 16
+SEMI (289) 7 16 76 77
 COMMA (290) 9 18 28 63
 PERIOD (291)
 NUMBER (292) 45
@@ -242,7 +245,7 @@ ArrayUnit (59)
 InitVal (60)
     on left: 35, on right: 20
 Exp (61)
-    on left: 36, on right: 29 35 52
+    on left: 36, on right: 29 35 52 77
 AddExp (62)
     on left: 37 38 39, on right: 15 36 38 39
 MulExp (63)
@@ -286,7 +289,9 @@ $@13 (81)
 BlockItems (82)
     on left: 71 72, on right: 70 72
 BlockItem (83)
-    on left: 73 74, on right: 71 72
+    on left: 73 74 75, on right: 71 72
+Stmt (84)
+    on left: 76 77, on right: 75
 
 
 State 0
@@ -1336,18 +1341,21 @@ State 108
 
    70 Block: LCURLY $@13 . BlockItems RCURLY
 
-    INT    shift, and go to state 112
-    CONST  shift, and go to state 2
+    INT     shift, and go to state 112
+    CONST   shift, and go to state 2
+    RETURN  shift, and go to state 113
 
     INT       [reduce using rule 73 (BlockItem)]
     CONST     [reduce using rule 73 (BlockItem)]
+    RETURN    [reduce using rule 73 (BlockItem)]
     $default  reduce using rule 73 (BlockItem)
 
-    Decl        go to state 113
+    Decl        go to state 114
     ConstDecl   go to state 7
     VarDecl     go to state 8
-    BlockItems  go to state 114
-    BlockItem   go to state 115
+    BlockItems  go to state 115
+    BlockItem   go to state 116
+    Stmt        go to state 117
 
 
 State 109
@@ -1383,46 +1391,94 @@ State 112
 
 State 113
 
+   76 Stmt: RETURN . SEMI
+   77     | RETURN . Exp SEMI
+
+    IDENT   shift, and go to state 28
+    SEMI    shift, and go to state 118
+    NUMBER  shift, and go to state 29
+
+    Exp         go to state 119
+    AddExp      go to state 38
+    MulExp      go to state 32
+    UnaryExp    go to state 33
+    PrimaryExp  go to state 34
+    LVal        go to state 35
+
+
+State 114
+
    74 BlockItem: Decl .
 
     $default  reduce using rule 74 (BlockItem)
 
 
-State 114
+State 115
 
    70 Block: LCURLY $@13 BlockItems . RCURLY
    72 BlockItems: BlockItems . BlockItem
 
-    RCURLY  shift, and go to state 116
+    RCURLY  shift, and go to state 120
     INT     shift, and go to state 112
     CONST   shift, and go to state 2
+    RETURN  shift, and go to state 113
 
     RCURLY  [reduce using rule 73 (BlockItem)]
     INT     [reduce using rule 73 (BlockItem)]
     CONST   [reduce using rule 73 (BlockItem)]
+    RETURN  [reduce using rule 73 (BlockItem)]
 
-    Decl       go to state 113
+    Decl       go to state 114
     ConstDecl  go to state 7
     VarDecl    go to state 8
-    BlockItem  go to state 117
+    BlockItem  go to state 121
+    Stmt       go to state 117
 
 
-State 115
+State 116
 
    71 BlockItems: BlockItem .
 
     $default  reduce using rule 71 (BlockItems)
 
 
-State 116
+State 117
+
+   75 BlockItem: Stmt .
+
+    $default  reduce using rule 75 (BlockItem)
+
+
+State 118
+
+   76 Stmt: RETURN SEMI .
+
+    $default  reduce using rule 76 (Stmt)
+
+
+State 119
+
+   77 Stmt: RETURN Exp . SEMI
+
+    SEMI  shift, and go to state 122
+
+
+State 120
 
    70 Block: LCURLY $@13 BlockItems RCURLY .
 
     $default  reduce using rule 70 (Block)
 
 
-State 117
+State 121
 
    72 BlockItems: BlockItems BlockItem .
 
     $default  reduce using rule 72 (BlockItems)
+
+
+State 122
+
+   77 Stmt: RETURN Exp SEMI .
+
+    $default  reduce using rule 77 (Stmt)
