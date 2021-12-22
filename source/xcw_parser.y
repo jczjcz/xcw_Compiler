@@ -1139,6 +1139,7 @@ Stmt:
         Stk_IF_ELSE.push(LABEL_l_num_st);      //当前的label存入栈中
         LABEL_l_num_end += 3;      //因为一个IF语句一般会用到3个label
         out << IF_DEEP() + "if t" + to_string(VAR_t_num) + " == 0 goto l" + to_string(LABEL_l_num_st) << endl;
+        VAR_t_num ++;
         out << IF_DEEP() + "goto l" + to_string(LABEL_l_num_st+1) << endl;
         out << IF_DEEP() + "l" + to_string(LABEL_l_num_st+1) + ":" << endl;
     }
@@ -1153,6 +1154,26 @@ Stmt:
         IF_Else
         {
             Stk_IF_ELSE.pop();
+        }
+    | WHILE LPAREN Cond RPAREN
+    {
+        LABEL_l_num_st = LABEL_l_num_end;
+        Stk_IF_ELSE.push(LABEL_l_num_st);      //当前的label存入栈中
+        LABEL_l_num_end += 3;      //因为一个While语句一般会用到3个label
+        out << IF_DEEP() + "l" + to_string(LABEL_l_num_st+2) + ":" << endl;
+        
+        out << IF_DEEP() + "if t" + to_string(VAR_t_num) + " == 0 goto l" + to_string(LABEL_l_num_st) << endl;
+        VAR_t_num ++;
+        out << IF_DEEP() + "goto l" + to_string(LABEL_l_num_st+1) << endl;
+
+        out << IF_DEEP() + "l" + to_string(LABEL_l_num_st+1) + ":" << endl;
+    }
+        Stmt
+        {
+            LABEL_l_num_st = Stk_IF_ELSE.top();
+            Stk_IF_ELSE.pop();
+            out << IF_DEEP() + "\t" + "goto l" + to_string(LABEL_l_num_st+2) << endl;
+            out << IF_DEEP() + "l" + to_string(LABEL_l_num_st) + ":" << endl;
         }
 ;
 

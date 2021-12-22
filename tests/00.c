@@ -1,13 +1,11 @@
 void main(){
     int a;
-    if(a){
-        int b = 2;
-        int a = 3;
-        if(a){
-            int b = 2;
+    while(a){
+        int b;
+        b = 1;
+        while(b){
+            int c;
         }
     }
-    else{
-        int c = 3;
-    }
+    int c;
 }
