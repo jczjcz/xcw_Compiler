@@ -159,6 +159,15 @@ stack<int> Stk_IF_ELSE;
 
 //----------------------------------------------------------
 
+//-----------------函数语句打印相关变量------------------------------
+vector<string> Func_VarDecl;
+vector<string> Func_Other;
+string Func_begin_flag = "funcbegin";     //这句话用来标注 函数开始
+string def_out;       // 这个string 用来记录用于def的语句
+string other_out;     // 这个string 用来记录其他的语句
+//----------------------------------------------------------
+
+
 %}
 
 %token ADD SUB MUL DIV MOD
@@ -174,6 +183,17 @@ stack<int> Stk_IF_ELSE;
 
 
 %%
+START:
+    CompUnit
+    {
+        for(int i = 0;i < Func_VarDecl.size();i++){
+            out << Func_VarDecl[i] << endl;
+        }
+        for(int i = 0;i < Func_Other.size();i++){
+            out << Func_Other[i] << endl;
+        }
+    }
+;
 
 CompUnit:
     CompDecl
@@ -204,11 +224,8 @@ ConstDef:
     {
         int num = *ToInt($3);
         IDENT_scope tmp = IDENT_scope(*ToStr($1), num, DEEP, 1);
-        //tmp.Print_IDENT();
         if(check_define(*ToStr($1))){       //如果在当前域中未被定义过
-            //out << "11111" << endl;
             Scope.push_back(tmp);
-            //VAR_T_num ++ ;
         }
         else{
             string err = "\"" +  *ToStr($1) + "\" already defined in this scope.";
@@ -229,7 +246,9 @@ ConstDef:
         }
         int n = ToPtrnum($2)->ptr_int;      //当前数组的元素总数，例如a[2][3], n=6
         // 输出 var 24 T0 
-        out << "var " << n*INTSIZE << " T" << to_string(VAR_T_num) <<endl;
+        // out << "var " << n*INTSIZE << " T" << to_string(VAR_T_num) <<endl;
+        def_out = "var" + to_string(n*INTSIZE) + " T" + to_string(VAR_T_num);
+        Func_VarDecl.push_back(def_out);
 
         vector<Ptr_num>* Ident_array = new vector<Ptr_num>;
         vector<int>* Ident_dim_array = new vector<int>;
@@ -253,13 +272,13 @@ ConstDef:
         ArrayInit RCURLY
         {
             //没填满的元素用0填充
-            //out << "------- Array_dest = "<<Array_dest<<endl;
             for(; Array_loc < Array_dest; Array_loc++){
-                //out << "Array_loc = " << Array_loc << endl;
                 Ptr_num tmp_ptr = Ptr_num("0");     //构造vector中的元素
                 string ir_name = "T" + to_string(VAR_T_num) + "[" + to_string(4 * Array_loc) + "]";
                 Scope.back().IDENT_array->push_back(tmp_ptr);
-                out << ir_name << " = " << 0 << endl;
+                //out << ir_name << " = " << 0 << endl;
+                other_out = ir_name + " = 0";
+                Func_Other.push_back(other_out);
             }
             VAR_T_num ++;     //定义结束后，把变量名数字 + 1
             Array_dim.clear();     //初始化数组维度
@@ -297,8 +316,12 @@ VarDef:
         //tmp.Print_IDENT();
         if(check_define(*ToStr($1))){       //如果在当前域中未被定义过
             Scope.push_back(tmp);
-            out << IF_DEEP() + "var T" << VAR_T_num << endl;
-            out << IF_DEEP() + "T" << VAR_T_num << " = " << 0 << endl;
+            //out << IF_DEEP() + "var T" << VAR_T_num << endl;
+            def_out = IF_DEEP() + "var T" + to_string(VAR_T_num);
+            //out << IF_DEEP() + "T" << VAR_T_num << " = " << 0 << endl;
+            other_out = IF_DEEP() + "T" + to_string(VAR_T_num) + " = 0";
+            Func_VarDecl.push_back(def_out);
+            Func_Other.push_back(other_out);
             VAR_T_num ++ ;
         }
         else{
@@ -314,8 +337,12 @@ VarDef:
             IDENT_scope tmp = IDENT_scope(*ToStr($1), to_string(num), DEEP, 0);  
             tmp.IR_name = "T" + to_string(VAR_T_num);   
             Scope.push_back(tmp);
-            out << IF_DEEP() + "var T" << VAR_T_num << endl;
-            out << IF_DEEP() + "T" << VAR_T_num << " = " << num << endl;
+            // out << IF_DEEP() + "var T" << VAR_T_num << endl;
+            def_out = IF_DEEP() + "var T" + to_string(VAR_T_num);
+            // out << IF_DEEP() + "T" << VAR_T_num << " = " << num << endl;
+            other_out = IF_DEEP() + "T" + to_string(VAR_T_num) + " = " + to_string(num);
+            Func_VarDecl.push_back(def_out);
+            Func_Other.push_back(other_out);
             VAR_T_num ++ ;
         }
         else{              //传递的是变量
@@ -327,8 +354,12 @@ VarDef:
             IDENT_scope tmp = IDENT_scope(*ToStr($1), num, DEEP, 0);
             tmp.IR_name = "T" + to_string(VAR_T_num);   
             Scope.push_back(tmp);
-            out << IF_DEEP() + "var T" << VAR_T_num << endl;
-            out << IF_DEEP() + "T" << VAR_T_num << " = " << num << endl;
+            // out << IF_DEEP() + "var T" << VAR_T_num << endl;
+            def_out = IF_DEEP() + "var T" + to_string(VAR_T_num);
+            // out << IF_DEEP() + "T" << VAR_T_num << " = " << num << endl;
+            other_out = IF_DEEP() + "T" + to_string(VAR_T_num) + " = " + num;
+            Func_VarDecl.push_back(def_out);
+            Func_Other.push_back(other_out);
             VAR_T_num ++ ;
         }
         
@@ -346,7 +377,9 @@ VarDef:
         // yyerror("test");
         int n = ToPtrnum($2)->ptr_int;      //当前数组的元素总数，例如a[2][3], n=6
         // 输出 var 24 T0 
-        out << IF_DEEP() + "var " << n*INTSIZE << " T" << to_string(VAR_T_num) <<endl;
+        // out << IF_DEEP() + "var " << n*INTSIZE << " T" << to_string(VAR_T_num) <<endl;
+        def_out = IF_DEEP() + "var " + to_string(n*INTSIZE) + " T" + to_string(VAR_T_num);
+        Func_VarDecl.push_back(def_out);
         
         vector<Ptr_num>* Ident_array = new vector<Ptr_num>;
         vector<int>* Ident_dim_array = new vector<int>;
@@ -365,7 +398,6 @@ VarDef:
             Ptr_num tmp_ptr = Ptr_num("0");     //构造vector中的元素
             string ir_name = "T" + to_string(VAR_T_num) + "[" + to_string(4 * i) + "]";
             Ident_array->push_back(tmp_ptr);
-            //out << IF_DEEP() + ir_name << " = " << 0 << endl;
         }
         VAR_T_num ++;
     }
@@ -386,7 +418,9 @@ VarDef:
         }
         int n = ToPtrnum($2)->ptr_int;      //当前数组的元素总数，例如a[2][3], n=6
         // 输出 var 24 T0 
-        out << IF_DEEP() + "var " << n*INTSIZE << " T" << to_string(VAR_T_num) <<endl;
+        // out << IF_DEEP() + "var " << n*INTSIZE << " T" << to_string(VAR_T_num) <<endl;
+        def_out = IF_DEEP() + "var " + to_string(n*INTSIZE) + " T" + to_string(VAR_T_num);
+        Func_VarDecl.push_back(def_out);
 
         vector<Ptr_num>* Ident_array = new vector<Ptr_num>;
         vector<int>* Ident_dim_array = new vector<int>;
@@ -409,13 +443,13 @@ VarDef:
         ArrayInit RCURLY
         {
             //没填满的元素用0填充
-            //out << "------- Array_dest = "<<Array_dest<<endl;
             for(; Array_loc < Array_dest; Array_loc++){
-                //out << "Array_loc = " << Array_loc << endl;
                 Ptr_num tmp_ptr = Ptr_num("0");     //构造vector中的元素
                 string ir_name = "T" + to_string(VAR_T_num) + "[" + to_string(4 * Array_loc) + "]";
                 Scope.back().IDENT_array->push_back(tmp_ptr);
-                out << IF_DEEP() + ir_name << " = " << 0 << endl;
+                //out << IF_DEEP() + ir_name << " = " << 0 << endl;
+                other_out = IF_DEEP() + ir_name + " = 0";
+                Func_Other.push_back(other_out);
             }
             VAR_T_num ++;     //定义结束后，把变量名数字 + 1
             Array_dim.clear();     //初始化数组维度
@@ -429,7 +463,6 @@ ArrayInit:
     | ArrayExps
     {
         //类似于 {1},{1,2}
-       // out << "ArrayExps " << endl;
         $$ = $1;
     }
 ;
@@ -442,19 +475,21 @@ ArrayExps:
 ArrayExp:
     Exp
     {
-        //out << "Array_loc = " << Array_loc << endl;
-        //out << "EXP" << endl;
         if(ToPtrnum($1)->IF_ptr_int){    //为常量，加入到数组中
             Ptr_num tmp_ptr = Ptr_num(ToPtrnum($1)->ptr_int);     //构造vector中的元素
             string ir_name = "T" + to_string(VAR_T_num) + "[" + to_string(4 * Array_loc) + "]";
             Scope.back().IDENT_array->push_back(tmp_ptr);
-            out << IF_DEEP() + ir_name << " = " << ToPtrnum($1)->ptr_int << endl;
+            // out << IF_DEEP() + ir_name << " = " << ToPtrnum($1)->ptr_int << endl;
+            other_out = IF_DEEP() + ir_name + " = " + to_string(ToPtrnum($1)->ptr_int);
+            Func_Other.push_back(other_out);
         }       
         else{          //为变量，加入到数组中
             Ptr_num tmp_ptr = Ptr_num(ToPtrnum($1)->ptr_str);     //构造vector中的元素
             string ir_name = "T" + to_string(VAR_T_num) + "[" + to_string(4 * Array_loc) + "]";
             Scope.back().IDENT_array->push_back(tmp_ptr);
-            out << IF_DEEP() + ir_name << " = " << ToPtrnum($1)->ptr_str << endl;
+            // out << IF_DEEP() + ir_name << " = " << ToPtrnum($1)->ptr_str << endl;
+            other_out = IF_DEEP() + ir_name + " = " + ToPtrnum($1)->ptr_str;
+            Func_Other.push_back(other_out);
         }
         Array_loc ++;     //位置向前进1
     }
@@ -475,7 +510,9 @@ ArrayExp:
                 Ptr_num tmp_ptr = Ptr_num("0");     //构造vector中的元素
                 string ir_name = "T" + to_string(VAR_T_num) + "[" + to_string(4 * Array_loc) + "]";
                 Scope.back().IDENT_array->push_back(tmp_ptr);
-                out << IF_DEEP() + ir_name << " = " << 0 << endl;
+                // out << IF_DEEP() + ir_name << " = " << 0 << endl;
+                other_out = IF_DEEP() + ir_name + " = 0";
+                Func_Other.push_back(other_out);   
             }
             Array_dest = old_Array_dest;
             Array_deep --;      //遇到右括号，深度-1
@@ -489,7 +526,6 @@ ArrayExp:
 ArrayDef:
     ArrayUnit
     {
-        //out << "Array num1111 = " << ToPtrnum($1)->ptr_int << endl;
         $$ = $1;
     }
     | ArrayDef ArrayUnit
@@ -503,7 +539,6 @@ ArrayUnit:
     LBRAC ConstExp RBRAC
     {
         $$ = $2;
-        //out << "dim = " << ToPtrnum($2)->ptr_int << endl;
         Array_dim.push_back(ToPtrnum($2)->ptr_int);      //把数组数据放到Array_dim中，记录数组维度信息
         
     }
@@ -512,27 +547,14 @@ ArrayUnit:
 InitVal: 
     Exp
     {
-        // out << "LVAL end"<<endl;
-        // out << "IF_ptr_str = "<<ToPtrnum($1)->ptr_str<<endl;
-        // $$ = $1;
+
     }
 ;
 
 Exp:
     AddExp
     {
-        $$ = $1;
-        //ToPtrnum($1)->Print();
-        // out << IF_DEEP() + "++++if_int = " << ToPtrnum($1)->IF_ptr_int << endl;
-        // if(ToPtrnum($1)->IF_ptr_int)
-        //     out << IF_DEEP() + "aaaaaa " << ToPtrnum($1)->ptr_int << endl;
-        // else{
-        //     out << "test" << endl;
-        //     ToPtrnum($1)->Print();
-        //     out << IF_DEEP() + "bbbbbb " << endl;
-        //     out << ToPtrnum($1)->ptr_str << endl;
-        // }
-            
+        $$ = $1;            
     }
 ;
 
@@ -567,9 +589,10 @@ AddExp:
             VAR_t_num ++;
             //是字符型
             tmp_ptr->IF_ptr_int = 0;
-            out << IF_DEEP() + tmp_ptr->ptr_str << " = " << str1 << " + " << str2 << endl;      // 输出类似于 t0 = T0 + 1
+            // out << IF_DEEP() + tmp_ptr->ptr_str << " = " << str1 << " + " << str2 << endl;      // 输出类似于 t0 = T0 + 1
+            other_out = IF_DEEP() + tmp_ptr->ptr_str + " = " + str1 + " + " + str2;
+            Func_Other.push_back(other_out);
         }
-        //out << "AddExp ADD MulExp" << *ToInt($1) << "+" << *ToInt($3) << endl;
         $$ = tmp_ptr; 
     }
     | AddExp SUB MulExp
@@ -601,7 +624,9 @@ AddExp:
             VAR_t_num ++;
             //是字符型
             tmp_ptr->IF_ptr_int = 0;
-            out << IF_DEEP() + tmp_ptr->ptr_str << " = " << str1 << " - " << str2 << endl;      // 输出类似于 t0 = T0 + 1
+            // out << IF_DEEP() + tmp_ptr->ptr_str << " = " << str1 << " - " << str2 << endl;      // 输出类似于 t0 = T0 + 1
+            other_out = IF_DEEP() + tmp_ptr->ptr_str + " = " + str1 + " - " + str2;
+            Func_Other.push_back(other_out);
         }
         $$ = tmp_ptr; 
     }
@@ -612,7 +637,6 @@ MulExp:
     UnaryExp
     {
         $$ = $1;
-//        ToPtrnum($1)->Print();
     }
     | MulExp MUL UnaryExp
     {
@@ -643,9 +667,10 @@ MulExp:
             VAR_t_num ++;
             //是字符型
             tmp_ptr->IF_ptr_int = 0;
-            out << IF_DEEP() + tmp_ptr->ptr_str << " = " << str1 << " * " << str2 << endl;      // 输出类似于 t0 = T0 + 1
+            // out << IF_DEEP() + tmp_ptr->ptr_str << " = " << str1 << " * " << str2 << endl;      // 输出类似于 t0 = T0 + 1
+            other_out = IF_DEEP() + tmp_ptr->ptr_str + " = " + str1 + " * " + str2;
+            Func_Other.push_back(other_out);
         }
-        //out << "AddExp ADD MulExp" << *ToInt($1) << "+" << *ToInt($3) << endl;
         $$ = tmp_ptr; 
     }
     | MulExp DIV UnaryExp
@@ -683,9 +708,10 @@ MulExp:
             VAR_t_num ++;
             //是字符型
             tmp_ptr->IF_ptr_int = 0;
-            out << IF_DEEP() + tmp_ptr->ptr_str << " = " << str1 << " / " << str2 << endl;      // 输出类似于 t0 = T0 + 1
+            // out << IF_DEEP() + tmp_ptr->ptr_str << " = " << str1 << " / " << str2 << endl;      // 输出类似于 t0 = T0 + 1
+            other_out = IF_DEEP() + tmp_ptr->ptr_str + " = " + str1 + " / " + str2;
+            Func_Other.push_back(other_out);
         }
-        //out << "AddExp ADD MulExp" << *ToInt($1) << "+" << *ToInt($3) << endl;
         $$ = tmp_ptr; 
     }
     | MulExp MOD UnaryExp
@@ -723,9 +749,10 @@ MulExp:
             VAR_t_num ++;
             //是字符型
             tmp_ptr->IF_ptr_int = 0;
-            out << IF_DEEP() + tmp_ptr->ptr_str << " = " << str1 << " % " << str2 << endl;      // 输出类似于 t0 = T0 + 1
+            // out << IF_DEEP() + tmp_ptr->ptr_str << " = " << str1 << " % " << str2 << endl;      // 输出类似于 t0 = T0 + 1
+            other_out = IF_DEEP() + tmp_ptr->ptr_str + " = " + str1 + " % " + str2;
+            Func_Other.push_back(other_out);
         }
-        //out << "AddExp ADD MulExp" << *ToInt($1) << "+" << *ToInt($3) << endl;
         $$ = tmp_ptr; 
     }
 ;
@@ -734,7 +761,6 @@ UnaryExp:
     PrimaryExp
     {
         $$ = $1;
-//        ToPtrnum($1)->Print();
     }
     | IDENT LPAREN FuncRParams RPAREN
     {
@@ -745,7 +771,9 @@ UnaryExp:
             yyerror(err);
         }
 
-        out << IF_DEEP() + "t" + to_string(VAR_t_num) + " = call f_" + *(ToStr($1)) << endl;
+        // out << IF_DEEP() + "t" + to_string(VAR_t_num) + " = call f_" + *(ToStr($1)) << endl;
+        other_out = IF_DEEP() + "t" + to_string(VAR_t_num) + " = call f_" + *(ToStr($1));
+        Func_Other.push_back(other_out);
 
         Ptr_num* tmp_ptr = new Ptr_num;
         tmp_ptr->ptr_str = "t" + to_string(VAR_t_num);
@@ -753,14 +781,6 @@ UnaryExp:
 
         VAR_t_num ++;
         $$ = tmp_ptr;
-        //出现在左边,函数必然为INT型，有返回值
-        // IDENT_scope tmp_ret = IDENT_scope("ret"+*ToStr($1),"0",DEEP,0);
-        // tmp_ret.IR_name = "T" + to_string(VAR_T_num);
-        // out << IF_DEEP() + "var " + tmp_ret.IR_name << endl;
-        // Scope.push_back(tmp_ret);
-        // out << IF_DEEP() + tmp_ret.IR_name + " = call f_" + *(ToStr($1)) << endl;
-
-        // 类似于 a(1,3)这样，表示调用函数
     }
 ;
 
@@ -774,10 +794,7 @@ PrimaryExp:
     }
     | LVal
     {
-        // out << "LVaL end"<<endl;
-        // out << "IF_ptr_str = "<<ToPtrnum($1)->ptr_str<<endl;
         $$ = $1;
-        //ToPtrnum($1)->Print();
     }
 ;
 
@@ -785,7 +802,6 @@ LVal:
     IDENT
     {
         IDENT_scope* tmp = find_define(*ToStr($1));
-        //out << "ToStr -> " << *ToStr($1) << endl;
         if( tmp == nullptr){          //变量尚未定义
             string err = "\"" +  *ToStr($1) + "\" was not declared in this scope.";
             yyerror(err);
@@ -812,28 +828,22 @@ LVal:
     }
         ArrayLVals
         {        //a[2][3]     a[1][b]  
-            //out << "Left = ArrayLVals " << endl;
-            // IDENT_scope* tmp = ((IDENT_scope*)$$); 
             Ptr_num tmp_ptr, tmp_ptr_new, tmp_ptr_old;
             int ptr_size = INTSIZE;
-            //out << "in ArrayLVals--------------" << endl;
 
             for(int i = Array_LVal_dim.size()-1; i >= 0 ;i --){
-                //out << "i = "<<i << endl;
-                // tmp_ptr_old = tmp_ptr_new;
                 tmp_ptr = Array_LVal_dim[i];
-                //out << "int = " << tmp_ptr.ptr_int << endl;
                 if(tmp_ptr.IF_ptr_int){     //是整数
-                    //out << "tmp_ptr.IF_ptr_int = 1" << endl;
                     tmp_ptr_new.IF_ptr_int = 1;
                     tmp_ptr_new.ptr_int = tmp_ptr.ptr_int * ptr_size;
-                    //out << "tmp_ptr_new.ptr_int = " << tmp_ptr_new.ptr_int << endl;
                     if(i != Array_LVal_dim.size()-1){     //第一次，不用考虑和之前相加
                         if(tmp_ptr_old.IF_ptr_int){     //如果前面的也是INT
                             tmp_ptr_old.ptr_int += tmp_ptr_new.ptr_int;
                         }
                         else{
-                            out << IF_DEEP() + "t" + to_string(VAR_t_num ) << " = "<< tmp_ptr_new.ptr_int << " + " << tmp_ptr_old.ptr_str << endl;
+                            // out << IF_DEEP() + "t" + to_string(VAR_t_num ) << " = "<< tmp_ptr_new.ptr_int << " + " << tmp_ptr_old.ptr_str << endl;
+                            other_out =  IF_DEEP() + "t" + to_string(VAR_t_num ) + " = " + to_string(tmp_ptr_new.ptr_int) + " + " + tmp_ptr_old.ptr_str;
+                            Func_Other.push_back(other_out);
                             tmp_ptr_old.ptr_str = "t" + to_string(VAR_t_num);
                             VAR_t_num ++;
                         }
@@ -843,7 +853,6 @@ LVal:
                     }
                 }
                 else{
-                    //out << "tmp_ptr.IF_ptr_int = 0" << endl;
                     tmp_ptr_new.IF_ptr_int = 0;
                     tmp_ptr_new.ptr_str = "t" + to_string(VAR_t_num);
                     tmp_ptr_old.ptr_str = to_string(tmp_ptr_old.ptr_int);    //强制转换为string类型
@@ -851,8 +860,9 @@ LVal:
                     VAR_t_num ++;
                     out << IF_DEEP() + tmp_ptr_new.ptr_str << " = " << tmp_ptr.ptr_str << " * " << ptr_size << endl;
                     if(i != Array_LVal_dim.size()-1){     //第一次不用考虑和之前相加
-                        //out << "tmp_ptr_old.ptr_int = " << tmp_ptr_old.ptr_int << endl;
-                        out <<IF_DEEP() + "t" + to_string(VAR_t_num ) << " = "<< tmp_ptr_new.ptr_str << " + " << tmp_ptr_old.ptr_str << endl;
+                        // out <<IF_DEEP() + "t" + to_string(VAR_t_num ) << " = "<< tmp_ptr_new.ptr_str << " + " << tmp_ptr_old.ptr_str << endl;
+                        other_out = IF_DEEP() + "t" + to_string(VAR_t_num ) + " = " + tmp_ptr_new.ptr_str + " + " + tmp_ptr_old.ptr_str;
+                        Func_Other.push_back(other_out);
                         tmp_ptr_old.ptr_str = "t" + to_string(VAR_t_num);
                         VAR_t_num ++;
                     }
@@ -861,34 +871,17 @@ LVal:
                     }
                 }
                 ptr_size *= Array_dim[i];     //更新ptr_size
-                //out << endl << "ptr_size = "<< ptr_size << endl;
-                // out << "test ptr_size" << endl;
-                // out << (*(tmp->IDENT_dim_array)) << endl;
-                // out << "test ptr_size" << endl;
             }
             Array_LVal_dim.clear();
-            //out << "Arrayend " << endl;
             if(tmp_ptr_old.IF_ptr_int){
                 tmp_ptr_old.ptr_str = Array_name + "[" + to_string(tmp_ptr_old.ptr_int) + "]";
                 tmp_ptr_old.IF_ptr_int = 0;     //最后的结果一定是一个字符串类型
-                //out << "tmp_ptr_old.ptr_str = " <<  tmp_ptr_old.ptr_str << endl;
             }
             else{
                 tmp_ptr_old.ptr_str = Array_name + "[" + tmp_ptr_old.ptr_str + "]";
                 tmp_ptr_old.IF_ptr_int = 0;
-                //out << "tmp_ptr_old.ptr_str = " <<  tmp_ptr_old.ptr_str << endl;
             }    
-            //out << "tmp_ptr_old.ptr_str = " << tmp_ptr_old.ptr_str << endl; 
-
-            //用临时变量储存数组元素
-            // out << IF_DEEP() + "t" + to_string(VAR_t_num) << " = "<< tmp_ptr_old.ptr_str << endl;
-            // tmp_ptr_old.ptr_str = "t" + to_string(VAR_t_num);
-            // VAR_t_num ++;
             $$ = & tmp_ptr_old;
-
-
-            //out << "tmp_ptr_old.ptr_str = " <<  tmp_ptr_old.ptr_str << endl;
-            //out << "out ArrayLVals--------------" << endl;
         }
 ;
 
@@ -908,7 +901,6 @@ ArrayLVal:
 FuncDef:
     INT IDENT
     {
-        //out << " This is a INT Func" << endl;
         //首先检查当前域中是否出现
         if(!check_define(*ToStr($2))){
             string err = "\"" +  *ToStr($1) + "\" already defined in this scope.";
@@ -954,7 +946,6 @@ FuncDef:
         tmp.IDENT_if_ret_int = 0;
         //tmp.IDENT_func_param_num = 0;      //没有参数
         Scope.push_back(tmp);
-        //out << "f_" << *ToStr($2) << " [" << tmp.IDENT_func_param_num << "]" << endl;
     }
         LPAREN
         {
@@ -963,14 +954,20 @@ FuncDef:
         FuncFParams RPAREN
         {
             DEEP --;
-            out << "f_" << *ToStr($2) << " [" << VAR_p_num << "]" << endl;
+            // out << "f_" << *ToStr($2) << " [" << VAR_p_num << "]" << endl;
+            other_out = "f_" + (*ToStr($2)) + " [" + to_string(VAR_p_num) + "]";
+            Func_Other.push_back(other_out);
         }
         Block
         {
             
-            out << "\treturn" << endl;
-            out << "end " << "f_" << *ToStr($2) << endl;
+            // out << "\treturn" << endl;
+            // out << "end " << "f_" << *ToStr($2) << endl;
 
+            other_out = "\treturn";
+            Func_Other.push_back(other_out);
+            other_out = "end f_" + *ToStr($2);
+            Func_Other.push_back(other_out);
             
         }
 ;
@@ -989,8 +986,7 @@ FuncFParams:
 
 FuncFParam:    
     INT IDENT
-    {        //a(int b){}
-        //out << "INT IDENT" << endl;
+    { 
         // 检查是否出现过
         if(!check_define(*ToStr($2))){
             string err = "\"" +  *ToStr($1) + "\" already defined in this scope.";
@@ -1024,7 +1020,6 @@ FuncFParam:
 ArrayParamDef:
     ArrayUnit
     {
-        //out << "Array num1111 = " << ToPtrnum($1)->ptr_int << endl;
         $$ = $1;
     }
     | ArrayParamDef ArrayUnit
@@ -1062,40 +1057,32 @@ BlockItems:
 
 BlockItem:
     {
-        // out << "BlockItem"<<endl;
         //暂时先考虑内容为空的情况
     }
     | Decl
     {
-        //out << "this is decl " << endl;
     }
     | Stmt
     {
-        //out << "this is stmt " << endl;
     }
 ;
 
 Stmt:
     RETURN SEMI
     {
-        //out << IF_DEEP() + "return" << endl;
     }
     | RETURN Exp SEMI
     {
-        // out << IF_DEEP() + "return ";
-        //ToPtrnum($2)->Print();
-        // out << endl;
-        //out << IF_DEEP() + "ToPtrnum($2)->IF_ptr_int = " << ToPtrnum($2)->IF_ptr_int<< endl;
-        //out << IF_DEEP() + "ToPtrnum($2)->ptr_str = " << ToPtrnum($2)->ptr_str<< endl;
         if(ToPtrnum($2)->IF_ptr_int){       //为常量
-            out << IF_DEEP() + "return " << ToPtrnum($2)->ptr_int << endl;
+            // out << IF_DEEP() + "return " << ToPtrnum($2)->ptr_int << endl;
+            other_out = IF_DEEP() + "return " + to_string(ToPtrnum($2)->ptr_int);
+            Func_Other.push_back(other_out);
         }
         else{
-            //out << "ToPtrnum($2)->ptr_str = " << ToPtrnum($2)->ptr_str << endl;
-            out << IF_DEEP() + "return " + ToPtrnum($2)->ptr_str << endl;
+            // out << IF_DEEP() + "return " + ToPtrnum($2)->ptr_str << endl;
+            other_out = IF_DEEP() + "return " + ToPtrnum($2)->ptr_str;
+            Func_Other.push_back(other_out);
         }
-
-        //out << "test" << endl;
     }
     | Exp SEMI
     {
@@ -1111,25 +1098,24 @@ Stmt:
     }
     | LVal 
     {
-        out << IF_DEEP() + ToPtrnum($1)->ptr_str;
+        // out << IF_DEEP() + ToPtrnum($1)->ptr_str;
+        other_out = IF_DEEP() + ToPtrnum($1)->ptr_str;
     }
         ASSIGN Exp SEMI
         {
-            // out << IF_DEEP() + "if_int = " << ToPtrnum($4)->IF_ptr_int << endl;
-            // out << IF_DEEP() + "aaaaaa " << ToPtrnum($4)->ptr_int << endl;
             //类似于 a = b   LVal 返回一个 Ptr_num类型的指针tmp_ptr，此时LVal传上来的必定是一个ptr_str
             
-
             if(ToPtrnum($4)->IF_ptr_int == 1){       //传递的是常量
                 int num = ToPtrnum($4)->ptr_int;
-                out << " = " << num << endl;
+                // out << " = " << num << endl;
+                other_out += (" = " + to_string(num));
+                Func_Other.push_back(other_out);
             }
             else{              //Exp传递的是变量
-                // out << "in else" << endl;
                 string num = ToPtrnum($4)->ptr_str;
-                // out << "after string" <<endl;
-                out << " = " << num << endl;
-                // out << "after out" <<endl;
+                // out << " = " << num << endl;
+                other_out += (" = " + num);
+                Func_Other.push_back(other_out);
             }
 
         }
@@ -1138,17 +1124,27 @@ Stmt:
         LABEL_l_num_st = LABEL_l_num_end;
         Stk_IF_ELSE.push(LABEL_l_num_st);      //当前的label存入栈中
         LABEL_l_num_end += 3;      //因为一个IF语句一般会用到3个label
-        out << IF_DEEP() + "if t" + to_string(VAR_t_num) + " == 0 goto l" + to_string(LABEL_l_num_st) << endl;
+        // out << IF_DEEP() + "if t" + to_string(VAR_t_num) + " == 0 goto l" + to_string(LABEL_l_num_st) << endl;
+        other_out = IF_DEEP() + "if t" + to_string(VAR_t_num) + " == 0 goto l" + to_string(LABEL_l_num_st);
+        Func_Other.push_back(other_out);
         VAR_t_num ++;
-        out << IF_DEEP() + "goto l" + to_string(LABEL_l_num_st+1) << endl;
-        out << IF_DEEP() + "l" + to_string(LABEL_l_num_st+1) + ":" << endl;
+        // out << IF_DEEP() + "goto l" + to_string(LABEL_l_num_st+1) << endl;
+        other_out = IF_DEEP() + "goto l" + to_string(LABEL_l_num_st+1);
+        Func_Other.push_back(other_out);
+        // out << IF_DEEP() + "l" + to_string(LABEL_l_num_st+1) + ":" << endl;
+        other_out = IF_DEEP() + "l" + to_string(LABEL_l_num_st+1) + ":";
+        Func_Other.push_back(other_out);
     }
         Stmt
         { 
             LABEL_l_num_st = Stk_IF_ELSE.top();
             
-            out << IF_DEEP() + "\t" + "goto l" + to_string(LABEL_l_num_st+2) << endl;  //goto l2
-            out << IF_DEEP() + "l" + to_string(LABEL_l_num_st) + ":" << endl;
+            // out << IF_DEEP() + "\t" + "goto l" + to_string(LABEL_l_num_st+2) << endl;  //goto l2
+            other_out = IF_DEEP() + "\t" + "goto l" + to_string(LABEL_l_num_st+2);
+            Func_Other.push_back(other_out);
+            // out << IF_DEEP() + "l" + to_string(LABEL_l_num_st) + ":" << endl;
+            other_out = IF_DEEP() + "l" + to_string(LABEL_l_num_st) + ":";
+            Func_Other.push_back(other_out);    
             //
         }
         IF_Else
@@ -1160,20 +1156,32 @@ Stmt:
         LABEL_l_num_st = LABEL_l_num_end;
         Stk_IF_ELSE.push(LABEL_l_num_st);      //当前的label存入栈中
         LABEL_l_num_end += 3;      //因为一个While语句一般会用到3个label
-        out << IF_DEEP() + "l" + to_string(LABEL_l_num_st+2) + ":" << endl;
+        // out << IF_DEEP() + "l" + to_string(LABEL_l_num_st+2) + ":" << endl;
+        other_out = IF_DEEP() + "l" + to_string(LABEL_l_num_st+2) + ":";
+        Func_Other.push_back(other_out);  
         
-        out << IF_DEEP() + "if t" + to_string(VAR_t_num) + " == 0 goto l" + to_string(LABEL_l_num_st) << endl;
+        // out << IF_DEEP() + "if t" + to_string(VAR_t_num) + " == 0 goto l" + to_string(LABEL_l_num_st) << endl;
+        other_out = IF_DEEP() + "if t" + to_string(VAR_t_num) + " == 0 goto l" + to_string(LABEL_l_num_st);
+        Func_Other.push_back(other_out);  
         VAR_t_num ++;
-        out << IF_DEEP() + "goto l" + to_string(LABEL_l_num_st+1) << endl;
+        // out << IF_DEEP() + "goto l" + to_string(LABEL_l_num_st+1) << endl;
+        other_out = IF_DEEP() + "goto l" + to_string(LABEL_l_num_st+1);
+        Func_Other.push_back(other_out);  
 
-        out << IF_DEEP() + "l" + to_string(LABEL_l_num_st+1) + ":" << endl;
+        // out << IF_DEEP() + "l" + to_string(LABEL_l_num_st+1) + ":" << endl;
+        other_out = IF_DEEP() + "l" + to_string(LABEL_l_num_st+1) + ":";
+        Func_Other.push_back(other_out);  
     }
         Stmt
         {
             LABEL_l_num_st = Stk_IF_ELSE.top();
             Stk_IF_ELSE.pop();
-            out << IF_DEEP() + "\t" + "goto l" + to_string(LABEL_l_num_st+2) << endl;
-            out << IF_DEEP() + "l" + to_string(LABEL_l_num_st) + ":" << endl;
+            // out << IF_DEEP() + "\t" + "goto l" + to_string(LABEL_l_num_st+2) << endl;
+            other_out = IF_DEEP() + "\t" + "goto l" + to_string(LABEL_l_num_st+2);
+            Func_Other.push_back(other_out);  
+            // out << IF_DEEP() + "l" + to_string(LABEL_l_num_st) + ":" << endl;
+            other_out = IF_DEEP() + "l" + to_string(LABEL_l_num_st) + ":";
+            Func_Other.push_back(other_out);  
         }
 ;
 
@@ -1185,16 +1193,26 @@ IF_Else:
     {
         LABEL_l_num_st = Stk_IF_ELSE.top();
         //Stk_IF_ELSE.pop();
-        out << IF_DEEP() + "l" + to_string(LABEL_l_num_st+2) + ":" << endl;
+        // out << IF_DEEP() + "l" + to_string(LABEL_l_num_st+2) + ":" << endl;
+        other_out = IF_DEEP() + "l" + to_string(LABEL_l_num_st+2) + ":";
+        Func_Other.push_back(other_out);  
     }
 ;
 
 Cond:
     LOrExp
     {
-        out << IF_DEEP() + "t" + to_string(VAR_t_num) + " = ";
-        ToPtrnum($$)->Print();
-        out << endl;
+        // out << IF_DEEP() + "t" + to_string(VAR_t_num) + " = ";
+        other_out = IF_DEEP() + "l" + to_string(LABEL_l_num_st+2) + ":";
+        if(ToPtrnum($$)->IF_ptr_int){    //如果是常量
+            other_out += to_string(ToPtrnum($$)->ptr_int);
+        }
+        else{
+            other_out += ToPtrnum($$)->ptr_str;
+        }
+        // ToPtrnum($$)->Print();
+        //out << endl;
+        Func_Other.push_back(other_out);  
     }
 ;
 
@@ -1224,10 +1242,14 @@ FuncRParams:
     {
         Ptr_num* param_tmp = ToPtrnum($1);
         if(param_tmp->IF_ptr_int){       //如果是常量
-            out << IF_DEEP() + "param " << param_tmp->ptr_int << endl;
+            // out << IF_DEEP() + "param " << param_tmp->ptr_int << endl;
+            other_out = IF_DEEP() + "param " + to_string(param_tmp->ptr_int);
+            Func_Other.push_back(other_out);  
         }
         else{
-            out << IF_DEEP() + "param " + param_tmp->ptr_str << endl;
+            // out << IF_DEEP() + "param " + param_tmp->ptr_str << endl;
+            other_out = IF_DEEP() + "param " + param_tmp->ptr_str ;
+            Func_Other.push_back(other_out);  
         }
 
     }
@@ -1235,10 +1257,14 @@ FuncRParams:
     {
         Ptr_num* param_tmp = ToPtrnum($3);
         if(param_tmp->IF_ptr_int){       //如果是常量
-            out << IF_DEEP() + "param " << param_tmp->ptr_int << endl;
+            // out << IF_DEEP() + "param " << param_tmp->ptr_int << endl;
+            other_out = IF_DEEP() + "param " + to_string(param_tmp->ptr_int);
+            Func_Other.push_back(other_out);
         }
         else{
-            out << IF_DEEP() + "param " + param_tmp->ptr_str << endl;
+            // out << IF_DEEP() + "param " + param_tmp->ptr_str << endl;
+            other_out = IF_DEEP() + "param " + param_tmp->ptr_str ;
+            Func_Other.push_back(other_out); 
         }
     }
 ;

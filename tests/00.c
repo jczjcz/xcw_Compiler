@@ -1,11 +1,9 @@
-void main(){
-    int a;
-    while(a){
-        int b;
-        b = 1;
-        while(b){
-            int c;
-        }
-    }
-    int c;
-}
+int a[3] = {};
+int b;
+int c;
+int d;
+int g = a[1];
+int h = b;
+
+
+
