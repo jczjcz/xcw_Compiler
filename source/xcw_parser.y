@@ -66,6 +66,13 @@ string IF_DEEP(){
     //str_if_deep = DEEP * "\t";
     return str_if_deep;
 }
+string IF_DEEP_DEF(){
+    string str_if_deep = "";
+    if(DEEP!=0)
+        str_if_deep += "\t";
+    //str_if_deep = DEEP * "\t";
+    return str_if_deep;
+}
 
 
 
@@ -162,9 +169,26 @@ stack<int> Stk_IF_ELSE;
 //-----------------函数语句打印相关变量------------------------------
 vector<string> Func_VarDecl;
 vector<string> Func_Other;
-string Func_begin_flag = "funcbegin";     //这句话用来标注 函数开始
+vector<string> Func_Def;
+//string Func_begin_flag = "funcbegin";     //这句话用来标注 函数开始
 string def_out;       // 这个string 用来记录用于def的语句
 string other_out;     // 这个string 用来记录其他的语句
+string func_def_in = "";   // 进函数和出函数部分
+string func_def_out = "";   
+void Out_Print(){
+    if(func_def_in != "")
+        out << func_def_in << endl;
+    for(int i = 0;i < Func_VarDecl.size();i++){
+        out << Func_VarDecl[i] << endl;
+    }
+    for(int i = 0;i < Func_Other.size();i++){
+        out << Func_Other[i] << endl;
+    }
+    //out << func_def_out << endl;
+    Func_VarDecl.clear();
+    Func_Other.clear();
+    func_def_in = "";
+}
 //----------------------------------------------------------
 
 
@@ -183,17 +207,6 @@ string other_out;     // 这个string 用来记录其他的语句
 
 
 %%
-START:
-    CompUnit
-    {
-        for(int i = 0;i < Func_VarDecl.size();i++){
-            out << Func_VarDecl[i] << endl;
-        }
-        for(int i = 0;i < Func_Other.size();i++){
-            out << Func_Other[i] << endl;
-        }
-    }
-;
 
 CompUnit:
     CompDecl
@@ -201,9 +214,21 @@ CompUnit:
 ;
 
 CompDecl:
-    Decl
+    DeclOutFunc
+    {
+        Out_Print();
+    }
     | FuncDef
+    {
+        Out_Print();
+    }
 ;
+
+DeclOutFunc:
+    ConstDecl
+    | VarDecl
+;
+
 
 Decl:
     ConstDecl
@@ -247,7 +272,7 @@ ConstDef:
         int n = ToPtrnum($2)->ptr_int;      //当前数组的元素总数，例如a[2][3], n=6
         // 输出 var 24 T0 
         // out << "var " << n*INTSIZE << " T" << to_string(VAR_T_num) <<endl;
-        def_out = "var" + to_string(n*INTSIZE) + " T" + to_string(VAR_T_num);
+        def_out = IF_DEEP_DEF() + "var" + to_string(n*INTSIZE) + " T" + to_string(VAR_T_num);
         Func_VarDecl.push_back(def_out);
 
         vector<Ptr_num>* Ident_array = new vector<Ptr_num>;
@@ -277,7 +302,7 @@ ConstDef:
                 string ir_name = "T" + to_string(VAR_T_num) + "[" + to_string(4 * Array_loc) + "]";
                 Scope.back().IDENT_array->push_back(tmp_ptr);
                 //out << ir_name << " = " << 0 << endl;
-                other_out = ir_name + " = 0";
+                other_out = IF_DEEP() + ir_name + " = 0";
                 Func_Other.push_back(other_out);
             }
             VAR_T_num ++;     //定义结束后，把变量名数字 + 1
@@ -317,7 +342,7 @@ VarDef:
         if(check_define(*ToStr($1))){       //如果在当前域中未被定义过
             Scope.push_back(tmp);
             //out << IF_DEEP() + "var T" << VAR_T_num << endl;
-            def_out = IF_DEEP() + "var T" + to_string(VAR_T_num);
+            def_out = IF_DEEP_DEF() + "var T" + to_string(VAR_T_num);
             //out << IF_DEEP() + "T" << VAR_T_num << " = " << 0 << endl;
             other_out = IF_DEEP() + "T" + to_string(VAR_T_num) + " = 0";
             Func_VarDecl.push_back(def_out);
@@ -338,7 +363,7 @@ VarDef:
             tmp.IR_name = "T" + to_string(VAR_T_num);   
             Scope.push_back(tmp);
             // out << IF_DEEP() + "var T" << VAR_T_num << endl;
-            def_out = IF_DEEP() + "var T" + to_string(VAR_T_num);
+            def_out = IF_DEEP_DEF() + "var T" + to_string(VAR_T_num);
             // out << IF_DEEP() + "T" << VAR_T_num << " = " << num << endl;
             other_out = IF_DEEP() + "T" + to_string(VAR_T_num) + " = " + to_string(num);
             Func_VarDecl.push_back(def_out);
@@ -355,7 +380,7 @@ VarDef:
             tmp.IR_name = "T" + to_string(VAR_T_num);   
             Scope.push_back(tmp);
             // out << IF_DEEP() + "var T" << VAR_T_num << endl;
-            def_out = IF_DEEP() + "var T" + to_string(VAR_T_num);
+            def_out = IF_DEEP_DEF() + "var T" + to_string(VAR_T_num);
             // out << IF_DEEP() + "T" << VAR_T_num << " = " << num << endl;
             other_out = IF_DEEP() + "T" + to_string(VAR_T_num) + " = " + num;
             Func_VarDecl.push_back(def_out);
@@ -419,7 +444,7 @@ VarDef:
         int n = ToPtrnum($2)->ptr_int;      //当前数组的元素总数，例如a[2][3], n=6
         // 输出 var 24 T0 
         // out << IF_DEEP() + "var " << n*INTSIZE << " T" << to_string(VAR_T_num) <<endl;
-        def_out = IF_DEEP() + "var " + to_string(n*INTSIZE) + " T" + to_string(VAR_T_num);
+        def_out = IF_DEEP_DEF() + "var " + to_string(n*INTSIZE) + " T" + to_string(VAR_T_num);
         Func_VarDecl.push_back(def_out);
 
         vector<Ptr_num>* Ident_array = new vector<Ptr_num>;
@@ -922,14 +947,18 @@ FuncDef:
             DEEP --;
             //IDENT_scope* tmp_ptr = find_define(*ToStr($2));    //找到函数变量的指针
             //tmp_ptr->IDENT_func_param_num = 
-            out << "f_" << *ToStr($2) << " [" << VAR_p_num << "]" << endl;  
+            //out << "f_" << *ToStr($2) << " [" << VAR_p_num << "]" << endl;  
+            func_def_in =  "f_" + *ToStr($2) + " [" + to_string(VAR_p_num) + "]";
         }
         Block
         {
             
-            out << "\treturn 0" << endl;
-            out << "end " << "f_" << *ToStr($2) << endl;
-
+            // out << "\treturn 0" << endl;
+            // out << "end " << "f_" << *ToStr($2) << endl;
+            other_out = "\treturn 0";
+            Func_Other.push_back(other_out);
+            other_out = "end f_" + *ToStr($2);
+            Func_Other.push_back(other_out);
             //声明结束后，把记录参数数量的 VAR_p_num 初始化
             VAR_p_num = 0;
             
@@ -955,8 +984,8 @@ FuncDef:
         {
             DEEP --;
             // out << "f_" << *ToStr($2) << " [" << VAR_p_num << "]" << endl;
-            other_out = "f_" + (*ToStr($2)) + " [" + to_string(VAR_p_num) + "]";
-            Func_Other.push_back(other_out);
+            func_def_in = "f_" + (*ToStr($2)) + " [" + to_string(VAR_p_num) + "]";
+            //Func_Other.push_back(other_out);
         }
         Block
         {
@@ -968,7 +997,9 @@ FuncDef:
             Func_Other.push_back(other_out);
             other_out = "end f_" + *ToStr($2);
             Func_Other.push_back(other_out);
-            
+
+            //声明结束后，把记录参数数量的 VAR_p_num 初始化
+            VAR_p_num = 0;
         }
 ;
 
@@ -1161,11 +1192,11 @@ Stmt:
         Func_Other.push_back(other_out);  
         
         // out << IF_DEEP() + "if t" + to_string(VAR_t_num) + " == 0 goto l" + to_string(LABEL_l_num_st) << endl;
-        other_out = IF_DEEP() + "if t" + to_string(VAR_t_num) + " == 0 goto l" + to_string(LABEL_l_num_st);
+        other_out = IF_DEEP() + "\tif t" + to_string(VAR_t_num) + " == 0 goto l" + to_string(LABEL_l_num_st);
         Func_Other.push_back(other_out);  
         VAR_t_num ++;
         // out << IF_DEEP() + "goto l" + to_string(LABEL_l_num_st+1) << endl;
-        other_out = IF_DEEP() + "goto l" + to_string(LABEL_l_num_st+1);
+        other_out = IF_DEEP() + "\tgoto l" + to_string(LABEL_l_num_st+1);
         Func_Other.push_back(other_out);  
 
         // out << IF_DEEP() + "l" + to_string(LABEL_l_num_st+1) + ":" << endl;
@@ -1203,7 +1234,7 @@ Cond:
     LOrExp
     {
         // out << IF_DEEP() + "t" + to_string(VAR_t_num) + " = ";
-        other_out = IF_DEEP() + "l" + to_string(LABEL_l_num_st+2) + ":";
+        other_out = IF_DEEP() + "t" + to_string(VAR_t_num) + " = ";
         if(ToPtrnum($$)->IF_ptr_int){    //如果是常量
             other_out += to_string(ToPtrnum($$)->ptr_int);
         }

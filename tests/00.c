@@ -1,9 +1,18 @@
-int a[3] = {};
-int b;
-int c;
-int d;
-int g = a[1];
-int h = b;
-
-
-
+int h[10];
+int m = 4;
+int n;
+void main(){
+    int a;
+    while(a){
+        int b = h[4];
+        b = 1;
+        if(a){
+            int b;
+        }
+        else{
+            int b;
+        }
+    }
+    int c;
+}
+int nn = 5;
