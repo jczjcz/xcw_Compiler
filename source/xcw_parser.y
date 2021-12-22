@@ -10,6 +10,7 @@
 #include<string>
 #include<cstdlib>
 #include<vector>
+#include<stack>
 
 using namespace std;
 
@@ -36,17 +37,17 @@ struct Ptr_num{             // 用来传递参数，用IF_ptr_int表示传上来
     }
     Ptr_num(){}
     void Print(){       //打印出数值，用于调试
-        out << "-------------Ptr_print_in------------"<<endl;
+        //out << "-------------Ptr_print_in------------"<<endl;
         if(IF_ptr_int){
-            out << "IF_ptr_int = " << IF_ptr_int << endl;
+            //out << "IF_ptr_int = " << IF_ptr_int << endl;
             out << ptr_int;
         }
         else{
-            out << "IF_ptr_int = " << IF_ptr_int << endl;
+            //out << "IF_ptr_int = " << IF_ptr_int << endl;
             out << ptr_str;
         }
-        out << endl;
-        out << "-------------Ptr_print_out------------"<<endl;
+        //out << endl;
+        //out << "-------------Ptr_print_out------------"<<endl;
     }
 };
 
@@ -58,9 +59,12 @@ struct Params_num{      //函数参数的元素类型，需要包括 INT型变�
 
 int DEEP;      //当前的深度
 string IF_DEEP(){
-    if(DEEP==0)
-        return "";
-    return "\t";
+    string str_if_deep = "";
+    for(int i = 0;i < DEEP;i++){
+        str_if_deep += "\t";
+    }
+    //str_if_deep = DEEP * "\t";
+    return str_if_deep;
 }
 
 
@@ -148,8 +152,10 @@ int Array_deep;
 string Array_name;
 //----------------------------------------------------------
 
-//-----------------函数相关变量------------------------------
-
+//-----------------IF_ELSE相关变量------------------------------
+int LABEL_l_num_st = 0;       //表示一个IF语句开始，需要的label标记数   默认为0
+int LABEL_l_num_end = 0;
+stack<int> Stk_IF_ELSE;
 
 //----------------------------------------------------------
 
@@ -873,7 +879,14 @@ LVal:
                 //out << "tmp_ptr_old.ptr_str = " <<  tmp_ptr_old.ptr_str << endl;
             }    
             //out << "tmp_ptr_old.ptr_str = " << tmp_ptr_old.ptr_str << endl; 
+
+            //用临时变量储存数组元素
+            // out << IF_DEEP() + "t" + to_string(VAR_t_num) << " = "<< tmp_ptr_old.ptr_str << endl;
+            // tmp_ptr_old.ptr_str = "t" + to_string(VAR_t_num);
+            // VAR_t_num ++;
             $$ = & tmp_ptr_old;
+
+
             //out << "tmp_ptr_old.ptr_str = " <<  tmp_ptr_old.ptr_str << endl;
             //out << "out ArrayLVals--------------" << endl;
         }
@@ -1100,27 +1113,87 @@ Stmt:
     {
         out << IF_DEEP() + ToPtrnum($1)->ptr_str;
     }
-    ASSIGN Exp SEMI
+        ASSIGN Exp SEMI
+        {
+            // out << IF_DEEP() + "if_int = " << ToPtrnum($4)->IF_ptr_int << endl;
+            // out << IF_DEEP() + "aaaaaa " << ToPtrnum($4)->ptr_int << endl;
+            //类似于 a = b   LVal 返回一个 Ptr_num类型的指针tmp_ptr，此时LVal传上来的必定是一个ptr_str
+            
+
+            if(ToPtrnum($4)->IF_ptr_int == 1){       //传递的是常量
+                int num = ToPtrnum($4)->ptr_int;
+                out << " = " << num << endl;
+            }
+            else{              //Exp传递的是变量
+                // out << "in else" << endl;
+                string num = ToPtrnum($4)->ptr_str;
+                // out << "after string" <<endl;
+                out << " = " << num << endl;
+                // out << "after out" <<endl;
+            }
+
+        }
+    | IF LPAREN Cond RPAREN 
     {
-        // out << IF_DEEP() + "if_int = " << ToPtrnum($4)->IF_ptr_int << endl;
-        // out << IF_DEEP() + "aaaaaa " << ToPtrnum($4)->ptr_int << endl;
-        //类似于 a = b   LVal 返回一个 Ptr_num类型的指针tmp_ptr，此时LVal传上来的必定是一个ptr_str
-        
-
-        if(ToPtrnum($4)->IF_ptr_int == 1){       //传递的是常量
-            int num = ToPtrnum($4)->ptr_int;
-            out << " = " << num << endl;
+        LABEL_l_num_st = LABEL_l_num_end;
+        Stk_IF_ELSE.push(LABEL_l_num_st);      //当前的label存入栈中
+        LABEL_l_num_end += 3;      //因为一个IF语句一般会用到3个label
+        out << IF_DEEP() + "if t" + to_string(VAR_t_num) + " == 0 goto l" + to_string(LABEL_l_num_st) << endl;
+        out << IF_DEEP() + "goto l" + to_string(LABEL_l_num_st+1) << endl;
+        out << IF_DEEP() + "l" + to_string(LABEL_l_num_st+1) + ":" << endl;
+    }
+        Stmt
+        { 
+            LABEL_l_num_st = Stk_IF_ELSE.top();
+            
+            out << IF_DEEP() + "\t" + "goto l" + to_string(LABEL_l_num_st+2) << endl;  //goto l2
+            out << IF_DEEP() + "l" + to_string(LABEL_l_num_st) + ":" << endl;
+            //
         }
-        else{              //Exp传递的是变量
-            // out << "in else" << endl;
-            string num = ToPtrnum($4)->ptr_str;
-            // out << "after string" <<endl;
-            out << " = " << num << endl;
-            // out << "after out" <<endl;
+        IF_Else
+        {
+            Stk_IF_ELSE.pop();
         }
+;
 
+IF_Else:
+    {
+        // 不存在ELSE的情况
+    }
+    | ELSE Stmt
+    {
+        LABEL_l_num_st = Stk_IF_ELSE.top();
+        //Stk_IF_ELSE.pop();
+        out << IF_DEEP() + "l" + to_string(LABEL_l_num_st+2) + ":" << endl;
     }
 ;
+
+Cond:
+    LOrExp
+    {
+        out << IF_DEEP() + "t" + to_string(VAR_t_num) + " = ";
+        ToPtrnum($$)->Print();
+        out << endl;
+    }
+;
+
+LOrExp:
+    LAndExp
+;
+
+LAndExp:
+    EqExp
+;
+
+EqExp:
+    RelExp
+;
+
+RelExp:
+    AddExp;
+;
+
+
 
 FuncRParams:
     {

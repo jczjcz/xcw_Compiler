@@ -1,12 +1,13 @@
-int b[10][10];
-int c[10][10];
-
-
-int d = b[1][1];
-
-int main(){
-    c[1][1] = b[1][1];
-    return b[3][1];
+void main(){
+    int a;
+    if(a){
+        int b = 2;
+        int a = 3;
+        if(a){
+            int b = 2;
+        }
+    }
+    else{
+        int c = 3;
+    }
 }
-
-
