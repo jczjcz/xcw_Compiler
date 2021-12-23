@@ -37,17 +37,17 @@ struct Ptr_num{             // 用来传递参数，用IF_ptr_int表示传上来
     }
     Ptr_num(){}
     void Print(){       //打印出数值，用于调试
-        //out << "-------------Ptr_print_in------------"<<endl;
+        out << "-------------Ptr_print_in------------"<<endl;
         if(IF_ptr_int){
-            //out << "IF_ptr_int = " << IF_ptr_int << endl;
+            out << "IF_ptr_int = " << IF_ptr_int << endl;
             out << ptr_int;
         }
         else{
-            //out << "IF_ptr_int = " << IF_ptr_int << endl;
+            out << "IF_ptr_int = " << IF_ptr_int << endl;
             out << ptr_str;
         }
-        //out << endl;
-        //out << "-------------Ptr_print_out------------"<<endl;
+        out << endl;
+        out << "-------------Ptr_print_out------------"<<endl;
     }
 };
 
@@ -170,10 +170,12 @@ stack<int> Stk_Break;      // 和Stk_IF_ELSE相比，只用来储存While语句�
 
 //----------------------------------------------------------
 
-//-----------------条件判断语句 用于短路处理的相关变量------------------------------
+//-----------------EXP相关------------------------------
+string str_exp1,str_exp2;
 //----------------------------------------------------------
 
-
+int R_Array_Flag = 0;    //表示这个数组是否在右边表达式
+string LVal_Assign_out;
 
 
 //-----------------函数语句打印相关变量------------------------------
@@ -269,6 +271,7 @@ ConstDef:
     }
     | IDENT ArrayDef ASSIGN
     {
+        R_Array_Flag = 1;
         // 因为常量数组的下标仍有可能是变量，因此考虑将其用变量数组的形式做
         Array_deep = 0;    //将深度初始化为0
         Array_loc = 0;    //将下标初始化为0，path_length是整个数组的长度
@@ -317,6 +320,7 @@ ConstDef:
             }
             VAR_T_num ++;     //定义结束后，把变量名数字 + 1
             Array_dim.clear();     //初始化数组维度
+            R_Array_Flag = 0;
         }
 ;
 
@@ -364,42 +368,48 @@ VarDef:
             yyerror(err);
         }
     }
-    | IDENT ASSIGN InitVal
+    | IDENT ASSIGN 
     {
-
-        if(ToPtrnum($3)->IF_ptr_int == 1){       //传递的是常量
-            int num = ToPtrnum($3)->ptr_int;
-            IDENT_scope tmp = IDENT_scope(*ToStr($1), to_string(num), DEEP, 0);  
-            tmp.IR_name = "T" + to_string(VAR_T_num);   
-            Scope.push_back(tmp);
-            // out << IF_DEEP() + "var T" << VAR_T_num << endl;
-            def_out = IF_DEEP_DEF() + "var T" + to_string(VAR_T_num);
-            // out << IF_DEEP() + "T" << VAR_T_num << " = " << num << endl;
-            other_out = IF_DEEP() + "T" + to_string(VAR_T_num) + " = " + to_string(num);
-            Func_VarDecl.push_back(def_out);
-            Func_Other.push_back(other_out);
-            VAR_T_num ++ ;
-        }
-        else{              //传递的是变量
-            // out << "in the else " << endl;
-            // out << "----------IF_ptr_str = " << ToPtrnum($3)->ptr_str << endl;
-            string num = ToPtrnum($3)->ptr_str;
-
-            // out << "------------num = " << num << endl;
-            IDENT_scope tmp = IDENT_scope(*ToStr($1), num, DEEP, 0);
-            tmp.IR_name = "T" + to_string(VAR_T_num);   
-            Scope.push_back(tmp);
-            // out << IF_DEEP() + "var T" << VAR_T_num << endl;
-            def_out = IF_DEEP_DEF() + "var T" + to_string(VAR_T_num);
-            // out << IF_DEEP() + "T" << VAR_T_num << " = " << num << endl;
-            other_out = IF_DEEP() + "T" + to_string(VAR_T_num) + " = " + num;
-            Func_VarDecl.push_back(def_out);
-            Func_Other.push_back(other_out);
-            VAR_T_num ++ ;
-        }
-        
-        //tmp.Print_IDENT();
+        R_Array_Flag = 1;
     }
+        InitVal
+        {
+
+            if(ToPtrnum($4)->IF_ptr_int == 1){       //传递的是常量
+                int num = ToPtrnum($4)->ptr_int;
+                IDENT_scope tmp = IDENT_scope(*ToStr($1), to_string(num), DEEP, 0);  
+                tmp.IR_name = "T" + to_string(VAR_T_num);   
+                Scope.push_back(tmp);
+                // out << IF_DEEP() + "var T" << VAR_T_num << endl;
+                def_out = IF_DEEP_DEF() + "var T" + to_string(VAR_T_num);
+                // out << IF_DEEP() + "T" << VAR_T_num << " = " << num << endl;
+                other_out = IF_DEEP() + "T" + to_string(VAR_T_num) + " = " + to_string(num);
+                Func_VarDecl.push_back(def_out);
+                Func_Other.push_back(other_out);
+                VAR_T_num ++ ;
+            }
+            else{              //传递的是变量
+                string num = ToPtrnum($4)->ptr_str;
+
+                IDENT_scope tmp = IDENT_scope(*ToStr($1), num, DEEP, 0);
+                tmp.IR_name = "T" + to_string(VAR_T_num);   
+                Scope.push_back(tmp);
+                // out << IF_DEEP() + "var T" << VAR_T_num << endl;
+                def_out = IF_DEEP_DEF() + "var T" + to_string(VAR_T_num);
+                // out << IF_DEEP() + "T" << VAR_T_num << " = " << num << endl;
+
+                // other_out = "t" + to_string(VAR_t_num) + " = " + num;
+                // Func_Other.push_back(other_out);
+
+                other_out = IF_DEEP() + "T" + to_string(VAR_T_num) + " = " + num;
+                Func_VarDecl.push_back(def_out);
+                Func_Other.push_back(other_out);
+                VAR_T_num ++ ;
+                // VAR_t_num ++ ;
+            }
+            R_Array_Flag = 0;
+            //tmp.Print_IDENT();
+        }
     | IDENT ArrayDef
     {
         //首先检查当前域中是否出现
@@ -438,6 +448,7 @@ VarDef:
     }
     | IDENT ArrayDef ASSIGN 
     {
+        R_Array_Flag = 1;
         
         // 先进行初始化
         Array_deep = 0;    //将深度初始化为0
@@ -488,6 +499,8 @@ VarDef:
             }
             VAR_T_num ++;     //定义结束后，把变量名数字 + 1
             Array_dim.clear();     //初始化数组维度
+
+            R_Array_Flag = 0;
         }
 ;
 
@@ -597,6 +610,9 @@ AddExp:
     MulExp
     | AddExp ADD MulExp
     {
+        //out << "AddExp ADD MulExp" << endl;
+        
+        // ToPtrnum($3)->Print();
         Ptr_num* add_1 = ToPtrnum($1);
         Ptr_num* mul_1 = ToPtrnum($3);
         Ptr_num* tmp_ptr = new Ptr_num;
@@ -606,26 +622,34 @@ AddExp:
         }
         else{             // 至少有一个是变量
             //如果其中有常量，先强制把常量转成string类型
-            string str1, str2;
+            // out << "in_block" << endl;
+            // out << "testttttt-----" << add_1->ptr_str << endl;
+            // out << "testttttt-----" << add_1->ptr_str << endl;
             if(add_1->IF_ptr_int){
-                str1 = to_string(add_1->ptr_int);
+                str_exp1 = to_string(add_1->ptr_int);
+                //out << "str1 = " << str_exp1 << endl;
             }
             else{
-                str1 = add_1->ptr_str;
+                str_exp1 = add_1->ptr_str;
+                //out << "str1 = " << str_exp1 << endl;
             }
+            //ToPtrnum($1)->Print();
             if(mul_1->IF_ptr_int){
-                str2 = to_string(mul_1->ptr_int);
+                str_exp2 = to_string(mul_1->ptr_int);
             }
             else{
-                str2 = mul_1->ptr_str;
+                str_exp2 = mul_1->ptr_str;
             }
+
+            // out << "str1 = " << str_exp1 << endl;
+            // out << "str2 = " << str_exp2 << endl;
 
             tmp_ptr->ptr_str = "t" +  to_string(VAR_t_num);   // 生成中间变量
             VAR_t_num ++;
             //是字符型
             tmp_ptr->IF_ptr_int = 0;
-            // out << IF_DEEP() + tmp_ptr->ptr_str << " = " << str1 << " + " << str2 << endl;      // 输出类似于 t0 = T0 + 1
-            other_out = IF_DEEP() + tmp_ptr->ptr_str + " = " + str1 + " + " + str2;
+            //out << IF_DEEP() + tmp_ptr->ptr_str << " = " << str1 << " + " << str2 << endl;      // 输出类似于 t0 = T0 + 1
+            other_out = IF_DEEP() + tmp_ptr->ptr_str + " = " + str_exp1 + " + " + str_exp2;
             Func_Other.push_back(other_out);
         }
         $$ = tmp_ptr; 
@@ -672,6 +696,7 @@ MulExp:
     UnaryExp
     {
         $$ = $1;
+        
     }
     | MulExp MUL UnaryExp
     {
@@ -796,9 +821,12 @@ UnaryExp:
     PrimaryExp
     {
         $$ = $1;
+        //out << "PrimaryExp" << endl;
+  //      
     }
     | IDENT LPAREN FuncRParams RPAREN
     {
+        //out << "IDENT LPAREN FuncRParams RPAREN" << endl;
         IDENT_scope* tmp = find_define(*ToStr($1));
 
         if( tmp == nullptr){          //变量尚未定义
@@ -822,6 +850,7 @@ UnaryExp:
 PrimaryExp:
     NUMBER
     {
+        //out << "NUMBER" << endl;
         Ptr_num* tmp_ptr = new Ptr_num;
         tmp_ptr->ptr_int = *ToInt($1);
         tmp_ptr->IF_ptr_int = 1;
@@ -829,13 +858,16 @@ PrimaryExp:
     }
     | LVal
     {
+        //out << "LVal" << endl;
         $$ = $1;
+        
     }
 ;
 
 LVal:
     IDENT
     {
+        //out << "IDENT" << endl;
         IDENT_scope* tmp = find_define(*ToStr($1));
         if( tmp == nullptr){          //变量尚未定义
             string err = "\"" +  *ToStr($1) + "\" was not declared in this scope.";
@@ -854,6 +886,7 @@ LVal:
     }
     | IDENT
     {
+        //out << "IDENT  ArrayLVals" << endl;
         IDENT_scope* tmp = find_define(*ToStr($1));    //搜索这个数组的定义
         Array_name = tmp->IR_name;
         Array_dim.clear();
@@ -864,6 +897,7 @@ LVal:
         ArrayLVals
         {        //a[2][3]     a[1][b]  
             Ptr_num tmp_ptr, tmp_ptr_new, tmp_ptr_old;
+            // auto tmp_ptr_old = new Ptr_num;
             int ptr_size = INTSIZE;
 
             for(int i = Array_LVal_dim.size()-1; i >= 0 ;i --){
@@ -916,7 +950,18 @@ LVal:
                 tmp_ptr_old.ptr_str = Array_name + "[" + tmp_ptr_old.ptr_str + "]";
                 tmp_ptr_old.IF_ptr_int = 0;
             }    
-            $$ = & tmp_ptr_old;
+            if(R_Array_Flag == 1){
+                other_out = IF_DEEP() + "t" + to_string(VAR_t_num ) + " = " + tmp_ptr_old.ptr_str;
+                Func_Other.push_back(other_out);
+
+                tmp_ptr_old.ptr_str = "t" + to_string(VAR_t_num);
+                VAR_t_num ++;
+                $$ = & tmp_ptr_old;
+            }
+            else{
+                $$ = & tmp_ptr_old;
+            }
+           
         }
 ;
 
@@ -1140,7 +1185,8 @@ Stmt:
     | LVal 
     {
         // out << IF_DEEP() + ToPtrnum($1)->ptr_str;
-        other_out = IF_DEEP() + ToPtrnum($1)->ptr_str;
+        LVal_Assign_out = IF_DEEP() + ToPtrnum($1)->ptr_str;
+        R_Array_Flag = 1;
     }
         ASSIGN Exp SEMI
         {
@@ -1149,15 +1195,20 @@ Stmt:
             if(ToPtrnum($4)->IF_ptr_int == 1){       //传递的是常量
                 int num = ToPtrnum($4)->ptr_int;
                 // out << " = " << num << endl;
-                other_out += (" = " + to_string(num));
-                Func_Other.push_back(other_out);
+                LVal_Assign_out += (" = " + to_string(num));
+                Func_Other.push_back(LVal_Assign_out);
             }
             else{              //Exp传递的是变量
                 string num = ToPtrnum($4)->ptr_str;
+
+                // 用一个临时变量来存右边的值，主要用于数组的情况
+                // string other_out_tmp = IF_DEEP() + "t" + to_string(VAR_t_num) + " = " + num;
+                // Func_Other.push_back(other_out_tmp);
                 // out << " = " << num << endl;
-                other_out += (" = " + num);
-                Func_Other.push_back(other_out);
+                LVal_Assign_out += (" = " + num);
+                Func_Other.push_back(LVal_Assign_out);
             }
+            R_Array_Flag = 0;
 
         }
     | IF 

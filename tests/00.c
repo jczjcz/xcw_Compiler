@@ -1,10 +1,6 @@
-int n;
+int h[10];
+int t = h[1]+2;
 void main(){
-    int a;
-    int b;
-    while(a > b+1 || a){
-        int b = 121;
-    }
-    int c;
+    h[2] = 3;
+    h[2] = h[4] + 3 + t;
 }
-int nn = 5;
