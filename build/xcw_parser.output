@@ -7,7 +7,7 @@ Terminals unused in grammar
 State 105 conflicts: 1 shift/reduce
 State 114 conflicts: 11 shift/reduce
 State 131 conflicts: 12 shift/reduce
-State 177 conflicts: 1 shift/reduce
+State 179 conflicts: 1 shift/reduce
 
 
 Grammar
@@ -157,38 +157,42 @@ Grammar
 
    87 $@16: %empty
 
-   88 Stmt: IF LPAREN Cond RPAREN $@15 Stmt $@16 IF_Else
+   88 $@17: %empty
 
-   89 $@17: %empty
+   89 Stmt: IF $@15 LPAREN Cond RPAREN $@16 Stmt $@17 IF_Else
 
-   90 Stmt: WHILE LPAREN Cond RPAREN $@17 Stmt
-   91     | BREAK SEMI
-   92     | CONT SEMI
+   90 $@18: %empty
 
-   93 IF_Else: %empty
-   94        | ELSE Stmt
+   91 $@19: %empty
 
-   95 Cond: LOrExp
+   92 Stmt: WHILE $@18 LPAREN Cond RPAREN $@19 Stmt
+   93     | BREAK SEMI
+   94     | CONT SEMI
 
-   96 LOrExp: LAndExp
-   97       | LOrExp OR LAndExp
+   95 IF_Else: %empty
+   96        | ELSE Stmt
 
-   98 LAndExp: EqExp
-   99        | LAndExp AND EqExp
+   97 Cond: LOrExp
 
-  100 EqExp: RelExp
-  101      | EqExp EQ RelExp
-  102      | EqExp NEQ RelExp
+   98 LOrExp: LAndExp
+   99       | LOrExp OR LAndExp
 
-  103 RelExp: AddExp
-  104       | RelExp LE AddExp
-  105       | RelExp GE AddExp
-  106       | RelExp LEQ AddExp
-  107       | RelExp GEQ AddExp
+  100 LAndExp: EqExp
+  101        | LAndExp AND EqExp
 
-  108 FuncRParams: %empty
-  109            | Exp
-  110            | FuncRParams COMMA Exp
+  102 EqExp: RelExp
+  103      | EqExp EQ RelExp
+  104      | EqExp NEQ RelExp
+
+  105 RelExp: AddExp
+  106       | RelExp LE AddExp
+  107       | RelExp GE AddExp
+  108       | RelExp LEQ AddExp
+  109       | RelExp GEQ AddExp
+
+  110 FuncRParams: %empty
+  111            | Exp
+  112            | FuncRParams COMMA Exp
 
 
 Terminals, with rules where they appear
@@ -201,8 +205,8 @@ MUL (260) 43
 DIV (261) 44
 MOD (262) 45
 IDENT (263) 12 15 21 22 23 26 47 50 52 59 63 67 68
-LPAREN (264) 47 59 63 88 90
-RPAREN (265) 47 59 63 88 90
+LPAREN (264) 47 59 63 89 92
+RPAREN (265) 47 59 63 89 92
 LCURLY (266) 15 26 33 73
 RCURLY (267) 15 26 33 73
 LBRAC (268) 36 55 68
@@ -210,24 +214,24 @@ RBRAC (269) 36 55 68
 INT (270) 9 18 59 67 68
 CONST (271) 9
 VOID (272) 63
-LE (273) 104
-LEQ (274) 106
-GE (275) 105
-GEQ (276) 107
-EQ (277) 101
-NEQ (278) 102
-AND (279) 99
-OR (280) 97
+LE (273) 106
+LEQ (274) 108
+GE (275) 107
+GEQ (276) 109
+EQ (277) 103
+NEQ (278) 104
+AND (279) 101
+OR (280) 99
 NOT (281)
-IF (282) 88
-ELSE (283) 94
-WHILE (284) 90
-BREAK (285) 91
-CONT (286) 92
+IF (282) 89
+ELSE (283) 96
+WHILE (284) 92
+BREAK (285) 93
+CONT (286) 94
 RETURN (287) 79 80
 ASSIGN (288) 12 15 22 26 85
-SEMI (289) 9 18 79 80 81 82 85 91 92
-COMMA (290) 11 20 30 66 110
+SEMI (289) 9 18 79 80 81 82 85 93 94
+COMMA (290) 11 20 30 66 112
 PERIOD (291)
 NUMBER (292) 48
 
@@ -283,9 +287,9 @@ ArrayUnit (60)
 InitVal (61)
     on left: 37, on right: 22
 Exp (62)
-    on left: 38, on right: 31 37 55 80 81 85 109 110
+    on left: 38, on right: 31 37 55 80 81 85 111 112
 AddExp (63)
-    on left: 39 40 41, on right: 17 38 40 41 103 104 105 106 107
+    on left: 39 40 41, on right: 17 38 40 41 105 106 107 108 109
 MulExp (64)
     on left: 42 43 44 45, on right: 39 40 41 43 44 45
 UnaryExp (65)
@@ -329,30 +333,34 @@ BlockItems (83)
 BlockItem (84)
     on left: 76 77 78, on right: 74 75
 Stmt (85)
-    on left: 79 80 81 82 83 85 88 90 91 92, on right: 78 88 90 94
+    on left: 79 80 81 82 83 85 89 92 93 94, on right: 78 89 92 96
 $@14 (86)
     on left: 84, on right: 85
 $@15 (87)
-    on left: 86, on right: 88
+    on left: 86, on right: 89
 $@16 (88)
-    on left: 87, on right: 88
+    on left: 87, on right: 89
 $@17 (89)
-    on left: 89, on right: 90
-IF_Else (90)
-    on left: 93 94, on right: 88
-Cond (91)
-    on left: 95, on right: 88 90
-LOrExp (92)
-    on left: 96 97, on right: 95 97
-LAndExp (93)
-    on left: 98 99, on right: 96 97 99
-EqExp (94)
-    on left: 100 101 102, on right: 98 99 101 102
-RelExp (95)
-    on left: 103 104 105 106 107, on right: 100 101 102 104 105 106
-    107
-FuncRParams (96)
-    on left: 108 109 110, on right: 47 110
+    on left: 88, on right: 89
+$@18 (90)
+    on left: 90, on right: 92
+$@19 (91)
+    on left: 91, on right: 92
+IF_Else (92)
+    on left: 95 96, on right: 89
+Cond (93)
+    on left: 97, on right: 89 92
+LOrExp (94)
+    on left: 98 99, on right: 97 99
+LAndExp (95)
+    on left: 100 101, on right: 98 99 101
+EqExp (96)
+    on left: 102 103 104, on right: 100 101 103 104
+RelExp (97)
+    on left: 105 106 107 108 109, on right: 102 103 104 106 107 108
+    109
+FuncRParams (98)
+    on left: 110 111 112, on right: 47 112
 
 
 State 0
@@ -834,7 +842,7 @@ State 49
     IDENT   shift, and go to state 28
     NUMBER  shift, and go to state 29
 
-    $default  reduce using rule 108 (FuncRParams)
+    $default  reduce using rule 110 (FuncRParams)
 
     Exp          go to state 64
     AddExp       go to state 38
@@ -987,15 +995,15 @@ State 63
 
 State 64
 
-  109 FuncRParams: Exp .
+  111 FuncRParams: Exp .
 
-    $default  reduce using rule 109 (FuncRParams)
+    $default  reduce using rule 111 (FuncRParams)
 
 
 State 65
 
    47 UnaryExp: IDENT LPAREN FuncRParams . RPAREN
-  110 FuncRParams: FuncRParams . COMMA Exp
+  112 FuncRParams: FuncRParams . COMMA Exp
 
     RPAREN  shift, and go to state 80
     COMMA   shift, and go to state 81
@@ -1142,7 +1150,7 @@ State 80
 
 State 81
 
-  110 FuncRParams: FuncRParams COMMA . Exp
+  112 FuncRParams: FuncRParams COMMA . Exp
 
     IDENT   shift, and go to state 28
     NUMBER  shift, and go to state 29
@@ -1238,9 +1246,9 @@ State 89
 
 State 90
 
-  110 FuncRParams: FuncRParams COMMA Exp .
+  112 FuncRParams: FuncRParams COMMA Exp .
 
-    $default  reduce using rule 110 (FuncRParams)
+    $default  reduce using rule 112 (FuncRParams)
 
 
 State 91
@@ -1541,28 +1549,32 @@ State 118
 
 State 119
 
-   88 Stmt: IF . LPAREN Cond RPAREN $@15 Stmt $@16 IF_Else
+   89 Stmt: IF . $@15 LPAREN Cond RPAREN $@16 Stmt $@17 IF_Else
 
-    LPAREN  shift, and go to state 134
+    $default  reduce using rule 86 ($@15)
+
+    $@15  go to state 134
 
 
 State 120
 
-   90 Stmt: WHILE . LPAREN Cond RPAREN $@17 Stmt
+   92 Stmt: WHILE . $@18 LPAREN Cond RPAREN $@19 Stmt
 
-    LPAREN  shift, and go to state 135
+    $default  reduce using rule 90 ($@18)
+
+    $@18  go to state 135
 
 
 State 121
 
-   91 Stmt: BREAK . SEMI
+   93 Stmt: BREAK . SEMI
 
     SEMI  shift, and go to state 136
 
 
 State 122
 
-   92 Stmt: CONT . SEMI
+   94 Stmt: CONT . SEMI
 
     SEMI  shift, and go to state 137
 
@@ -1698,54 +1710,30 @@ State 133
 
 State 134
 
-   88 Stmt: IF LPAREN . Cond RPAREN $@15 Stmt $@16 IF_Else
+   89 Stmt: IF $@15 . LPAREN Cond RPAREN $@16 Stmt $@17 IF_Else
 
-    IDENT   shift, and go to state 28
-    NUMBER  shift, and go to state 29
-
-    AddExp      go to state 144
-    MulExp      go to state 32
-    UnaryExp    go to state 33
-    PrimaryExp  go to state 34
-    LVal        go to state 35
-    Cond        go to state 145
-    LOrExp      go to state 146
-    LAndExp     go to state 147
-    EqExp       go to state 148
-    RelExp      go to state 149
+    LPAREN  shift, and go to state 144
 
 
 State 135
 
-   90 Stmt: WHILE LPAREN . Cond RPAREN $@17 Stmt
+   92 Stmt: WHILE $@18 . LPAREN Cond RPAREN $@19 Stmt
 
-    IDENT   shift, and go to state 28
-    NUMBER  shift, and go to state 29
-
-    AddExp      go to state 144
-    MulExp      go to state 32
-    UnaryExp    go to state 33
-    PrimaryExp  go to state 34
-    LVal        go to state 35
-    Cond        go to state 150
-    LOrExp      go to state 146
-    LAndExp     go to state 147
-    EqExp       go to state 148
-    RelExp      go to state 149
+    LPAREN  shift, and go to state 145
 
 
 State 136
 
-   91 Stmt: BREAK SEMI .
+   93 Stmt: BREAK SEMI .
 
-    $default  reduce using rule 91 (Stmt)
+    $default  reduce using rule 93 (Stmt)
 
 
 State 137
 
-   92 Stmt: CONT SEMI .
+   94 Stmt: CONT SEMI .
 
-    $default  reduce using rule 92 (Stmt)
+    $default  reduce using rule 94 (Stmt)
 
 
 State 138
@@ -1759,7 +1747,7 @@ State 139
 
    80 Stmt: RETURN Exp . SEMI
 
-    SEMI  shift, and go to state 151
+    SEMI  shift, and go to state 146
 
 
 State 140
@@ -1773,7 +1761,7 @@ State 141
 
    85 Stmt: LVal $@14 . ASSIGN Exp SEMI
 
-    ASSIGN  shift, and go to state 152
+    ASSIGN  shift, and go to state 147
 
 
 State 142
@@ -1792,93 +1780,57 @@ State 143
 
 State 144
 
-   40 AddExp: AddExp . ADD MulExp
-   41       | AddExp . SUB MulExp
-  103 RelExp: AddExp .
+   89 Stmt: IF $@15 LPAREN . Cond RPAREN $@16 Stmt $@17 IF_Else
 
-    ADD  shift, and go to state 52
-    SUB  shift, and go to state 53
+    IDENT   shift, and go to state 28
+    NUMBER  shift, and go to state 29
 
-    $default  reduce using rule 103 (RelExp)
+    AddExp      go to state 148
+    MulExp      go to state 32
+    UnaryExp    go to state 33
+    PrimaryExp  go to state 34
+    LVal        go to state 35
+    Cond        go to state 149
+    LOrExp      go to state 150
+    LAndExp     go to state 151
+    EqExp       go to state 152
+    RelExp      go to state 153
 
 
 State 145
 
-   88 Stmt: IF LPAREN Cond . RPAREN $@15 Stmt $@16 IF_Else
+   92 Stmt: WHILE $@18 LPAREN . Cond RPAREN $@19 Stmt
 
-    RPAREN  shift, and go to state 153
+    IDENT   shift, and go to state 28
+    NUMBER  shift, and go to state 29
+
+    AddExp      go to state 148
+    MulExp      go to state 32
+    UnaryExp    go to state 33
+    PrimaryExp  go to state 34
+    LVal        go to state 35
+    Cond        go to state 154
+    LOrExp      go to state 150
+    LAndExp     go to state 151
+    EqExp       go to state 152
+    RelExp      go to state 153
 
 
 State 146
-
-   95 Cond: LOrExp .
-   97 LOrExp: LOrExp . OR LAndExp
-
-    OR  shift, and go to state 154
-
-    $default  reduce using rule 95 (Cond)
-
-
-State 147
-
-   96 LOrExp: LAndExp .
-   99 LAndExp: LAndExp . AND EqExp
-
-    AND  shift, and go to state 155
-
-    $default  reduce using rule 96 (LOrExp)
-
-
-State 148
-
-   98 LAndExp: EqExp .
-  101 EqExp: EqExp . EQ RelExp
-  102      | EqExp . NEQ RelExp
-
-    EQ   shift, and go to state 156
-    NEQ  shift, and go to state 157
-
-    $default  reduce using rule 98 (LAndExp)
-
-
-State 149
-
-  100 EqExp: RelExp .
-  104 RelExp: RelExp . LE AddExp
-  105       | RelExp . GE AddExp
-  106       | RelExp . LEQ AddExp
-  107       | RelExp . GEQ AddExp
-
-    LE   shift, and go to state 158
-    LEQ  shift, and go to state 159
-    GE   shift, and go to state 160
-    GEQ  shift, and go to state 161
-
-    $default  reduce using rule 100 (EqExp)
-
-
-State 150
-
-   90 Stmt: WHILE LPAREN Cond . RPAREN $@17 Stmt
-
-    RPAREN  shift, and go to state 162
-
-
-State 151
 
    80 Stmt: RETURN Exp SEMI .
 
     $default  reduce using rule 80 (Stmt)
 
 
-State 152
+State 147
 
    85 Stmt: LVal $@14 ASSIGN . Exp SEMI
 
     IDENT   shift, and go to state 28
     NUMBER  shift, and go to state 29
 
-    Exp         go to state 163
+    Exp         go to state 155
     AddExp      go to state 38
     MulExp      go to state 32
     UnaryExp    go to state 33
@@ -1886,123 +1838,162 @@ State 152
     LVal        go to state 35
 
 
+State 148
+
+   40 AddExp: AddExp . ADD MulExp
+   41       | AddExp . SUB MulExp
+  105 RelExp: AddExp .
+
+    ADD  shift, and go to state 52
+    SUB  shift, and go to state 53
+
+    $default  reduce using rule 105 (RelExp)
+
+
+State 149
+
+   89 Stmt: IF $@15 LPAREN Cond . RPAREN $@16 Stmt $@17 IF_Else
+
+    RPAREN  shift, and go to state 156
+
+
+State 150
+
+   97 Cond: LOrExp .
+   99 LOrExp: LOrExp . OR LAndExp
+
+    OR  shift, and go to state 157
+
+    $default  reduce using rule 97 (Cond)
+
+
+State 151
+
+   98 LOrExp: LAndExp .
+  101 LAndExp: LAndExp . AND EqExp
+
+    AND  shift, and go to state 158
+
+    $default  reduce using rule 98 (LOrExp)
+
+
+State 152
+
+  100 LAndExp: EqExp .
+  103 EqExp: EqExp . EQ RelExp
+  104      | EqExp . NEQ RelExp
+
+    EQ   shift, and go to state 159
+    NEQ  shift, and go to state 160
+
+    $default  reduce using rule 100 (LAndExp)
+
+
 State 153
 
-   88 Stmt: IF LPAREN Cond RPAREN . $@15 Stmt $@16 IF_Else
+  102 EqExp: RelExp .
+  106 RelExp: RelExp . LE AddExp
+  107       | RelExp . GE AddExp
+  108       | RelExp . LEQ AddExp
+  109       | RelExp . GEQ AddExp
 
-    $default  reduce using rule 86 ($@15)
+    LE   shift, and go to state 161
+    LEQ  shift, and go to state 162
+    GE   shift, and go to state 163
+    GEQ  shift, and go to state 164
 
-    $@15  go to state 164
+    $default  reduce using rule 102 (EqExp)
 
 
 State 154
 
-   97 LOrExp: LOrExp OR . LAndExp
+   92 Stmt: WHILE $@18 LPAREN Cond . RPAREN $@19 Stmt
 
-    IDENT   shift, and go to state 28
-    NUMBER  shift, and go to state 29
-
-    AddExp      go to state 144
-    MulExp      go to state 32
-    UnaryExp    go to state 33
-    PrimaryExp  go to state 34
-    LVal        go to state 35
-    LAndExp     go to state 165
-    EqExp       go to state 148
-    RelExp      go to state 149
+    RPAREN  shift, and go to state 165
 
 
 State 155
 
-   99 LAndExp: LAndExp AND . EqExp
+   85 Stmt: LVal $@14 ASSIGN Exp . SEMI
 
-    IDENT   shift, and go to state 28
-    NUMBER  shift, and go to state 29
-
-    AddExp      go to state 144
-    MulExp      go to state 32
-    UnaryExp    go to state 33
-    PrimaryExp  go to state 34
-    LVal        go to state 35
-    EqExp       go to state 166
-    RelExp      go to state 149
+    SEMI  shift, and go to state 166
 
 
 State 156
 
-  101 EqExp: EqExp EQ . RelExp
+   89 Stmt: IF $@15 LPAREN Cond RPAREN . $@16 Stmt $@17 IF_Else
 
-    IDENT   shift, and go to state 28
-    NUMBER  shift, and go to state 29
+    $default  reduce using rule 87 ($@16)
 
-    AddExp      go to state 144
-    MulExp      go to state 32
-    UnaryExp    go to state 33
-    PrimaryExp  go to state 34
-    LVal        go to state 35
-    RelExp      go to state 167
+    $@16  go to state 167
 
 
 State 157
 
-  102 EqExp: EqExp NEQ . RelExp
+   99 LOrExp: LOrExp OR . LAndExp
 
     IDENT   shift, and go to state 28
     NUMBER  shift, and go to state 29
 
-    AddExp      go to state 144
+    AddExp      go to state 148
     MulExp      go to state 32
     UnaryExp    go to state 33
     PrimaryExp  go to state 34
     LVal        go to state 35
-    RelExp      go to state 168
+    LAndExp     go to state 168
+    EqExp       go to state 152
+    RelExp      go to state 153
 
 
 State 158
 
-  104 RelExp: RelExp LE . AddExp
+  101 LAndExp: LAndExp AND . EqExp
 
     IDENT   shift, and go to state 28
     NUMBER  shift, and go to state 29
 
-    AddExp      go to state 169
+    AddExp      go to state 148
     MulExp      go to state 32
     UnaryExp    go to state 33
     PrimaryExp  go to state 34
     LVal        go to state 35
+    EqExp       go to state 169
+    RelExp      go to state 153
 
 
 State 159
 
-  106 RelExp: RelExp LEQ . AddExp
+  103 EqExp: EqExp EQ . RelExp
 
     IDENT   shift, and go to state 28
     NUMBER  shift, and go to state 29
 
-    AddExp      go to state 170
+    AddExp      go to state 148
     MulExp      go to state 32
     UnaryExp    go to state 33
     PrimaryExp  go to state 34
     LVal        go to state 35
+    RelExp      go to state 170
 
 
 State 160
 
-  105 RelExp: RelExp GE . AddExp
+  104 EqExp: EqExp NEQ . RelExp
 
     IDENT   shift, and go to state 28
     NUMBER  shift, and go to state 29
 
-    AddExp      go to state 171
+    AddExp      go to state 148
     MulExp      go to state 32
     UnaryExp    go to state 33
     PrimaryExp  go to state 34
     LVal        go to state 35
+    RelExp      go to state 171
 
 
 State 161
 
-  107 RelExp: RelExp GEQ . AddExp
+  106 RelExp: RelExp LE . AddExp
 
     IDENT   shift, and go to state 28
     NUMBER  shift, and go to state 29
@@ -2016,23 +2007,65 @@ State 161
 
 State 162
 
-   90 Stmt: WHILE LPAREN Cond RPAREN . $@17 Stmt
+  108 RelExp: RelExp LEQ . AddExp
 
-    $default  reduce using rule 89 ($@17)
+    IDENT   shift, and go to state 28
+    NUMBER  shift, and go to state 29
 
-    $@17  go to state 173
+    AddExp      go to state 173
+    MulExp      go to state 32
+    UnaryExp    go to state 33
+    PrimaryExp  go to state 34
+    LVal        go to state 35
 
 
 State 163
 
-   85 Stmt: LVal $@14 ASSIGN Exp . SEMI
+  107 RelExp: RelExp GE . AddExp
 
-    SEMI  shift, and go to state 174
+    IDENT   shift, and go to state 28
+    NUMBER  shift, and go to state 29
+
+    AddExp      go to state 174
+    MulExp      go to state 32
+    UnaryExp    go to state 33
+    PrimaryExp  go to state 34
+    LVal        go to state 35
 
 
 State 164
 
-   88 Stmt: IF LPAREN Cond RPAREN $@15 . Stmt $@16 IF_Else
+  109 RelExp: RelExp GEQ . AddExp
+
+    IDENT   shift, and go to state 28
+    NUMBER  shift, and go to state 29
+
+    AddExp      go to state 175
+    MulExp      go to state 32
+    UnaryExp    go to state 33
+    PrimaryExp  go to state 34
+    LVal        go to state 35
+
+
+State 165
+
+   92 Stmt: WHILE $@18 LPAREN Cond RPAREN . $@19 Stmt
+
+    $default  reduce using rule 91 ($@19)
+
+    $@19  go to state 176
+
+
+State 166
+
+   85 Stmt: LVal $@14 ASSIGN Exp SEMI .
+
+    $default  reduce using rule 85 (Stmt)
+
+
+State 167
+
+   89 Stmt: IF $@15 LPAREN Cond RPAREN $@16 . Stmt $@17 IF_Else
 
     IDENT   shift, and go to state 28
     LCURLY  shift, and go to state 106
@@ -2051,80 +2084,68 @@ State 164
     PrimaryExp  go to state 34
     LVal        go to state 129
     Block       go to state 130
-    Stmt        go to state 175
-
-
-State 165
-
-   97 LOrExp: LOrExp OR LAndExp .
-   99 LAndExp: LAndExp . AND EqExp
-
-    AND  shift, and go to state 155
-
-    $default  reduce using rule 97 (LOrExp)
-
-
-State 166
-
-   99 LAndExp: LAndExp AND EqExp .
-  101 EqExp: EqExp . EQ RelExp
-  102      | EqExp . NEQ RelExp
-
-    EQ   shift, and go to state 156
-    NEQ  shift, and go to state 157
-
-    $default  reduce using rule 99 (LAndExp)
-
-
-State 167
-
-  101 EqExp: EqExp EQ RelExp .
-  104 RelExp: RelExp . LE AddExp
-  105       | RelExp . GE AddExp
-  106       | RelExp . LEQ AddExp
-  107       | RelExp . GEQ AddExp
-
-    LE   shift, and go to state 158
-    LEQ  shift, and go to state 159
-    GE   shift, and go to state 160
-    GEQ  shift, and go to state 161
-
-    $default  reduce using rule 101 (EqExp)
+    Stmt        go to state 177
 
 
 State 168
 
-  102 EqExp: EqExp NEQ RelExp .
-  104 RelExp: RelExp . LE AddExp
-  105       | RelExp . GE AddExp
-  106       | RelExp . LEQ AddExp
-  107       | RelExp . GEQ AddExp
+   99 LOrExp: LOrExp OR LAndExp .
+  101 LAndExp: LAndExp . AND EqExp
 
-    LE   shift, and go to state 158
-    LEQ  shift, and go to state 159
-    GE   shift, and go to state 160
-    GEQ  shift, and go to state 161
+    AND  shift, and go to state 158
 
-    $default  reduce using rule 102 (EqExp)
+    $default  reduce using rule 99 (LOrExp)
 
 
 State 169
 
-   40 AddExp: AddExp . ADD MulExp
-   41       | AddExp . SUB MulExp
-  104 RelExp: RelExp LE AddExp .
+  101 LAndExp: LAndExp AND EqExp .
+  103 EqExp: EqExp . EQ RelExp
+  104      | EqExp . NEQ RelExp
 
-    ADD  shift, and go to state 52
-    SUB  shift, and go to state 53
+    EQ   shift, and go to state 159
+    NEQ  shift, and go to state 160
 
-    $default  reduce using rule 104 (RelExp)
+    $default  reduce using rule 101 (LAndExp)
 
 
 State 170
 
+  103 EqExp: EqExp EQ RelExp .
+  106 RelExp: RelExp . LE AddExp
+  107       | RelExp . GE AddExp
+  108       | RelExp . LEQ AddExp
+  109       | RelExp . GEQ AddExp
+
+    LE   shift, and go to state 161
+    LEQ  shift, and go to state 162
+    GE   shift, and go to state 163
+    GEQ  shift, and go to state 164
+
+    $default  reduce using rule 103 (EqExp)
+
+
+State 171
+
+  104 EqExp: EqExp NEQ RelExp .
+  106 RelExp: RelExp . LE AddExp
+  107       | RelExp . GE AddExp
+  108       | RelExp . LEQ AddExp
+  109       | RelExp . GEQ AddExp
+
+    LE   shift, and go to state 161
+    LEQ  shift, and go to state 162
+    GE   shift, and go to state 163
+    GEQ  shift, and go to state 164
+
+    $default  reduce using rule 104 (EqExp)
+
+
+State 172
+
    40 AddExp: AddExp . ADD MulExp
    41       | AddExp . SUB MulExp
-  106 RelExp: RelExp LEQ AddExp .
+  106 RelExp: RelExp LE AddExp .
 
     ADD  shift, and go to state 52
     SUB  shift, and go to state 53
@@ -2132,23 +2153,23 @@ State 170
     $default  reduce using rule 106 (RelExp)
 
 
-State 171
+State 173
 
    40 AddExp: AddExp . ADD MulExp
    41       | AddExp . SUB MulExp
-  105 RelExp: RelExp GE AddExp .
+  108 RelExp: RelExp LEQ AddExp .
 
     ADD  shift, and go to state 52
     SUB  shift, and go to state 53
 
-    $default  reduce using rule 105 (RelExp)
+    $default  reduce using rule 108 (RelExp)
 
 
-State 172
+State 174
 
    40 AddExp: AddExp . ADD MulExp
    41       | AddExp . SUB MulExp
-  107 RelExp: RelExp GEQ AddExp .
+  107 RelExp: RelExp GE AddExp .
 
     ADD  shift, and go to state 52
     SUB  shift, and go to state 53
@@ -2156,68 +2177,21 @@ State 172
     $default  reduce using rule 107 (RelExp)
 
 
-State 173
-
-   90 Stmt: WHILE LPAREN Cond RPAREN $@17 . Stmt
-
-    IDENT   shift, and go to state 28
-    LCURLY  shift, and go to state 106
-    IF      shift, and go to state 119
-    WHILE   shift, and go to state 120
-    BREAK   shift, and go to state 121
-    CONT    shift, and go to state 122
-    RETURN  shift, and go to state 123
-    SEMI    shift, and go to state 124
-    NUMBER  shift, and go to state 29
-
-    Exp         go to state 128
-    AddExp      go to state 38
-    MulExp      go to state 32
-    UnaryExp    go to state 33
-    PrimaryExp  go to state 34
-    LVal        go to state 129
-    Block       go to state 130
-    Stmt        go to state 176
-
-
-State 174
-
-   85 Stmt: LVal $@14 ASSIGN Exp SEMI .
-
-    $default  reduce using rule 85 (Stmt)
-
-
 State 175
 
-   88 Stmt: IF LPAREN Cond RPAREN $@15 Stmt . $@16 IF_Else
+   40 AddExp: AddExp . ADD MulExp
+   41       | AddExp . SUB MulExp
+  109 RelExp: RelExp GEQ AddExp .
 
-    $default  reduce using rule 87 ($@16)
+    ADD  shift, and go to state 52
+    SUB  shift, and go to state 53
 
-    $@16  go to state 177
+    $default  reduce using rule 109 (RelExp)
 
 
 State 176
 
-   90 Stmt: WHILE LPAREN Cond RPAREN $@17 Stmt .
-
-    $default  reduce using rule 90 (Stmt)
-
-
-State 177
-
-   88 Stmt: IF LPAREN Cond RPAREN $@15 Stmt $@16 . IF_Else
-
-    ELSE  shift, and go to state 178
-
-    ELSE      [reduce using rule 93 (IF_Else)]
-    $default  reduce using rule 93 (IF_Else)
-
-    IF_Else  go to state 179
-
-
-State 178
-
-   94 IF_Else: ELSE . Stmt
+   92 Stmt: WHILE $@18 LPAREN Cond RPAREN $@19 . Stmt
 
     IDENT   shift, and go to state 28
     LCURLY  shift, and go to state 106
@@ -2236,18 +2210,70 @@ State 178
     PrimaryExp  go to state 34
     LVal        go to state 129
     Block       go to state 130
-    Stmt        go to state 180
+    Stmt        go to state 178
+
+
+State 177
+
+   89 Stmt: IF $@15 LPAREN Cond RPAREN $@16 Stmt . $@17 IF_Else
+
+    $default  reduce using rule 88 ($@17)
+
+    $@17  go to state 179
+
+
+State 178
+
+   92 Stmt: WHILE $@18 LPAREN Cond RPAREN $@19 Stmt .
+
+    $default  reduce using rule 92 (Stmt)
 
 
 State 179
 
-   88 Stmt: IF LPAREN Cond RPAREN $@15 Stmt $@16 IF_Else .
+   89 Stmt: IF $@15 LPAREN Cond RPAREN $@16 Stmt $@17 . IF_Else
 
-    $default  reduce using rule 88 (Stmt)
+    ELSE  shift, and go to state 180
+
+    ELSE      [reduce using rule 95 (IF_Else)]
+    $default  reduce using rule 95 (IF_Else)
+
+    IF_Else  go to state 181
 
 
 State 180
 
-   94 IF_Else: ELSE Stmt .
+   96 IF_Else: ELSE . Stmt
 
-    $default  reduce using rule 94 (IF_Else)
+    IDENT   shift, and go to state 28
+    LCURLY  shift, and go to state 106
+    IF      shift, and go to state 119
+    WHILE   shift, and go to state 120
+    BREAK   shift, and go to state 121
+    CONT    shift, and go to state 122
+    RETURN  shift, and go to state 123
+    SEMI    shift, and go to state 124
+    NUMBER  shift, and go to state 29
+
+    Exp         go to state 128
+    AddExp      go to state 38
+    MulExp      go to state 32
+    UnaryExp    go to state 33
+    PrimaryExp  go to state 34
+    LVal        go to state 129
+    Block       go to state 130
+    Stmt        go to state 182
+
+
+State 181
+
+   89 Stmt: IF $@15 LPAREN Cond RPAREN $@16 Stmt $@17 IF_Else .
+
+    $default  reduce using rule 89 (Stmt)
+
+
+State 182
+
+   96 IF_Else: ELSE Stmt .
+
+    $default  reduce using rule 96 (IF_Else)

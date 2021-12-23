@@ -239,6 +239,12 @@ stack<int> Stk_Break;      // 和Stk_IF_ELSE相比，只用来储存While语句�
 
 //----------------------------------------------------------
 
+//-----------------条件判断语句 用于短路处理的相关变量------------------------------
+//----------------------------------------------------------
+
+
+
+
 //-----------------函数语句打印相关变量------------------------------
 vector<string> Func_VarDecl;
 vector<string> Func_Other;
@@ -266,7 +272,7 @@ void Out_Print(){
 
 
 
-#line 270 "build/xcw_parser.tab.c" /* yacc.c:337  */
+#line 276 "build/xcw_parser.tab.c" /* yacc.c:337  */
 # ifndef YY_NULLPTR
 #  if defined __cplusplus
 #   if 201103L <= __cplusplus
@@ -625,16 +631,16 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  15
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   185
+#define YYLAST   184
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  38
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  59
+#define YYNNTS  61
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  111
+#define YYNRULES  113
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  181
+#define YYNSTATES  183
 
 #define YYUNDEFTOK  2
 #define YYMAXUTOK   292
@@ -684,18 +690,18 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   216,   216,   217,   221,   225,   232,   233,   238,   239,
-     243,   247,   248,   252,   265,   296,   264,   318,   322,   330,
-     336,   337,   341,   361,   397,   434,   469,   433,   489,   492,
-     500,   501,   505,   526,   525,   556,   560,   568,   577,   584,
-     591,   592,   627,   666,   670,   705,   746,   790,   794,   817,
-     824,   831,   850,   849,   918,   919,   923,   932,   946,   950,
-     931,   971,   984,   988,   970,  1012,  1015,  1019,  1023,  1038,
-    1056,  1060,  1066,  1073,  1072,  1090,  1091,  1094,  1097,  1100,
-    1106,  1109,  1122,  1126,  1130,  1135,  1134,  1158,  1174,  1157,
-    1190,  1189,  1223,  1229,  1238,  1241,  1252,  1271,  1272,  1298,
-    1299,  1306,  1307,  1330,  1356,  1357,  1380,  1403,  1426,  1454,
-    1457,  1472
+       0,   222,   222,   223,   227,   231,   238,   239,   244,   245,
+     249,   253,   254,   258,   271,   302,   270,   324,   328,   336,
+     342,   343,   347,   367,   403,   440,   475,   439,   495,   498,
+     506,   507,   511,   532,   531,   562,   566,   574,   583,   590,
+     597,   598,   633,   672,   676,   711,   752,   796,   800,   823,
+     830,   837,   856,   855,   924,   925,   929,   938,   952,   956,
+     937,   977,   990,   994,   976,  1018,  1021,  1025,  1029,  1044,
+    1062,  1066,  1072,  1079,  1078,  1096,  1097,  1100,  1103,  1106,
+    1112,  1115,  1128,  1132,  1136,  1141,  1140,  1164,  1171,  1178,
+    1163,  1194,  1202,  1193,  1220,  1226,  1235,  1238,  1249,  1269,
+    1288,  1308,  1324,  1344,  1349,  1372,  1398,  1406,  1429,  1452,
+    1475,  1503,  1506,  1521
 };
 #endif
 
@@ -716,8 +722,8 @@ static const char *const yytname[] =
   "PrimaryExp", "LVal", "$@6", "ArrayLVals", "ArrayLVal", "FuncDef", "$@7",
   "$@8", "$@9", "$@10", "$@11", "$@12", "FuncFParams", "FuncFParam",
   "ArrayParamDef", "Block", "$@13", "BlockItems", "BlockItem", "Stmt",
-  "$@14", "$@15", "$@16", "$@17", "IF_Else", "Cond", "LOrExp", "LAndExp",
-  "EqExp", "RelExp", "FuncRParams", YY_NULLPTR
+  "$@14", "$@15", "$@16", "$@17", "$@18", "$@19", "IF_Else", "Cond",
+  "LOrExp", "LAndExp", "EqExp", "RelExp", "FuncRParams", YY_NULLPTR
 };
 #endif
 
@@ -733,10 +739,10 @@ static const yytype_uint16 yytoknum[] =
 };
 # endif
 
-#define YYPACT_NINF -112
+#define YYPACT_NINF -158
 
 #define yypact_value_is_default(Yystate) \
-  (!!((Yystate) == (-112)))
+  (!!((Yystate) == (-158)))
 
 #define YYTABLE_NINF -86
 
@@ -747,25 +753,25 @@ static const yytype_uint16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int16 yypact[] =
 {
-     104,    23,    30,   101,    76,  -112,  -112,  -112,  -112,  -112,
-      15,   -24,  -112,   102,  -112,  -112,  -112,     5,     5,    -8,
-    -112,    51,  -112,   108,    16,   -18,  -112,    93,    -1,  -112,
-     114,    52,   117,  -112,  -112,  -112,  -112,  -112,    52,  -112,
-    -112,  -112,    48,  -112,     5,    50,  -112,   102,  -112,     5,
-     116,  -112,     5,     5,     5,     5,     5,   119,   118,  -112,
-    -112,  -112,  -112,   118,  -112,    -9,     5,   116,  -112,   117,
-     117,  -112,  -112,  -112,  -112,   123,    -3,  -112,   121,    11,
-    -112,     5,   120,  -112,    -2,   122,  -112,   118,  -112,  -112,
-    -112,  -112,  -112,   133,   111,  -112,  -112,   134,   136,  -112,
-      -2,   136,    -2,  -112,    -2,   137,  -112,  -112,   139,  -112,
-     140,  -112,  -112,   137,    43,  -112,  -112,  -112,   108,   144,
-     145,   115,   124,     6,  -112,  -112,  -112,  -112,   125,   127,
-    -112,     7,  -112,  -112,     5,     5,  -112,  -112,  -112,   128,
-    -112,   130,  -112,  -112,    52,   146,   132,   131,    56,    94,
-     151,  -112,     5,  -112,     5,     5,     5,     5,     5,     5,
-       5,     5,  -112,   135,    74,   131,    56,    94,    94,    52,
-      52,    52,    52,    74,  -112,  -112,  -112,   138,    74,  -112,
-    -112
+      93,    18,    34,    21,    89,  -158,  -158,  -158,  -158,  -158,
+      49,   -20,  -158,    53,  -158,  -158,  -158,    16,    16,    64,
+    -158,    55,  -158,   110,    66,    22,  -158,   113,    -2,  -158,
+      87,    92,   106,  -158,  -158,  -158,  -158,  -158,    92,  -158,
+    -158,  -158,    67,  -158,    16,    70,  -158,    53,  -158,    16,
+     116,  -158,    16,    16,    16,    16,    16,   119,   117,  -158,
+    -158,  -158,  -158,   117,  -158,    -7,    16,   116,  -158,   106,
+     106,  -158,  -158,  -158,  -158,   125,    -4,  -158,   123,    37,
+    -158,    16,   121,  -158,     1,   124,  -158,   117,  -158,  -158,
+    -158,  -158,  -158,   126,   101,  -158,  -158,   134,   128,  -158,
+       1,   128,     1,  -158,     1,   136,  -158,  -158,   138,  -158,
+     139,  -158,  -158,   136,    44,  -158,  -158,  -158,   110,  -158,
+    -158,   118,   120,    32,  -158,  -158,  -158,  -158,   122,   127,
+    -158,     5,  -158,  -158,   144,   146,  -158,  -158,  -158,   129,
+    -158,   131,  -158,  -158,    16,    16,  -158,    16,    92,   147,
+     133,   135,    98,    73,   151,   132,  -158,    16,    16,    16,
+      16,    16,    16,    16,    16,  -158,  -158,    14,   135,    98,
+      73,    73,    92,    92,    92,    92,    14,  -158,  -158,   137,
+      14,  -158,  -158
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -777,32 +783,33 @@ static const yytype_uint8 yydefact[] =
       22,     0,    20,     0,    61,     1,     3,     0,     0,    24,
       35,     0,    19,     0,     0,     0,    11,     0,    51,    49,
        0,    18,    40,    43,    47,    50,    23,    38,    39,    25,
-      36,    58,    22,    21,     0,     0,    10,     0,    62,   109,
+      36,    58,    22,    21,     0,     0,    10,     0,    62,   111,
        0,    37,     0,     0,     0,     0,     0,     0,    65,    13,
-      17,    14,    12,    65,   110,     0,     0,    53,    54,    41,
+      17,    14,    12,    65,   112,     0,     0,    53,    54,    41,
       42,    44,    45,    46,    26,     0,     0,    66,     0,     0,
       48,     0,     0,    55,    28,    68,    59,     0,    15,    63,
-     111,    56,    33,     0,    29,    30,    32,     0,     0,    67,
+     113,    56,    33,     0,    29,    30,    32,     0,     0,    67,
       28,     0,    28,    27,     0,    72,    73,    60,     0,    64,
-       0,    31,    70,    69,    77,    16,    34,    71,     0,     0,
-       0,     0,     0,     0,    83,    78,     8,     9,     0,    50,
-      84,     0,    75,    79,     0,     0,    92,    93,    80,     0,
-      82,     0,    74,    76,   104,     0,    96,    97,    99,   101,
-       0,    81,     0,    87,     0,     0,     0,     0,     0,     0,
-       0,     0,    90,     0,     0,    98,   100,   102,   103,   105,
-     107,   106,   108,     0,    86,    88,    91,    94,     0,    89,
-      95
+       0,    31,    70,    69,    77,    16,    34,    71,     0,    87,
+      91,     0,     0,     0,    83,    78,     8,     9,     0,    50,
+      84,     0,    75,    79,     0,     0,    94,    95,    80,     0,
+      82,     0,    74,    76,     0,     0,    81,     0,   106,     0,
+      98,    99,   101,   103,     0,     0,    88,     0,     0,     0,
+       0,     0,     0,     0,     0,    92,    86,     0,   100,   102,
+     104,   105,   107,   109,   108,   110,     0,    89,    93,    96,
+       0,    90,    97
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int16 yypgoto[] =
 {
-    -112,  -112,   160,  -112,  -112,   -67,  -112,   126,  -112,  -112,
-    -112,   141,   -62,  -112,   142,  -112,  -112,   -13,  -112,    63,
-    -112,   147,   -15,  -112,   -16,   -17,    47,    71,  -112,  -111,
-    -112,  -112,   103,  -112,  -112,  -112,  -112,  -112,  -112,  -112,
-     105,    85,  -112,    -4,  -112,  -112,    44,  -107,  -112,  -112,
-    -112,  -112,  -112,    39,  -112,    22,    24,   -61,  -112
+    -158,  -158,   158,  -158,  -158,   -44,  -158,   130,  -158,  -158,
+    -158,   140,   -29,  -158,   145,  -158,  -158,    17,  -158,    63,
+    -158,   148,   -15,  -158,   -16,   -17,    71,    60,  -158,  -113,
+    -158,  -158,   102,  -158,  -158,  -158,  -158,  -158,  -158,  -158,
+     107,    84,  -158,   -93,  -158,  -158,    42,  -157,  -158,  -158,
+    -158,  -158,  -158,  -158,  -158,    29,  -158,    19,    20,   -34,
+    -158
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
@@ -812,8 +819,9 @@ static const yytype_int16 yydefgoto[] =
       59,    30,     8,    11,    12,    57,    84,    93,    94,    95,
      102,    19,    20,    36,   128,    38,    32,    33,    34,    35,
       50,    67,    68,     9,    21,    58,    98,    27,    63,   101,
-      76,    77,   113,   130,   114,   131,   132,   133,   141,   164,
-     177,   173,   179,   145,   146,   147,   148,   149,    65
+      76,    77,   113,   130,   114,   131,   132,   133,   141,   134,
+     167,   179,   135,   176,   181,   149,   150,   151,   152,   153,
+      65
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -821,48 +829,48 @@ static const yytype_int16 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int16 yytable[] =
 {
-      31,    80,    37,   129,    40,    17,    28,    86,    49,    92,
-      22,    23,   -52,    28,    28,    28,    46,    47,   106,   142,
-     129,    89,   118,     2,   -57,    39,    81,    31,    17,    17,
-      40,    10,    87,    64,   119,    29,   120,   121,   122,   123,
-     138,   124,    29,    29,    29,    13,    87,   126,    18,    44,
-      82,    28,   127,   129,   106,    52,    53,   175,   118,     2,
-      41,    17,   129,    17,   126,    90,   176,   129,    96,   127,
-     119,   180,   120,   121,   122,   123,    15,   124,   156,   157,
-      29,    18,    28,    61,    96,   106,    96,   108,    96,   110,
-     112,     1,     2,     3,   107,   167,   168,   109,   117,    69,
-      70,   119,    48,   120,   121,   122,   123,   139,   124,    14,
-      24,    29,   158,   159,   160,   161,    42,   144,   144,     1,
-       2,     3,    54,    55,    56,    71,    72,    73,    51,    66,
-      74,    85,    88,    75,    91,    97,   163,   144,   144,   144,
-     144,   169,   170,   171,   172,   103,   104,   106,   105,   136,
-      17,   115,   116,   134,   135,   155,   153,   154,   137,   140,
-     -85,   162,   151,   152,    16,    43,   178,   111,    79,   174,
-      83,    45,    99,    62,   150,   143,   165,     0,     0,   166,
-       0,     0,     0,     0,     0,    60
+      31,   129,    37,    80,    40,   107,    86,    49,   109,    28,
+     177,   -52,    92,    28,    22,    23,   106,   142,   129,   178,
+     118,     2,    28,   182,    28,   106,    10,    31,    81,    14,
+      40,    87,   119,    64,   120,   121,   122,   123,    29,   124,
+      28,   119,    29,   120,   121,   122,   123,    89,   124,    13,
+      82,    29,    28,    29,   129,   106,    46,    47,   -57,   118,
+       2,    24,    17,   129,    41,    90,   138,   129,    96,    29,
+     126,   119,    87,   120,   121,   122,   123,    17,   124,    17,
+      17,    29,    18,    17,    96,   127,    96,   126,    96,    15,
+     112,   161,   162,   163,   164,    52,    53,    39,   117,    44,
+      18,    51,   127,    61,     1,     2,     3,   139,     1,     2,
+       3,    54,    55,    56,    71,    72,    73,   108,    42,   110,
+     159,   160,    48,    69,    70,   170,   171,   148,   148,    66,
+      74,   155,    75,    85,    88,    91,   104,    97,   103,   106,
+     148,   148,   148,   148,   172,   173,   174,   175,   105,    17,
+     115,   116,   136,   144,   137,   145,   140,   156,   157,   158,
+     -85,   165,    16,   146,   147,   180,   166,   111,    43,    83,
+      79,    99,    45,   143,   154,     0,   168,    62,   169,     0,
+       0,     0,     0,     0,    60
 };
 
 static const yytype_int16 yycheck[] =
 {
-      17,    10,    18,   114,    19,    13,     8,    10,     9,    11,
-      34,    35,    13,     8,     8,     8,    34,    35,    11,    12,
-     131,    10,    15,    16,     9,    33,    35,    44,    13,    13,
-      45,     8,    35,    49,    27,    37,    29,    30,    31,    32,
-      34,    34,    37,    37,    37,    15,    35,   114,    33,    33,
-      66,     8,   114,   164,    11,     3,     4,   164,    15,    16,
-       9,    13,   173,    13,   131,    81,   173,   178,    84,   131,
-      27,   178,    29,    30,    31,    32,     0,    34,    22,    23,
-      37,    33,     8,    33,   100,    11,   102,   100,   104,   102,
-     105,    15,    16,    17,    98,   156,   157,   101,   113,    52,
-      53,    27,     9,    29,    30,    31,    32,   123,    34,     8,
-       8,    37,    18,    19,    20,    21,     8,   134,   135,    15,
-      16,    17,     5,     6,     7,    54,    55,    56,    14,    13,
-      11,     8,    11,    15,    14,    13,   152,   154,   155,   156,
-     157,   158,   159,   160,   161,    12,    35,    11,    14,    34,
-      13,    12,    12,     9,     9,    24,    10,    25,    34,    34,
-      33,    10,    34,    33,     4,    23,    28,   104,    63,    34,
-      67,    24,    87,    47,   135,   131,   154,    -1,    -1,   155,
-      -1,    -1,    -1,    -1,    -1,    44
+      17,   114,    18,    10,    19,    98,    10,     9,   101,     8,
+     167,    13,    11,     8,    34,    35,    11,    12,   131,   176,
+      15,    16,     8,   180,     8,    11,     8,    44,    35,     8,
+      45,    35,    27,    49,    29,    30,    31,    32,    37,    34,
+       8,    27,    37,    29,    30,    31,    32,    10,    34,    15,
+      66,    37,     8,    37,   167,    11,    34,    35,     9,    15,
+      16,     8,    13,   176,     9,    81,    34,   180,    84,    37,
+     114,    27,    35,    29,    30,    31,    32,    13,    34,    13,
+      13,    37,    33,    13,   100,   114,   102,   131,   104,     0,
+     105,    18,    19,    20,    21,     3,     4,    33,   113,    33,
+      33,    14,   131,    33,    15,    16,    17,   123,    15,    16,
+      17,     5,     6,     7,    54,    55,    56,   100,     8,   102,
+      22,    23,     9,    52,    53,   159,   160,   144,   145,    13,
+      11,   147,    15,     8,    11,    14,    35,    13,    12,    11,
+     157,   158,   159,   160,   161,   162,   163,   164,    14,    13,
+      12,    12,    34,     9,    34,     9,    34,    10,    25,    24,
+      33,    10,     4,    34,    33,    28,    34,   104,    23,    67,
+      63,    87,    24,   131,   145,    -1,   157,    47,   158,    -1,
+      -1,    -1,    -1,    -1,    44
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
@@ -875,19 +883,19 @@ static const yytype_uint8 yystos[] =
       49,    63,    64,    65,    66,    67,    61,    62,    63,    33,
       60,     9,     8,    52,    33,    59,    34,    35,     9,     9,
       68,    14,     3,     4,     5,     6,     7,    53,    73,    48,
-      49,    33,    45,    76,    62,    96,    13,    69,    70,    64,
+      49,    33,    45,    76,    62,    98,    13,    69,    70,    64,
       64,    65,    65,    65,    11,    15,    78,    79,    46,    78,
       10,    35,    62,    70,    54,     8,    10,    35,    11,    10,
       62,    14,    11,    55,    56,    57,    62,    13,    74,    79,
       47,    77,    58,    12,    35,    14,    11,    81,    55,    81,
       55,    57,    60,    80,    82,    12,    12,    60,    15,    27,
       29,    30,    31,    32,    34,    42,    43,    50,    62,    67,
-      81,    83,    84,    85,     9,     9,    34,    34,    34,    62,
-      34,    86,    12,    84,    63,    91,    92,    93,    94,    95,
-      91,    34,    33,    10,    25,    24,    22,    23,    18,    19,
-      20,    21,    10,    62,    87,    93,    94,    95,    95,    63,
-      63,    63,    63,    89,    34,    85,    85,    88,    28,    90,
-      85
+      81,    83,    84,    85,    87,    90,    34,    34,    34,    62,
+      34,    86,    12,    84,     9,     9,    34,    33,    63,    93,
+      94,    95,    96,    97,    93,    62,    10,    25,    24,    22,
+      23,    18,    19,    20,    21,    10,    34,    88,    95,    96,
+      97,    97,    63,    63,    63,    63,    91,    85,    85,    89,
+      28,    92,    85
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
@@ -901,10 +909,10 @@ static const yytype_uint8 yyr1[] =
       66,    67,    68,    67,    69,    69,    70,    72,    73,    74,
       71,    75,    76,    77,    71,    78,    78,    78,    79,    79,
       80,    80,    80,    82,    81,    83,    83,    84,    84,    84,
-      85,    85,    85,    85,    85,    86,    85,    87,    88,    85,
-      89,    85,    85,    85,    90,    90,    91,    92,    92,    93,
-      93,    94,    94,    94,    95,    95,    95,    95,    95,    96,
-      96,    96
+      85,    85,    85,    85,    85,    86,    85,    87,    88,    89,
+      85,    90,    91,    85,    85,    85,    92,    92,    93,    94,
+      94,    95,    95,    96,    96,    96,    97,    97,    97,    97,
+      97,    98,    98,    98
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
@@ -918,10 +926,10 @@ static const yytype_uint8 yyr2[] =
        1,     1,     0,     3,     1,     2,     3,     0,     0,     0,
        9,     0,     0,     0,     9,     0,     1,     3,     2,     5,
        1,     2,     0,     0,     4,     1,     2,     0,     1,     1,
-       2,     3,     2,     1,     1,     0,     5,     0,     0,     8,
-       0,     6,     2,     2,     0,     2,     1,     1,     3,     1,
-       3,     1,     3,     3,     1,     3,     3,     3,     3,     0,
-       1,     3
+       2,     3,     2,     1,     1,     0,     5,     0,     0,     0,
+       9,     0,     0,     7,     2,     2,     0,     2,     1,     1,
+       3,     1,     3,     1,     3,     3,     1,     3,     3,     3,
+       3,     0,     1,     3
 };
 
 
@@ -1607,23 +1615,23 @@ yyreduce:
   switch (yyn)
     {
         case 4:
-#line 222 "source/xcw_parser.y" /* yacc.c:1652  */
-    {
-        Out_Print();
-    }
-#line 1615 "build/xcw_parser.tab.c" /* yacc.c:1652  */
-    break;
-
-  case 5:
-#line 226 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 228 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         Out_Print();
     }
 #line 1623 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
+  case 5:
+#line 232 "source/xcw_parser.y" /* yacc.c:1652  */
+    {
+        Out_Print();
+    }
+#line 1631 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+    break;
+
   case 13:
-#line 253 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 259 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         int num = *ToInt(yyvsp[0]);
         IDENT_scope tmp = IDENT_scope(*ToStr(yyvsp[-2]), num, DEEP, 1);
@@ -1635,11 +1643,11 @@ yyreduce:
             yyerror(err);
         }
     }
-#line 1639 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 1647 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 14:
-#line 265 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 271 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         // 因为常量数组的下标仍有可能是变量，因此考虑将其用变量数组的形式做
         Array_deep = 0;    //将深度初始化为0
@@ -1670,21 +1678,21 @@ yyreduce:
         tmp.IDENT_dim_array = Ident_dim_array;
         Scope.push_back(tmp);
     }
-#line 1674 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 1682 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 15:
-#line 296 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 302 "source/xcw_parser.y" /* yacc.c:1652  */
     {
             Array_deep = 0;    //将深度初始化为0
             Array_loc = 0;    //将下标初始化为0，path_length是整个数组的长度
             Array_dest = Array_loc + path_length;
         }
-#line 1684 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 1692 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 16:
-#line 302 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 308 "source/xcw_parser.y" /* yacc.c:1652  */
     {
             //没填满的元素用0填充
             for(; Array_loc < Array_dest; Array_loc++){
@@ -1698,20 +1706,20 @@ yyreduce:
             VAR_T_num ++;     //定义结束后，把变量名数字 + 1
             Array_dim.clear();     //初始化数组维度
         }
-#line 1702 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 1710 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 18:
-#line 323 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 329 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         yyval = yyvsp[0];
         //out << "ADD EXP" << endl;
     }
-#line 1711 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 1719 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 22:
-#line 342 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 348 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         IDENT_scope tmp = IDENT_scope(*ToStr(yyvsp[0]), "0", DEEP, 0);
         tmp.IR_name = "T" + to_string(VAR_T_num);
@@ -1731,11 +1739,11 @@ yyreduce:
             yyerror(err);
         }
     }
-#line 1735 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 1743 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 23:
-#line 362 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 368 "source/xcw_parser.y" /* yacc.c:1652  */
     {
 
         if(ToPtrnum(yyvsp[0])->IF_ptr_int == 1){       //传递的是常量
@@ -1771,11 +1779,11 @@ yyreduce:
         
         //tmp.Print_IDENT();
     }
-#line 1775 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 1783 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 24:
-#line 398 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 404 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         //首先检查当前域中是否出现
         if(!check_define(*ToStr(yyvsp[-1]))){
@@ -1811,11 +1819,11 @@ yyreduce:
         }
         VAR_T_num ++;
     }
-#line 1815 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 1823 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 25:
-#line 434 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 440 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         
         // 先进行初始化
@@ -1850,19 +1858,19 @@ yyreduce:
         tmp.IDENT_dim_array = Ident_dim_array;
         Scope.push_back(tmp);
     }
-#line 1854 "build/xcw_parser.tab.c" /* yacc.c:1652  */
-    break;
-
-  case 26:
-#line 469 "source/xcw_parser.y" /* yacc.c:1652  */
-    {
-            Array_dest = Array_loc + path_length;
-        }
 #line 1862 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
+  case 26:
+#line 475 "source/xcw_parser.y" /* yacc.c:1652  */
+    {
+            Array_dest = Array_loc + path_length;
+        }
+#line 1870 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+    break;
+
   case 27:
-#line 473 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 479 "source/xcw_parser.y" /* yacc.c:1652  */
     {
             //没填满的元素用0填充
             for(; Array_loc < Array_dest; Array_loc++){
@@ -1876,28 +1884,28 @@ yyreduce:
             VAR_T_num ++;     //定义结束后，把变量名数字 + 1
             Array_dim.clear();     //初始化数组维度
         }
-#line 1880 "build/xcw_parser.tab.c" /* yacc.c:1652  */
-    break;
-
-  case 28:
-#line 489 "source/xcw_parser.y" /* yacc.c:1652  */
-    {
-        // 类似于{}的情况，推出空值
-    }
 #line 1888 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
+  case 28:
+#line 495 "source/xcw_parser.y" /* yacc.c:1652  */
+    {
+        // 类似于{}的情况，推出空值
+    }
+#line 1896 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+    break;
+
   case 29:
-#line 493 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 499 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         //类似于 {1},{1,2}
         yyval = yyvsp[0];
     }
-#line 1897 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 1905 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 32:
-#line 506 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 512 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         if(ToPtrnum(yyvsp[0])->IF_ptr_int){    //为常量，加入到数组中
             Ptr_num tmp_ptr = Ptr_num(ToPtrnum(yyvsp[0])->ptr_int);     //构造vector中的元素
@@ -1917,11 +1925,11 @@ yyreduce:
         }
         Array_loc ++;     //位置向前进1
     }
-#line 1921 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 1929 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 33:
-#line 526 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 532 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         //out << "LCURLY" << endl;
         path_length = path_length / Array_dim[Array_deep];
@@ -1929,11 +1937,11 @@ yyreduce:
         old_Array_dest = Array_dest;
         Array_dest = Array_loc + path_length;
     }
-#line 1933 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 1941 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 34:
-#line 534 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 540 "source/xcw_parser.y" /* yacc.c:1652  */
     {
             //out << "RCURLY" << endl;
             //out << "------- Array_dest = "<<Array_dest<<endl;
@@ -1950,54 +1958,54 @@ yyreduce:
             Array_deep --;      //遇到右括号，深度-1
             path_length = path_length * Array_dim[Array_deep];
         }
-#line 1954 "build/xcw_parser.tab.c" /* yacc.c:1652  */
-    break;
-
-  case 35:
-#line 557 "source/xcw_parser.y" /* yacc.c:1652  */
-    {
-        yyval = yyvsp[0];
-    }
 #line 1962 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
+  case 35:
+#line 563 "source/xcw_parser.y" /* yacc.c:1652  */
+    {
+        yyval = yyvsp[0];
+    }
+#line 1970 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+    break;
+
   case 36:
-#line 561 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 567 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         ToPtrnum(yyvsp[-1])->ptr_int = ToPtrnum(yyvsp[-1])->ptr_int * ToPtrnum(yyvsp[0])->ptr_int;
         yyval = yyvsp[-1];
     }
-#line 1971 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 1979 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 37:
-#line 569 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 575 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         yyval = yyvsp[-1];
         Array_dim.push_back(ToPtrnum(yyvsp[-1])->ptr_int);      //把数组数据放到Array_dim中，记录数组维度信息
         
     }
-#line 1981 "build/xcw_parser.tab.c" /* yacc.c:1652  */
-    break;
-
-  case 38:
-#line 578 "source/xcw_parser.y" /* yacc.c:1652  */
-    {
-
-    }
 #line 1989 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
-  case 39:
-#line 585 "source/xcw_parser.y" /* yacc.c:1652  */
+  case 38:
+#line 584 "source/xcw_parser.y" /* yacc.c:1652  */
     {
-        yyval = yyvsp[0];            
+
     }
 #line 1997 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
+  case 39:
+#line 591 "source/xcw_parser.y" /* yacc.c:1652  */
+    {
+        yyval = yyvsp[0];            
+    }
+#line 2005 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+    break;
+
   case 41:
-#line 593 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 599 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         Ptr_num* add_1 = ToPtrnum(yyvsp[-2]);
         Ptr_num* mul_1 = ToPtrnum(yyvsp[0]);
@@ -2032,11 +2040,11 @@ yyreduce:
         }
         yyval = tmp_ptr; 
     }
-#line 2036 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 2044 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 42:
-#line 628 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 634 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         Ptr_num* add_1 = ToPtrnum(yyvsp[-2]);
         Ptr_num* mul_1 = ToPtrnum(yyvsp[0]);
@@ -2071,19 +2079,19 @@ yyreduce:
         }
         yyval = tmp_ptr; 
     }
-#line 2075 "build/xcw_parser.tab.c" /* yacc.c:1652  */
-    break;
-
-  case 43:
-#line 667 "source/xcw_parser.y" /* yacc.c:1652  */
-    {
-        yyval = yyvsp[0];
-    }
 #line 2083 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
+  case 43:
+#line 673 "source/xcw_parser.y" /* yacc.c:1652  */
+    {
+        yyval = yyvsp[0];
+    }
+#line 2091 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+    break;
+
   case 44:
-#line 671 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 677 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         Ptr_num* add_1 = ToPtrnum(yyvsp[-2]);
         Ptr_num* mul_1 = ToPtrnum(yyvsp[0]);
@@ -2118,11 +2126,11 @@ yyreduce:
         }
         yyval = tmp_ptr; 
     }
-#line 2122 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 2130 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 45:
-#line 706 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 712 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         Ptr_num* add_1 = ToPtrnum(yyvsp[-2]);
         Ptr_num* mul_1 = ToPtrnum(yyvsp[0]);
@@ -2163,11 +2171,11 @@ yyreduce:
         }
         yyval = tmp_ptr; 
     }
-#line 2167 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 2175 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 46:
-#line 747 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 753 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         Ptr_num* add_1 = ToPtrnum(yyvsp[-2]);
         Ptr_num* mul_1 = ToPtrnum(yyvsp[0]);
@@ -2208,19 +2216,19 @@ yyreduce:
         }
         yyval = tmp_ptr; 
     }
-#line 2212 "build/xcw_parser.tab.c" /* yacc.c:1652  */
-    break;
-
-  case 47:
-#line 791 "source/xcw_parser.y" /* yacc.c:1652  */
-    {
-        yyval = yyvsp[0];
-    }
 #line 2220 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
+  case 47:
+#line 797 "source/xcw_parser.y" /* yacc.c:1652  */
+    {
+        yyval = yyvsp[0];
+    }
+#line 2228 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+    break;
+
   case 48:
-#line 795 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 801 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         IDENT_scope* tmp = find_define(*ToStr(yyvsp[-3]));
 
@@ -2240,30 +2248,30 @@ yyreduce:
         VAR_t_num ++;
         yyval = tmp_ptr;
     }
-#line 2244 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 2252 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 49:
-#line 818 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 824 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         Ptr_num* tmp_ptr = new Ptr_num;
         tmp_ptr->ptr_int = *ToInt(yyvsp[0]);
         tmp_ptr->IF_ptr_int = 1;
         yyval = tmp_ptr;
     }
-#line 2255 "build/xcw_parser.tab.c" /* yacc.c:1652  */
-    break;
-
-  case 50:
-#line 825 "source/xcw_parser.y" /* yacc.c:1652  */
-    {
-        yyval = yyvsp[0];
-    }
 #line 2263 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
+  case 50:
+#line 831 "source/xcw_parser.y" /* yacc.c:1652  */
+    {
+        yyval = yyvsp[0];
+    }
+#line 2271 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+    break;
+
   case 51:
-#line 832 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 838 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         IDENT_scope* tmp = find_define(*ToStr(yyvsp[0]));
         if( tmp == nullptr){          //变量尚未定义
@@ -2281,11 +2289,11 @@ yyreduce:
         }   
         yyval = tmp_ptr;
     }
-#line 2285 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 2293 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 52:
-#line 850 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 856 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         IDENT_scope* tmp = find_define(*ToStr(yyvsp[0]));    //搜索这个数组的定义
         Array_name = tmp->IR_name;
@@ -2294,11 +2302,11 @@ yyreduce:
             Array_dim.push_back((*(*tmp).IDENT_dim_array)[i]);
         }
     }
-#line 2298 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 2306 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 53:
-#line 859 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 865 "source/xcw_parser.y" /* yacc.c:1652  */
     {        //a[2][3]     a[1][b]  
             Ptr_num tmp_ptr, tmp_ptr_new, tmp_ptr_old;
             int ptr_size = INTSIZE;
@@ -2355,19 +2363,19 @@ yyreduce:
             }    
             yyval = & tmp_ptr_old;
         }
-#line 2359 "build/xcw_parser.tab.c" /* yacc.c:1652  */
-    break;
-
-  case 56:
-#line 924 "source/xcw_parser.y" /* yacc.c:1652  */
-    {
-        Array_LVal_dim.push_back(*(ToPtrnum(yyvsp[-1])));    //存入进行引用的维度
-    }
 #line 2367 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
+  case 56:
+#line 930 "source/xcw_parser.y" /* yacc.c:1652  */
+    {
+        Array_LVal_dim.push_back(*(ToPtrnum(yyvsp[-1])));    //存入进行引用的维度
+    }
+#line 2375 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+    break;
+
   case 57:
-#line 932 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 938 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         //首先检查当前域中是否出现
         if(!check_define(*ToStr(yyvsp[0]))){
@@ -2381,19 +2389,19 @@ yyreduce:
         Scope.push_back(tmp);
         
     }
-#line 2385 "build/xcw_parser.tab.c" /* yacc.c:1652  */
-    break;
-
-  case 58:
-#line 946 "source/xcw_parser.y" /* yacc.c:1652  */
-    {
-            DEEP ++;
-        }
 #line 2393 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
+  case 58:
+#line 952 "source/xcw_parser.y" /* yacc.c:1652  */
+    {
+            DEEP ++;
+        }
+#line 2401 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+    break;
+
   case 59:
-#line 950 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 956 "source/xcw_parser.y" /* yacc.c:1652  */
     {
             DEEP --;
             //IDENT_scope* tmp_ptr = find_define(*ToStr($2));    //找到函数变量的指针
@@ -2401,11 +2409,11 @@ yyreduce:
             //out << "f_" << *ToStr($2) << " [" << VAR_p_num << "]" << endl;  
             func_def_in =  "f_" + *ToStr(yyvsp[-5]) + " [" + to_string(VAR_p_num) + "]";
         }
-#line 2405 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 2413 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 60:
-#line 958 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 964 "source/xcw_parser.y" /* yacc.c:1652  */
     {
             
             // out << "\treturn 0" << endl;
@@ -2418,11 +2426,11 @@ yyreduce:
             VAR_p_num = 0;
             
         }
-#line 2422 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 2430 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 61:
-#line 971 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 977 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         //首先检查当前域中是否出现
         if(!check_define(*ToStr(yyvsp[0]))){
@@ -2435,30 +2443,30 @@ yyreduce:
         //tmp.IDENT_func_param_num = 0;      //没有参数
         Scope.push_back(tmp);
     }
-#line 2439 "build/xcw_parser.tab.c" /* yacc.c:1652  */
-    break;
-
-  case 62:
-#line 984 "source/xcw_parser.y" /* yacc.c:1652  */
-    {
-            DEEP ++;
-        }
 #line 2447 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
+  case 62:
+#line 990 "source/xcw_parser.y" /* yacc.c:1652  */
+    {
+            DEEP ++;
+        }
+#line 2455 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+    break;
+
   case 63:
-#line 988 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 994 "source/xcw_parser.y" /* yacc.c:1652  */
     {
             DEEP --;
             // out << "f_" << *ToStr($2) << " [" << VAR_p_num << "]" << endl;
             func_def_in = "f_" + (*ToStr(yyvsp[-5])) + " [" + to_string(VAR_p_num) + "]";
             //Func_Other.push_back(other_out);
         }
-#line 2458 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 2466 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 64:
-#line 995 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 1001 "source/xcw_parser.y" /* yacc.c:1652  */
     {
             
             // out << "\treturn" << endl;
@@ -2472,27 +2480,27 @@ yyreduce:
             //声明结束后，把记录参数数量的 VAR_p_num 初始化
             VAR_p_num = 0;
         }
-#line 2476 "build/xcw_parser.tab.c" /* yacc.c:1652  */
-    break;
-
-  case 65:
-#line 1012 "source/xcw_parser.y" /* yacc.c:1652  */
-    {
-        //表示没有参数的情况
-    }
 #line 2484 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
-  case 66:
-#line 1016 "source/xcw_parser.y" /* yacc.c:1652  */
+  case 65:
+#line 1018 "source/xcw_parser.y" /* yacc.c:1652  */
     {
-
+        //表示没有参数的情况
     }
 #line 2492 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
+  case 66:
+#line 1022 "source/xcw_parser.y" /* yacc.c:1652  */
+    {
+
+    }
+#line 2500 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+    break;
+
   case 68:
-#line 1024 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 1030 "source/xcw_parser.y" /* yacc.c:1652  */
     { 
         // 检查是否出现过
         if(!check_define(*ToStr(yyvsp[0]))){
@@ -2507,11 +2515,11 @@ yyreduce:
         VAR_p_num ++;
         Scope.push_back(tmp);
     }
-#line 2511 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 2519 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 69:
-#line 1039 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 1045 "source/xcw_parser.y" /* yacc.c:1652  */
     {      //void d(int d[])
         // 检查是否出现过
         if(!check_define(*ToStr(yyvsp[-3]))){
@@ -2526,44 +2534,44 @@ yyreduce:
         VAR_p_num ++;
         Scope.push_back(tmp);
     }
-#line 2530 "build/xcw_parser.tab.c" /* yacc.c:1652  */
-    break;
-
-  case 70:
-#line 1057 "source/xcw_parser.y" /* yacc.c:1652  */
-    {
-        yyval = yyvsp[0];
-    }
 #line 2538 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
+  case 70:
+#line 1063 "source/xcw_parser.y" /* yacc.c:1652  */
+    {
+        yyval = yyvsp[0];
+    }
+#line 2546 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+    break;
+
   case 71:
-#line 1061 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 1067 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         ToPtrnum(yyvsp[-1])->ptr_int = ToPtrnum(yyvsp[-1])->ptr_int * ToPtrnum(yyvsp[0])->ptr_int;
         yyval = yyvsp[-1];
     }
-#line 2547 "build/xcw_parser.tab.c" /* yacc.c:1652  */
-    break;
-
-  case 72:
-#line 1066 "source/xcw_parser.y" /* yacc.c:1652  */
-    {
-        //也有可能为空
-    }
 #line 2555 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
-  case 73:
-#line 1073 "source/xcw_parser.y" /* yacc.c:1652  */
+  case 72:
+#line 1072 "source/xcw_parser.y" /* yacc.c:1652  */
     {
-        DEEP ++;     // 深度+1，保证这些新加入的元素属于当前域中
+        //也有可能为空
     }
 #line 2563 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
+  case 73:
+#line 1079 "source/xcw_parser.y" /* yacc.c:1652  */
+    {
+        DEEP ++;     // 深度+1，保证这些新加入的元素属于当前域中
+    }
+#line 2571 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+    break;
+
   case 74:
-#line 1077 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 1083 "source/xcw_parser.y" /* yacc.c:1652  */
     {
             //结束以后，删除在其中定义过的变量,因为这些实际上是局部变量，但方便起见输出成原生变量
             //在这里正好也同时删除了参数变量（因为事实上声明时并不会用到）
@@ -2574,40 +2582,40 @@ yyreduce:
             }
             DEEP --;     //还原
         }
-#line 2578 "build/xcw_parser.tab.c" /* yacc.c:1652  */
-    break;
-
-  case 77:
-#line 1094 "source/xcw_parser.y" /* yacc.c:1652  */
-    {
-        //暂时先考虑内容为空的情况
-    }
 #line 2586 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
+  case 77:
+#line 1100 "source/xcw_parser.y" /* yacc.c:1652  */
+    {
+        //暂时先考虑内容为空的情况
+    }
+#line 2594 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+    break;
+
   case 78:
-#line 1098 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 1104 "source/xcw_parser.y" /* yacc.c:1652  */
     {
     }
-#line 2593 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 2601 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 79:
-#line 1101 "source/xcw_parser.y" /* yacc.c:1652  */
-    {
-    }
-#line 2600 "build/xcw_parser.tab.c" /* yacc.c:1652  */
-    break;
-
-  case 80:
 #line 1107 "source/xcw_parser.y" /* yacc.c:1652  */
     {
     }
-#line 2607 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 2608 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+    break;
+
+  case 80:
+#line 1113 "source/xcw_parser.y" /* yacc.c:1652  */
+    {
+    }
+#line 2615 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 81:
-#line 1110 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 1116 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         if(ToPtrnum(yyvsp[-1])->IF_ptr_int){       //为常量
             // out << IF_DEEP() + "return " << ToPtrnum($2)->ptr_int << endl;
@@ -2620,44 +2628,44 @@ yyreduce:
             Func_Other.push_back(other_out);
         }
     }
-#line 2624 "build/xcw_parser.tab.c" /* yacc.c:1652  */
-    break;
-
-  case 82:
-#line 1123 "source/xcw_parser.y" /* yacc.c:1652  */
-    {
-        //类似于 直接调用void函数，如f(1,2);
-    }
 #line 2632 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
-  case 83:
-#line 1127 "source/xcw_parser.y" /* yacc.c:1652  */
+  case 82:
+#line 1129 "source/xcw_parser.y" /* yacc.c:1652  */
     {
-        // 一个;的情况
+        //类似于 直接调用void函数，如f(1,2);
     }
 #line 2640 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
-  case 84:
-#line 1131 "source/xcw_parser.y" /* yacc.c:1652  */
+  case 83:
+#line 1133 "source/xcw_parser.y" /* yacc.c:1652  */
     {
-        // 内部还是一个语句块
+        // 一个;的情况
     }
 #line 2648 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
+  case 84:
+#line 1137 "source/xcw_parser.y" /* yacc.c:1652  */
+    {
+        // 内部还是一个语句块
+    }
+#line 2656 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+    break;
+
   case 85:
-#line 1135 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 1141 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         // out << IF_DEEP() + ToPtrnum($1)->ptr_str;
         other_out = IF_DEEP() + ToPtrnum(yyvsp[0])->ptr_str;
     }
-#line 2657 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 2665 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 86:
-#line 1140 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 1146 "source/xcw_parser.y" /* yacc.c:1652  */
     {
             //类似于 a = b   LVal 返回一个 Ptr_num类型的指针tmp_ptr，此时LVal传上来的必定是一个ptr_str
             
@@ -2675,31 +2683,33 @@ yyreduce:
             }
 
         }
-#line 2679 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 2687 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 87:
-#line 1158 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 1164 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         LABEL_l_num_st = LABEL_l_num_end;
         Stk_IF_ELSE.push(LABEL_l_num_st);      //当前的label存入栈中
-        LABEL_l_num_end += 3;      //因为一个IF语句一般会用到3个label
-        // out << IF_DEEP() + "if t" + to_string(VAR_t_num) + " == 0 goto l" + to_string(LABEL_l_num_st) << endl;
-        other_out = IF_DEEP() + "if t" + to_string(VAR_t_num) + " == 0 goto l" + to_string(LABEL_l_num_st);
-        Func_Other.push_back(other_out);
-        VAR_t_num ++;
-        // out << IF_DEEP() + "goto l" + to_string(LABEL_l_num_st+1) << endl;
-        other_out = IF_DEEP() + "goto l" + to_string(LABEL_l_num_st+1);
-        Func_Other.push_back(other_out);
-        // out << IF_DEEP() + "l" + to_string(LABEL_l_num_st+1) + ":" << endl;
-        other_out = IF_DEEP() + "l" + to_string(LABEL_l_num_st+1) + ":";
+        other_out = IF_DEEP() + "l" + to_string(LABEL_l_num_st+2) + ":";    //没什么用，但看起来更整齐
         Func_Other.push_back(other_out);
     }
-#line 2699 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 2698 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 88:
-#line 1174 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 1171 "source/xcw_parser.y" /* yacc.c:1652  */
+    {
+            
+            LABEL_l_num_end += 3;      //因为一个IF语句一般会用到3个label
+            other_out = IF_DEEP() + "l" + to_string(LABEL_l_num_st+1) + ":";
+            Func_Other.push_back(other_out);
+        }
+#line 2709 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+    break;
+
+  case 89:
+#line 1178 "source/xcw_parser.y" /* yacc.c:1652  */
     { 
             LABEL_l_num_st = Stk_IF_ELSE.top();
             
@@ -2711,45 +2721,42 @@ yyreduce:
             Func_Other.push_back(other_out);    
             //
         }
-#line 2715 "build/xcw_parser.tab.c" /* yacc.c:1652  */
-    break;
-
-  case 89:
-#line 1186 "source/xcw_parser.y" /* yacc.c:1652  */
-    {
-            Stk_IF_ELSE.pop();
-        }
-#line 2723 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 2725 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 90:
 #line 1190 "source/xcw_parser.y" /* yacc.c:1652  */
     {
-        LABEL_l_num_st = LABEL_l_num_end;
-        Stk_IF_ELSE.push(LABEL_l_num_st);      //当前的label存入栈中
-        Stk_Break.push(LABEL_l_num_st);
-        LABEL_l_num_end += 3;      //因为一个While语句一般会用到3个label
-        // out << IF_DEEP() + "l" + to_string(LABEL_l_num_st+2) + ":" << endl;
-        other_out = IF_DEEP() + "l" + to_string(LABEL_l_num_st+2) + ":";
-        Func_Other.push_back(other_out);  
-        
-        // out << IF_DEEP() + "if t" + to_string(VAR_t_num) + " == 0 goto l" + to_string(LABEL_l_num_st) << endl;
-        other_out = IF_DEEP() + "\tif t" + to_string(VAR_t_num) + " == 0 goto l" + to_string(LABEL_l_num_st);
-        Func_Other.push_back(other_out);  
-        VAR_t_num ++;
-        // out << IF_DEEP() + "goto l" + to_string(LABEL_l_num_st+1) << endl;
-        other_out = IF_DEEP() + "\tgoto l" + to_string(LABEL_l_num_st+1);
-        Func_Other.push_back(other_out);  
-
-        // out << IF_DEEP() + "l" + to_string(LABEL_l_num_st+1) + ":" << endl;
-        other_out = IF_DEEP() + "l" + to_string(LABEL_l_num_st+1) + ":";
-        Func_Other.push_back(other_out);  
-    }
-#line 2749 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+            Stk_IF_ELSE.pop();
+        }
+#line 2733 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 91:
-#line 1212 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 1194 "source/xcw_parser.y" /* yacc.c:1652  */
+    {
+        LABEL_l_num_st = LABEL_l_num_end;
+        Stk_IF_ELSE.push(LABEL_l_num_st);      //当前的label存入栈中
+        Stk_Break.push(LABEL_l_num_st);
+        other_out = IF_DEEP() + "l" + to_string(LABEL_l_num_st+2) + ":";
+        Func_Other.push_back(other_out);
+    }
+#line 2745 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+    break;
+
+  case 92:
+#line 1202 "source/xcw_parser.y" /* yacc.c:1652  */
+    {
+            
+            LABEL_l_num_end += 3;      //因为一个While语句一般会用到3个label
+            other_out = IF_DEEP() + "l" + to_string(LABEL_l_num_st+1) + ":";
+            Func_Other.push_back(other_out);  
+        }
+#line 2756 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+    break;
+
+  case 93:
+#line 1209 "source/xcw_parser.y" /* yacc.c:1652  */
     {
             LABEL_l_num_st = Stk_IF_ELSE.top();
             Stk_IF_ELSE.pop();
@@ -2761,39 +2768,39 @@ yyreduce:
             other_out = IF_DEEP() + "l" + to_string(LABEL_l_num_st) + ":";
             Func_Other.push_back(other_out);  
         }
-#line 2765 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 2772 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
-  case 92:
-#line 1224 "source/xcw_parser.y" /* yacc.c:1652  */
+  case 94:
+#line 1221 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         LABEL_l_num_st = Stk_Break.top();
         other_out = IF_DEEP() + "goto l" + to_string(LABEL_l_num_st);
         Func_Other.push_back(other_out);  
     }
-#line 2775 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 2782 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
-  case 93:
-#line 1230 "source/xcw_parser.y" /* yacc.c:1652  */
+  case 95:
+#line 1227 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         LABEL_l_num_st = Stk_Break.top();
         other_out = IF_DEEP() + "goto l" + to_string(LABEL_l_num_st+2);
         Func_Other.push_back(other_out);  
     }
-#line 2785 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 2792 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
-  case 94:
-#line 1238 "source/xcw_parser.y" /* yacc.c:1652  */
+  case 96:
+#line 1235 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         // 不存在ELSE的情况
     }
-#line 2793 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 2800 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
-  case 95:
-#line 1242 "source/xcw_parser.y" /* yacc.c:1652  */
+  case 97:
+#line 1239 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         LABEL_l_num_st = Stk_IF_ELSE.top();
         //Stk_IF_ELSE.pop();
@@ -2801,68 +2808,128 @@ yyreduce:
         other_out = IF_DEEP() + "l" + to_string(LABEL_l_num_st+2) + ":";
         Func_Other.push_back(other_out);  
     }
-#line 2805 "build/xcw_parser.tab.c" /* yacc.c:1652  */
-    break;
-
-  case 96:
-#line 1253 "source/xcw_parser.y" /* yacc.c:1652  */
-    {
-        // out << IF_DEEP() + "t" + to_string(VAR_t_num) + " = ";
-        other_out = IF_DEEP() + "t" + to_string(VAR_t_num) + " = ";
-        if(ToPtrnum(yyvsp[0])->IF_ptr_int){    //如果是常量
-            other_out += to_string(ToPtrnum(yyval)->ptr_int);
-        }
-        else{
-            other_out += ToPtrnum(yyvsp[0])->ptr_str;
-        }
-        //VAR_t_num ++;
-        // ToPtrnum($$)->Print();
-        //out << endl;
-        Func_Other.push_back(other_out);  
-        yyval = yyvsp[0];
-    }
-#line 2825 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 2812 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 98:
-#line 1273 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 1250 "source/xcw_parser.y" /* yacc.c:1652  */
     {
-        other_out = IF_DEEP() + "t" + to_string(VAR_t_num) + " = ";
-        if(ToPtrnum(yyvsp[-2])->IF_ptr_int){    //如果是常量
-            other_out += to_string(ToPtrnum(yyvsp[-2])->ptr_int);
-        }
-        else{
-            other_out += ToPtrnum(yyvsp[-2])->ptr_str;
-        }
-        other_out += " || ";
-        if(ToPtrnum(yyvsp[0])->IF_ptr_int){    //如果是常量
-            other_out += to_string(ToPtrnum(yyvsp[0])->ptr_int);
-        }
-        else{
-            other_out += ToPtrnum(yyvsp[0])->ptr_str;
-        }
-        // ToPtrnum($$)->Print();
-        //out << endl;
-        Func_Other.push_back(other_out);  
-        Ptr_num* tmp_ptr = new Ptr_num("t" + to_string(VAR_t_num));
-        VAR_t_num ++;
-        yyval = tmp_ptr;
+        //out << "LOrExp"<<endl;
+        // // out << IF_DEEP() + "t" + to_string(VAR_t_num) + " = ";
+        // other_out = IF_DEEP() + "t" + to_string(VAR_t_num) + " = ";
+        // if(ToPtrnum($1)->IF_ptr_int){    //如果是常量
+        //     other_out += to_string(ToPtrnum($$)->ptr_int);
+        // }
+        // else{
+        //     other_out += ToPtrnum($1)->ptr_str;
+        // }
+        // //VAR_t_num ++;
+        // // ToPtrnum($$)->Print();
+        // //out << endl;
+        // Func_Other.push_back(other_out);  
+        // $$ = $1;
     }
-#line 2852 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 2833 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+    break;
+
+  case 99:
+#line 1270 "source/xcw_parser.y" /* yacc.c:1652  */
+    {
+        //out << "LAndExp"<<endl;
+        string str_2;
+        if(ToPtrnum(yyvsp[0])->IF_ptr_int){    //如果是常量
+            str_2 = to_string(ToPtrnum(yyvsp[0])->ptr_int);
+        }
+        else{
+            str_2 = ToPtrnum(yyvsp[0])->ptr_str;
+        }
+
+        LABEL_l_num_st = Stk_IF_ELSE.top();
+
+        // other_out = IF_DEEP() + "\tif " + str_2 + " == 0 goto l" + to_string(LABEL_l_num_st);
+        // Func_Other.push_back(other_out);
+        other_out = IF_DEEP() + "\tgoto l" + to_string(LABEL_l_num_st+1);
+        Func_Other.push_back(other_out);
+        
+    }
+#line 2856 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 100:
-#line 1300 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 1289 "source/xcw_parser.y" /* yacc.c:1652  */
     {
-        
+        //out << "LOrExp OR LAndExp"<<endl;
+        string str_2;
+        if(ToPtrnum(yyvsp[0])->IF_ptr_int){    //如果是常量
+            str_2 = to_string(ToPtrnum(yyvsp[0])->ptr_int);
+        }
+        else{
+            str_2 = ToPtrnum(yyvsp[0])->ptr_str;
+        }
+
+        LABEL_l_num_st = Stk_IF_ELSE.top();
+        // other_out = IF_DEEP() + "\tif " + str_2 + " == 0 goto l" + to_string(LABEL_l_num_st);
+        // Func_Other.push_back(other_out);
+        other_out = IF_DEEP() + "\tgoto l" + to_string(LABEL_l_num_st+1);
+        Func_Other.push_back(other_out);
     }
-#line 2860 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 2877 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+    break;
+
+  case 101:
+#line 1309 "source/xcw_parser.y" /* yacc.c:1652  */
+    {
+        //out << "EqExp"<<endl;
+        string str_2;
+        if(ToPtrnum(yyvsp[0])->IF_ptr_int){    //如果是常量
+            str_2 = to_string(ToPtrnum(yyvsp[0])->ptr_int);
+        }
+        else{
+            str_2 = ToPtrnum(yyvsp[0])->ptr_str;
+        }
+
+        LABEL_l_num_st = Stk_IF_ELSE.top();
+
+        other_out = IF_DEEP() + "\tif " + str_2 + " == 0 goto l" + to_string(LABEL_l_num_st);
+        Func_Other.push_back(other_out);
+    }
+#line 2897 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
   case 102:
-#line 1308 "source/xcw_parser.y" /* yacc.c:1652  */
+#line 1325 "source/xcw_parser.y" /* yacc.c:1652  */
     {
-        other_out = IF_DEEP() + "t" + to_string(VAR_t_num) + " = ";
+        //out << "LAndExp AND EqExp"<<endl;
+        string str_2;
+        if(ToPtrnum(yyvsp[0])->IF_ptr_int){    //如果是常量
+            str_2 = to_string(ToPtrnum(yyvsp[0])->ptr_int);
+        }
+        else{
+            str_2 = ToPtrnum(yyvsp[0])->ptr_str;
+        }
+
+        LABEL_l_num_st = Stk_IF_ELSE.top();
+        other_out = IF_DEEP() + "\tif " + str_2 + " == 0 goto l" + to_string(LABEL_l_num_st);
+        Func_Other.push_back(other_out);
+        // other_out = IF_DEEP() + "\tgoto l" + to_string(LABEL_l_num_st+1);
+        // Func_Other.push_back(other_out);
+    }
+#line 2918 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+    break;
+
+  case 103:
+#line 1345 "source/xcw_parser.y" /* yacc.c:1652  */
+    {
+        //out << "RelExp" << endl;
+        yyval = yyvsp[0];
+    }
+#line 2927 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+    break;
+
+  case 104:
+#line 1350 "source/xcw_parser.y" /* yacc.c:1652  */
+    {
+        other_out = IF_DEEP() + "\tt" + to_string(VAR_t_num) + " = ";
         if(ToPtrnum(yyvsp[-2])->IF_ptr_int){    //如果是常量
             other_out += to_string(ToPtrnum(yyvsp[-2])->ptr_int);
         }
@@ -2883,13 +2950,13 @@ yyreduce:
         VAR_t_num ++;
         yyval = tmp_ptr;
     }
-#line 2887 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 2954 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
-  case 103:
-#line 1331 "source/xcw_parser.y" /* yacc.c:1652  */
+  case 105:
+#line 1373 "source/xcw_parser.y" /* yacc.c:1652  */
     {
-        other_out = IF_DEEP() + "t" + to_string(VAR_t_num) + " = ";
+        other_out = IF_DEEP() + "\tt" + to_string(VAR_t_num) + " = ";
         if(ToPtrnum(yyvsp[-2])->IF_ptr_int){    //如果是常量
             other_out += to_string(ToPtrnum(yyvsp[-2])->ptr_int);
         }
@@ -2910,13 +2977,25 @@ yyreduce:
         VAR_t_num ++;
         yyval = tmp_ptr;
     }
-#line 2914 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 2981 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
-  case 105:
-#line 1358 "source/xcw_parser.y" /* yacc.c:1652  */
+  case 106:
+#line 1399 "source/xcw_parser.y" /* yacc.c:1652  */
     {
-        other_out = IF_DEEP() + "t" + to_string(VAR_t_num) + " = ";
+        // out << "ADDExp" << endl;
+        // out << "===";
+        // ToPtrnum($1)->Print(); 
+        // out<< "===" << endl;
+        yyval = yyvsp[0];
+    }
+#line 2993 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+    break;
+
+  case 107:
+#line 1407 "source/xcw_parser.y" /* yacc.c:1652  */
+    {
+        other_out = IF_DEEP() + "\tt" + to_string(VAR_t_num) + " = ";
         if(ToPtrnum(yyvsp[-2])->IF_ptr_int){    //如果是常量
             other_out += to_string(ToPtrnum(yyvsp[-2])->ptr_int);
         }
@@ -2937,13 +3016,13 @@ yyreduce:
         VAR_t_num ++;
         yyval = tmp_ptr;
     }
-#line 2941 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 3020 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
-  case 106:
-#line 1381 "source/xcw_parser.y" /* yacc.c:1652  */
+  case 108:
+#line 1430 "source/xcw_parser.y" /* yacc.c:1652  */
     {
-        other_out = IF_DEEP() + "t" + to_string(VAR_t_num) + " = ";
+        other_out = IF_DEEP() + "\tt" + to_string(VAR_t_num) + " = ";
         if(ToPtrnum(yyvsp[-2])->IF_ptr_int){    //如果是常量
             other_out += to_string(ToPtrnum(yyvsp[-2])->ptr_int);
         }
@@ -2964,13 +3043,13 @@ yyreduce:
         VAR_t_num ++;
         yyval = tmp_ptr;
     }
-#line 2968 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 3047 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
-  case 107:
-#line 1404 "source/xcw_parser.y" /* yacc.c:1652  */
+  case 109:
+#line 1453 "source/xcw_parser.y" /* yacc.c:1652  */
     {
-        other_out = IF_DEEP() + "t" + to_string(VAR_t_num) + " = ";
+        other_out = IF_DEEP() + "\tt" + to_string(VAR_t_num) + " = ";
         if(ToPtrnum(yyvsp[-2])->IF_ptr_int){    //如果是常量
             other_out += to_string(ToPtrnum(yyvsp[-2])->ptr_int);
         }
@@ -2991,13 +3070,13 @@ yyreduce:
         VAR_t_num ++;
         yyval = tmp_ptr;
     }
-#line 2995 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 3074 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
-  case 108:
-#line 1427 "source/xcw_parser.y" /* yacc.c:1652  */
+  case 110:
+#line 1476 "source/xcw_parser.y" /* yacc.c:1652  */
     {
-        other_out = IF_DEEP() + "t" + to_string(VAR_t_num) + " = ";
+        other_out = IF_DEEP() + "\tt" + to_string(VAR_t_num) + " = ";
         if(ToPtrnum(yyvsp[-2])->IF_ptr_int){    //如果是常量
             other_out += to_string(ToPtrnum(yyvsp[-2])->ptr_int);
         }
@@ -3018,19 +3097,19 @@ yyreduce:
         VAR_t_num ++;
         yyval = tmp_ptr;
     }
-#line 3022 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 3101 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
-  case 109:
-#line 1454 "source/xcw_parser.y" /* yacc.c:1652  */
+  case 111:
+#line 1503 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         //表示函数调用中没有参数的情况
     }
-#line 3030 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 3109 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
-  case 110:
-#line 1458 "source/xcw_parser.y" /* yacc.c:1652  */
+  case 112:
+#line 1507 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         Ptr_num* param_tmp = ToPtrnum(yyvsp[0]);
         if(param_tmp->IF_ptr_int){       //如果是常量
@@ -3045,11 +3124,11 @@ yyreduce:
         }
 
     }
-#line 3049 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 3128 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
-  case 111:
-#line 1473 "source/xcw_parser.y" /* yacc.c:1652  */
+  case 113:
+#line 1522 "source/xcw_parser.y" /* yacc.c:1652  */
     {
         Ptr_num* param_tmp = ToPtrnum(yyvsp[0]);
         if(param_tmp->IF_ptr_int){       //如果是常量
@@ -3063,11 +3142,11 @@ yyreduce:
             Func_Other.push_back(other_out); 
         }
     }
-#line 3067 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 3146 "build/xcw_parser.tab.c" /* yacc.c:1652  */
     break;
 
 
-#line 3071 "build/xcw_parser.tab.c" /* yacc.c:1652  */
+#line 3150 "build/xcw_parser.tab.c" /* yacc.c:1652  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -3298,7 +3377,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 1497 "source/xcw_parser.y" /* yacc.c:1918  */
+#line 1546 "source/xcw_parser.y" /* yacc.c:1918  */
 
 
 void yyerror(const char *s) {

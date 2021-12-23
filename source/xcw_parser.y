@@ -170,6 +170,12 @@ stack<int> Stk_Break;      // 和Stk_IF_ELSE相比，只用来储存While语句�
 
 //----------------------------------------------------------
 
+//-----------------条件判断语句 用于短路处理的相关变量------------------------------
+//----------------------------------------------------------
+
+
+
+
 //-----------------函数语句打印相关变量------------------------------
 vector<string> Func_VarDecl;
 vector<string> Func_Other;
@@ -1154,22 +1160,20 @@ Stmt:
             }
 
         }
-    | IF LPAREN Cond RPAREN 
+    | IF 
     {
         LABEL_l_num_st = LABEL_l_num_end;
         Stk_IF_ELSE.push(LABEL_l_num_st);      //当前的label存入栈中
-        LABEL_l_num_end += 3;      //因为一个IF语句一般会用到3个label
-        // out << IF_DEEP() + "if t" + to_string(VAR_t_num) + " == 0 goto l" + to_string(LABEL_l_num_st) << endl;
-        other_out = IF_DEEP() + "if t" + to_string(VAR_t_num) + " == 0 goto l" + to_string(LABEL_l_num_st);
-        Func_Other.push_back(other_out);
-        VAR_t_num ++;
-        // out << IF_DEEP() + "goto l" + to_string(LABEL_l_num_st+1) << endl;
-        other_out = IF_DEEP() + "goto l" + to_string(LABEL_l_num_st+1);
-        Func_Other.push_back(other_out);
-        // out << IF_DEEP() + "l" + to_string(LABEL_l_num_st+1) + ":" << endl;
-        other_out = IF_DEEP() + "l" + to_string(LABEL_l_num_st+1) + ":";
+        other_out = IF_DEEP() + "l" + to_string(LABEL_l_num_st+2) + ":";    //没什么用，但看起来更整齐
         Func_Other.push_back(other_out);
     }
+        LPAREN Cond RPAREN 
+        {
+            
+            LABEL_l_num_end += 3;      //因为一个IF语句一般会用到3个label
+            other_out = IF_DEEP() + "l" + to_string(LABEL_l_num_st+1) + ":";
+            Func_Other.push_back(other_out);
+        }
         Stmt
         { 
             LABEL_l_num_st = Stk_IF_ELSE.top();
@@ -1186,28 +1190,21 @@ Stmt:
         {
             Stk_IF_ELSE.pop();
         }
-    | WHILE LPAREN Cond RPAREN
+    | WHILE 
     {
         LABEL_l_num_st = LABEL_l_num_end;
         Stk_IF_ELSE.push(LABEL_l_num_st);      //当前的label存入栈中
         Stk_Break.push(LABEL_l_num_st);
-        LABEL_l_num_end += 3;      //因为一个While语句一般会用到3个label
-        // out << IF_DEEP() + "l" + to_string(LABEL_l_num_st+2) + ":" << endl;
         other_out = IF_DEEP() + "l" + to_string(LABEL_l_num_st+2) + ":";
-        Func_Other.push_back(other_out);  
-        
-        // out << IF_DEEP() + "if t" + to_string(VAR_t_num) + " == 0 goto l" + to_string(LABEL_l_num_st) << endl;
-        other_out = IF_DEEP() + "\tif t" + to_string(VAR_t_num) + " == 0 goto l" + to_string(LABEL_l_num_st);
-        Func_Other.push_back(other_out);  
-        VAR_t_num ++;
-        // out << IF_DEEP() + "goto l" + to_string(LABEL_l_num_st+1) << endl;
-        other_out = IF_DEEP() + "\tgoto l" + to_string(LABEL_l_num_st+1);
-        Func_Other.push_back(other_out);  
-
-        // out << IF_DEEP() + "l" + to_string(LABEL_l_num_st+1) + ":" << endl;
-        other_out = IF_DEEP() + "l" + to_string(LABEL_l_num_st+1) + ":";
-        Func_Other.push_back(other_out);  
+        Func_Other.push_back(other_out);
     }
+        LPAREN Cond RPAREN
+        {
+            
+            LABEL_l_num_end += 3;      //因为一个While语句一般会用到3个label
+            other_out = IF_DEEP() + "l" + to_string(LABEL_l_num_st+1) + ":";
+            Func_Other.push_back(other_out);  
+        }
         Stmt
         {
             LABEL_l_num_st = Stk_IF_ELSE.top();
@@ -1251,62 +1248,107 @@ IF_Else:
 Cond:
     LOrExp
     {
-        // out << IF_DEEP() + "t" + to_string(VAR_t_num) + " = ";
-        other_out = IF_DEEP() + "t" + to_string(VAR_t_num) + " = ";
-        if(ToPtrnum($1)->IF_ptr_int){    //如果是常量
-            other_out += to_string(ToPtrnum($$)->ptr_int);
-        }
-        else{
-            other_out += ToPtrnum($1)->ptr_str;
-        }
-        //VAR_t_num ++;
-        // ToPtrnum($$)->Print();
-        //out << endl;
-        Func_Other.push_back(other_out);  
-        $$ = $1;
+        //out << "LOrExp"<<endl;
+        // // out << IF_DEEP() + "t" + to_string(VAR_t_num) + " = ";
+        // other_out = IF_DEEP() + "t" + to_string(VAR_t_num) + " = ";
+        // if(ToPtrnum($1)->IF_ptr_int){    //如果是常量
+        //     other_out += to_string(ToPtrnum($$)->ptr_int);
+        // }
+        // else{
+        //     other_out += ToPtrnum($1)->ptr_str;
+        // }
+        // //VAR_t_num ++;
+        // // ToPtrnum($$)->Print();
+        // //out << endl;
+        // Func_Other.push_back(other_out);  
+        // $$ = $1;
     }
 ;
 
 LOrExp:
     LAndExp
+    {
+        //out << "LAndExp"<<endl;
+        string str_2;
+        if(ToPtrnum($1)->IF_ptr_int){    //如果是常量
+            str_2 = to_string(ToPtrnum($1)->ptr_int);
+        }
+        else{
+            str_2 = ToPtrnum($1)->ptr_str;
+        }
+
+        LABEL_l_num_st = Stk_IF_ELSE.top();
+
+        // other_out = IF_DEEP() + "\tif " + str_2 + " == 0 goto l" + to_string(LABEL_l_num_st);
+        // Func_Other.push_back(other_out);
+        other_out = IF_DEEP() + "\tgoto l" + to_string(LABEL_l_num_st+1);
+        Func_Other.push_back(other_out);
+        
+    }
     | LOrExp OR LAndExp
     {
-        other_out = IF_DEEP() + "t" + to_string(VAR_t_num) + " = ";
-        if(ToPtrnum($1)->IF_ptr_int){    //如果是常量
-            other_out += to_string(ToPtrnum($1)->ptr_int);
-        }
-        else{
-            other_out += ToPtrnum($1)->ptr_str;
-        }
-        other_out += " || ";
+        //out << "LOrExp OR LAndExp"<<endl;
+        string str_2;
         if(ToPtrnum($3)->IF_ptr_int){    //如果是常量
-            other_out += to_string(ToPtrnum($3)->ptr_int);
+            str_2 = to_string(ToPtrnum($3)->ptr_int);
         }
         else{
-            other_out += ToPtrnum($3)->ptr_str;
+            str_2 = ToPtrnum($3)->ptr_str;
         }
-        // ToPtrnum($$)->Print();
-        //out << endl;
-        Func_Other.push_back(other_out);  
-        Ptr_num* tmp_ptr = new Ptr_num("t" + to_string(VAR_t_num));
-        VAR_t_num ++;
-        $$ = tmp_ptr;
+
+        LABEL_l_num_st = Stk_IF_ELSE.top();
+        // other_out = IF_DEEP() + "\tif " + str_2 + " == 0 goto l" + to_string(LABEL_l_num_st);
+        // Func_Other.push_back(other_out);
+        other_out = IF_DEEP() + "\tgoto l" + to_string(LABEL_l_num_st+1);
+        Func_Other.push_back(other_out);
     }
 ;
 
 LAndExp:
     EqExp
+    {
+        //out << "EqExp"<<endl;
+        string str_2;
+        if(ToPtrnum($1)->IF_ptr_int){    //如果是常量
+            str_2 = to_string(ToPtrnum($1)->ptr_int);
+        }
+        else{
+            str_2 = ToPtrnum($1)->ptr_str;
+        }
+
+        LABEL_l_num_st = Stk_IF_ELSE.top();
+
+        other_out = IF_DEEP() + "\tif " + str_2 + " == 0 goto l" + to_string(LABEL_l_num_st);
+        Func_Other.push_back(other_out);
+    }
     | LAndExp AND EqExp
     {
-        
+        //out << "LAndExp AND EqExp"<<endl;
+        string str_2;
+        if(ToPtrnum($3)->IF_ptr_int){    //如果是常量
+            str_2 = to_string(ToPtrnum($3)->ptr_int);
+        }
+        else{
+            str_2 = ToPtrnum($3)->ptr_str;
+        }
+
+        LABEL_l_num_st = Stk_IF_ELSE.top();
+        other_out = IF_DEEP() + "\tif " + str_2 + " == 0 goto l" + to_string(LABEL_l_num_st);
+        Func_Other.push_back(other_out);
+        // other_out = IF_DEEP() + "\tgoto l" + to_string(LABEL_l_num_st+1);
+        // Func_Other.push_back(other_out);
     }
 ;
 
 EqExp:
     RelExp
+    {
+        //out << "RelExp" << endl;
+        $$ = $1;
+    }
     | EqExp EQ RelExp
     {
-        other_out = IF_DEEP() + "t" + to_string(VAR_t_num) + " = ";
+        other_out = IF_DEEP() + "\tt" + to_string(VAR_t_num) + " = ";
         if(ToPtrnum($1)->IF_ptr_int){    //如果是常量
             other_out += to_string(ToPtrnum($1)->ptr_int);
         }
@@ -1329,7 +1371,7 @@ EqExp:
     }
     | EqExp NEQ RelExp
     {
-        other_out = IF_DEEP() + "t" + to_string(VAR_t_num) + " = ";
+        other_out = IF_DEEP() + "\tt" + to_string(VAR_t_num) + " = ";
         if(ToPtrnum($1)->IF_ptr_int){    //如果是常量
             other_out += to_string(ToPtrnum($1)->ptr_int);
         }
@@ -1354,9 +1396,16 @@ EqExp:
 
 RelExp:
     AddExp
+    {
+        // out << "ADDExp" << endl;
+        // out << "===";
+        // ToPtrnum($1)->Print(); 
+        // out<< "===" << endl;
+        $$ = $1;
+    }
     | RelExp LE AddExp
     {
-        other_out = IF_DEEP() + "t" + to_string(VAR_t_num) + " = ";
+        other_out = IF_DEEP() + "\tt" + to_string(VAR_t_num) + " = ";
         if(ToPtrnum($1)->IF_ptr_int){    //如果是常量
             other_out += to_string(ToPtrnum($1)->ptr_int);
         }
@@ -1379,7 +1428,7 @@ RelExp:
     }
     | RelExp GE AddExp
     {
-        other_out = IF_DEEP() + "t" + to_string(VAR_t_num) + " = ";
+        other_out = IF_DEEP() + "\tt" + to_string(VAR_t_num) + " = ";
         if(ToPtrnum($1)->IF_ptr_int){    //如果是常量
             other_out += to_string(ToPtrnum($1)->ptr_int);
         }
@@ -1402,7 +1451,7 @@ RelExp:
     }
     | RelExp LEQ AddExp
     {
-        other_out = IF_DEEP() + "t" + to_string(VAR_t_num) + " = ";
+        other_out = IF_DEEP() + "\tt" + to_string(VAR_t_num) + " = ";
         if(ToPtrnum($1)->IF_ptr_int){    //如果是常量
             other_out += to_string(ToPtrnum($1)->ptr_int);
         }
@@ -1425,7 +1474,7 @@ RelExp:
     }
     | RelExp GEQ AddExp
     {
-        other_out = IF_DEEP() + "t" + to_string(VAR_t_num) + " = ";
+        other_out = IF_DEEP() + "\tt" + to_string(VAR_t_num) + " = ";
         if(ToPtrnum($1)->IF_ptr_int){    //如果是常量
             other_out += to_string(ToPtrnum($1)->ptr_int);
         }
