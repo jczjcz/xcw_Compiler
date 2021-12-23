@@ -1253,32 +1253,199 @@ Cond:
     {
         // out << IF_DEEP() + "t" + to_string(VAR_t_num) + " = ";
         other_out = IF_DEEP() + "t" + to_string(VAR_t_num) + " = ";
-        if(ToPtrnum($$)->IF_ptr_int){    //如果是常量
+        if(ToPtrnum($1)->IF_ptr_int){    //如果是常量
             other_out += to_string(ToPtrnum($$)->ptr_int);
         }
         else{
-            other_out += ToPtrnum($$)->ptr_str;
+            other_out += ToPtrnum($1)->ptr_str;
         }
+        //VAR_t_num ++;
         // ToPtrnum($$)->Print();
         //out << endl;
         Func_Other.push_back(other_out);  
+        $$ = $1;
     }
 ;
 
 LOrExp:
     LAndExp
+    | LOrExp OR LAndExp
+    {
+        other_out = IF_DEEP() + "t" + to_string(VAR_t_num) + " = ";
+        if(ToPtrnum($1)->IF_ptr_int){    //如果是常量
+            other_out += to_string(ToPtrnum($1)->ptr_int);
+        }
+        else{
+            other_out += ToPtrnum($1)->ptr_str;
+        }
+        other_out += " || ";
+        if(ToPtrnum($3)->IF_ptr_int){    //如果是常量
+            other_out += to_string(ToPtrnum($3)->ptr_int);
+        }
+        else{
+            other_out += ToPtrnum($3)->ptr_str;
+        }
+        // ToPtrnum($$)->Print();
+        //out << endl;
+        Func_Other.push_back(other_out);  
+        Ptr_num* tmp_ptr = new Ptr_num("t" + to_string(VAR_t_num));
+        VAR_t_num ++;
+        $$ = tmp_ptr;
+    }
 ;
 
 LAndExp:
     EqExp
+    | LAndExp AND EqExp
+    {
+        
+    }
 ;
 
 EqExp:
     RelExp
+    | EqExp EQ RelExp
+    {
+        other_out = IF_DEEP() + "t" + to_string(VAR_t_num) + " = ";
+        if(ToPtrnum($1)->IF_ptr_int){    //如果是常量
+            other_out += to_string(ToPtrnum($1)->ptr_int);
+        }
+        else{
+            other_out += ToPtrnum($1)->ptr_str;
+        }
+        other_out += " == ";
+        if(ToPtrnum($3)->IF_ptr_int){    //如果是常量
+            other_out += to_string(ToPtrnum($3)->ptr_int);
+        }
+        else{
+            other_out += ToPtrnum($3)->ptr_str;
+        }
+        // ToPtrnum($$)->Print();
+        //out << endl;
+        Func_Other.push_back(other_out);  
+        Ptr_num* tmp_ptr = new Ptr_num("t" + to_string(VAR_t_num));
+        VAR_t_num ++;
+        $$ = tmp_ptr;
+    }
+    | EqExp NEQ RelExp
+    {
+        other_out = IF_DEEP() + "t" + to_string(VAR_t_num) + " = ";
+        if(ToPtrnum($1)->IF_ptr_int){    //如果是常量
+            other_out += to_string(ToPtrnum($1)->ptr_int);
+        }
+        else{
+            other_out += ToPtrnum($1)->ptr_str;
+        }
+        other_out += " != ";
+        if(ToPtrnum($3)->IF_ptr_int){    //如果是常量
+            other_out += to_string(ToPtrnum($3)->ptr_int);
+        }
+        else{
+            other_out += ToPtrnum($3)->ptr_str;
+        }
+        // ToPtrnum($$)->Print();
+        //out << endl;
+        Func_Other.push_back(other_out);  
+        Ptr_num* tmp_ptr = new Ptr_num("t" + to_string(VAR_t_num));
+        VAR_t_num ++;
+        $$ = tmp_ptr;
+    }
 ;
 
 RelExp:
-    AddExp;
+    AddExp
+    | RelExp LE AddExp
+    {
+        other_out = IF_DEEP() + "t" + to_string(VAR_t_num) + " = ";
+        if(ToPtrnum($1)->IF_ptr_int){    //如果是常量
+            other_out += to_string(ToPtrnum($1)->ptr_int);
+        }
+        else{
+            other_out += ToPtrnum($1)->ptr_str;
+        }
+        other_out += " < ";
+        if(ToPtrnum($3)->IF_ptr_int){    //如果是常量
+            other_out += to_string(ToPtrnum($3)->ptr_int);
+        }
+        else{
+            other_out += ToPtrnum($3)->ptr_str;
+        }
+        // ToPtrnum($$)->Print();
+        //out << endl;
+        Func_Other.push_back(other_out);  
+        Ptr_num* tmp_ptr = new Ptr_num("t" + to_string(VAR_t_num));
+        VAR_t_num ++;
+        $$ = tmp_ptr;
+    }
+    | RelExp GE AddExp
+    {
+        other_out = IF_DEEP() + "t" + to_string(VAR_t_num) + " = ";
+        if(ToPtrnum($1)->IF_ptr_int){    //如果是常量
+            other_out += to_string(ToPtrnum($1)->ptr_int);
+        }
+        else{
+            other_out += ToPtrnum($1)->ptr_str;
+        }
+        other_out += " > ";
+        if(ToPtrnum($3)->IF_ptr_int){    //如果是常量
+            other_out += to_string(ToPtrnum($3)->ptr_int);
+        }
+        else{
+            other_out += ToPtrnum($3)->ptr_str;
+        }
+        // ToPtrnum($$)->Print();
+        //out << endl;
+        Func_Other.push_back(other_out);  
+        Ptr_num* tmp_ptr = new Ptr_num("t" + to_string(VAR_t_num));
+        VAR_t_num ++;
+        $$ = tmp_ptr;
+    }
+    | RelExp LEQ AddExp
+    {
+        other_out = IF_DEEP() + "t" + to_string(VAR_t_num) + " = ";
+        if(ToPtrnum($1)->IF_ptr_int){    //如果是常量
+            other_out += to_string(ToPtrnum($1)->ptr_int);
+        }
+        else{
+            other_out += ToPtrnum($1)->ptr_str;
+        }
+        other_out += " <= ";
+        if(ToPtrnum($3)->IF_ptr_int){    //如果是常量
+            other_out += to_string(ToPtrnum($3)->ptr_int);
+        }
+        else{
+            other_out += ToPtrnum($3)->ptr_str;
+        }
+        // ToPtrnum($$)->Print();
+        //out << endl;
+        Func_Other.push_back(other_out);  
+        Ptr_num* tmp_ptr = new Ptr_num("t" + to_string(VAR_t_num));
+        VAR_t_num ++;
+        $$ = tmp_ptr;
+    }
+    | RelExp GEQ AddExp
+    {
+        other_out = IF_DEEP() + "t" + to_string(VAR_t_num) + " = ";
+        if(ToPtrnum($1)->IF_ptr_int){    //如果是常量
+            other_out += to_string(ToPtrnum($1)->ptr_int);
+        }
+        else{
+            other_out += ToPtrnum($1)->ptr_str;
+        }
+        other_out += " >= ";
+        if(ToPtrnum($3)->IF_ptr_int){    //如果是常量
+            other_out += to_string(ToPtrnum($3)->ptr_int);
+        }
+        else{
+            other_out += ToPtrnum($3)->ptr_str;
+        }
+        // ToPtrnum($$)->Print();
+        //out << endl;
+        Func_Other.push_back(other_out);  
+        Ptr_num* tmp_ptr = new Ptr_num("t" + to_string(VAR_t_num));
+        VAR_t_num ++;
+        $$ = tmp_ptr;
+    }
 ;
 
 

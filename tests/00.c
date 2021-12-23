@@ -6,13 +6,15 @@ void main(){
     while(a){
         int b = h[4];
         b = 1;
-        if(a){
+        if(1 != 2 > 3 >=4){
             int b;
             continue;
         }
         else{
             int b;
+            b = 111;
         }
+        b = 121;
     }
     int c;
 }
