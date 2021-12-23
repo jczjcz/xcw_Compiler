@@ -45,4 +45,6 @@
 
 - IF Else 条件判断语句，暂时先不看Cond的情况 👌
 
-- while 循环语句，暂时先不看Cond的情况
+- while 循环语句，暂时先不看Cond的情况 👌
+
+- break和continue

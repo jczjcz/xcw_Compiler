@@ -159,10 +159,14 @@ int Array_deep;
 string Array_name;
 //----------------------------------------------------------
 
-//-----------------IF_ELSE相关变量------------------------------
+//-----------------IF_ELSE、While相关变量------------------------------
 int LABEL_l_num_st = 0;       //表示一个IF语句开始，需要的label标记数   默认为0
 int LABEL_l_num_end = 0;
 stack<int> Stk_IF_ELSE;
+//----------------------------------------------------------
+
+//-----------------Continue、Break相关变量------------------------------
+stack<int> Stk_Break;      // 和Stk_IF_ELSE相比，只用来储存While语句的label
 
 //----------------------------------------------------------
 
@@ -1186,6 +1190,7 @@ Stmt:
     {
         LABEL_l_num_st = LABEL_l_num_end;
         Stk_IF_ELSE.push(LABEL_l_num_st);      //当前的label存入栈中
+        Stk_Break.push(LABEL_l_num_st);
         LABEL_l_num_end += 3;      //因为一个While语句一般会用到3个label
         // out << IF_DEEP() + "l" + to_string(LABEL_l_num_st+2) + ":" << endl;
         other_out = IF_DEEP() + "l" + to_string(LABEL_l_num_st+2) + ":";
@@ -1207,6 +1212,7 @@ Stmt:
         {
             LABEL_l_num_st = Stk_IF_ELSE.top();
             Stk_IF_ELSE.pop();
+            Stk_Break.pop();
             // out << IF_DEEP() + "\t" + "goto l" + to_string(LABEL_l_num_st+2) << endl;
             other_out = IF_DEEP() + "\t" + "goto l" + to_string(LABEL_l_num_st+2);
             Func_Other.push_back(other_out);  
@@ -1214,6 +1220,18 @@ Stmt:
             other_out = IF_DEEP() + "l" + to_string(LABEL_l_num_st) + ":";
             Func_Other.push_back(other_out);  
         }
+    | BREAK SEMI
+    {
+        LABEL_l_num_st = Stk_Break.top();
+        other_out = IF_DEEP() + "goto l" + to_string(LABEL_l_num_st);
+        Func_Other.push_back(other_out);  
+    }
+    | CONT SEMI
+    {
+        LABEL_l_num_st = Stk_Break.top();
+        other_out = IF_DEEP() + "goto l" + to_string(LABEL_l_num_st+2);
+        Func_Other.push_back(other_out);  
+    }
 ;
 
 IF_Else:

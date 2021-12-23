@@ -8,6 +8,7 @@ void main(){
         b = 1;
         if(a){
             int b;
+            continue;
         }
         else{
             int b;
