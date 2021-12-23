@@ -863,6 +863,12 @@ PrimaryExp:
         $$ = $1;
         
     }
+    | LPAREN Exp RPAREN SEMI
+    {
+        out << "LPAREN Exp RPAREN SEMI" << endl;
+        $$ = $2;
+        out << "test"<<endl;
+    }
 ;
 
 LVal:
