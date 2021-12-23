@@ -1,5 +1,13 @@
+NOW_DIR = $(shell pwd)
+BUILD_DIR ?= $(NOW_DIR)/build
+SOURCE_DIR = $(NOW_DIR)/source
+TARGET_EXEC = compiler
+TARGET_DIR = $(BUILD_DIR)/$(TARGET_EXEC)
+
+
+
 .PHONY: lc
 lc:
-	lex -o build/xcw_main.l.yy.cpp source/xcw_scanner.l
-	yacc -v --defines=build/xcw_parser.tab.h --output=build/xcw_parser.tab.c source/xcw_parser.y
-	g++ -o build/compiler -I source build/xcw_main.l.yy.cpp build/xcw_parser.tab.c
+	lex -o $(BUILD_DIR)/xcw_main.l.yy.cpp $(SOURCE_DIR)/xcw_scanner.l
+	yacc -v --defines=$(BUILD_DIR)/xcw_parser.tab.h --output=$(BUILD_DIR)/xcw_parser.tab.c $(SOURCE_DIR)/xcw_parser.y
+	g++ -o $(BUILD_DIR)/compiler -I source $(BUILD_DIR)/xcw_main.l.yy.cpp $(BUILD_DIR)/xcw_parser.tab.c
