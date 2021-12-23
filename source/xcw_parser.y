@@ -18,6 +18,7 @@ void yyerror(const char *);
 void yyerror(const string&);
 extern int yylex();
 extern int yyparse();
+extern FILE *yyin;
 
 ostream &out = cout;       // 用于输出
 
@@ -1606,8 +1607,41 @@ void yyerror(const string &s) {
     yyerror(s.c_str());
 }
 
-int main() {
-    ios::sync_with_stdio(false);
+int main(int argc, char **argv) {
+    if (argc >= 4)
+        if ((yyin = fopen(argv[3], "r")) == NULL)
+            yyerror("Cannot open input file.");
+    
+    if (argc >= 6)
+        if (freopen(argv[5], "w", stdout) == NULL)
+            yyerror("Cannot open output file.");
+
+    // nowScope->addToken(new FuncIdentToken(RetInt, "getint", 0));
+    // nowScope->addToken(new FuncIdentToken(RetInt, "getch", 0));
+    // nowScope->addToken(new FuncIdentToken(RetInt, "getarray", 1));
+    // nowScope->addToken(new FuncIdentToken(RetVoid, "putint", 1));
+    // nowScope->addToken(new FuncIdentToken(RetVoid, "putch", 1));
+    // nowScope->addToken(new FuncIdentToken(RetVoid, "putarray", 2));
+
+    IDENT_scope tmp_1 = IDENT_scope("getint", "0", DEEP, 0);    //不是Const
+    tmp_1.IDENT_if_ret_int = 1;
+    Scope.push_back(tmp_1);
+    IDENT_scope tmp_2 = IDENT_scope("getch", "0", DEEP, 0);    //不是Const
+    tmp_2.IDENT_if_ret_int = 1;
+    Scope.push_back(tmp_2);
+    IDENT_scope tmp_3 = IDENT_scope("getarray", "0", DEEP, 0);    //不是Const
+    tmp_3.IDENT_if_ret_int = 1;
+    Scope.push_back(tmp_3);
+    IDENT_scope tmp_4 = IDENT_scope("putint", "0", DEEP, 0);    //不是Const
+    tmp_4.IDENT_if_ret_int = 0;
+    Scope.push_back(tmp_4);
+    IDENT_scope tmp_5 = IDENT_scope("putch", "0", DEEP, 0);    //不是Const
+    tmp_5.IDENT_if_ret_int = 0;
+    Scope.push_back(tmp_5);
+    IDENT_scope tmp_6 = IDENT_scope("putarray", "0", DEEP, 0);    //不是Const
+    tmp_6.IDENT_if_ret_int = 0;
+    Scope.push_back(tmp_6);
+
     yyparse();
     return 0;
 }
