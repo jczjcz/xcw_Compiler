@@ -178,6 +178,8 @@ string str_exp1,str_exp2;
 int R_Array_Flag = 0;    //表示这个数组是否在右边表达式
 string LVal_Assign_out;
 
+int Cond_Array_Flag = 0;    //表示这个数组是否在条件表达式
+
 
 //-----------------函数语句打印相关变量------------------------------
 vector<string> Func_VarDecl;
@@ -424,7 +426,7 @@ VarDef:
         int n = ToPtrnum($2)->ptr_int;      //当前数组的元素总数，例如a[2][3], n=6
         // 输出 var 24 T0 
         // out << IF_DEEP() + "var " << n*INTSIZE << " T" << to_string(VAR_T_num) <<endl;
-        def_out = IF_DEEP() + "var " + to_string(n*INTSIZE) + " T" + to_string(VAR_T_num);
+        def_out = IF_DEEP_DEF() + "var " + to_string(n*INTSIZE) + " T" + to_string(VAR_T_num);
         Func_VarDecl.push_back(def_out);
         
         vector<Ptr_num>* Ident_array = new vector<Ptr_num>;
@@ -611,10 +613,26 @@ Exp:
 
 AddExp:
     MulExp
+    {
+        $$ =$1;
+        // if(!ToPtrnum($1)->IF_ptr_int){
+        //     other_out = "ADD1-------------tmp_ptr_old = "  + ToPtrnum($1)->ptr_str ; 
+        //     Func_Other.push_back(other_out);
+        // }
+        // ToPtrnum($1)->Print();
+    }
     | AddExp ADD MulExp
     {
+        // if(!ToPtrnum($1)->IF_ptr_int){
+        //     other_out = "tmp_ptr_old = "  + ToPtrnum($1)->ptr_str ; 
+        //     Func_Other.push_back(other_out);
+        // }
+        // if(!ToPtrnum($3)->IF_ptr_int){
+        //     other_out = "tmp_ptr_old = "  + ToPtrnum($3)->ptr_str ; 
+        //     Func_Other.push_back(other_out);
+        // }
         //out << "AddExp ADD MulExp" << endl;
-        
+        // ToPtrnum($1)->Print();
         // ToPtrnum($3)->Print();
         Ptr_num* add_1 = ToPtrnum($1);
         Ptr_num* mul_1 = ToPtrnum($3);
@@ -625,16 +643,13 @@ AddExp:
         }
         else{             // 至少有一个是变量
             //如果其中有常量，先强制把常量转成string类型
-            // out << "in_block" << endl;
-            // out << "testttttt-----" << add_1->ptr_str << endl;
-            // out << "testttttt-----" << add_1->ptr_str << endl;
             if(add_1->IF_ptr_int){
                 str_exp1 = to_string(add_1->ptr_int);
-                //out << "str1 = " << str_exp1 << endl;
+                //out << "str_exp1 = " << str_exp1 << endl;
             }
             else{
                 str_exp1 = add_1->ptr_str;
-                //out << "str1 = " << str_exp1 << endl;
+                //out << "str_exp1 = " << str_exp1 << endl;
             }
             //ToPtrnum($1)->Print();
             if(mul_1->IF_ptr_int){
@@ -644,14 +659,16 @@ AddExp:
                 str_exp2 = mul_1->ptr_str;
             }
 
-            // out << "str1 = " << str_exp1 << endl;
-            // out << "str2 = " << str_exp2 << endl;
+            // out << "str_exp1 = " << str_exp1 << endl;
+            // out << "str_exp2 = " << str_exp2 << endl;
 
+            def_out = IF_DEEP_DEF() + "var t" + to_string(VAR_t_num);
+            Func_VarDecl.push_back(def_out);
             tmp_ptr->ptr_str = "t" +  to_string(VAR_t_num);   // 生成中间变量
             VAR_t_num ++;
             //是字符型
             tmp_ptr->IF_ptr_int = 0;
-            //out << IF_DEEP() + tmp_ptr->ptr_str << " = " << str1 << " + " << str2 << endl;      // 输出类似于 t0 = T0 + 1
+            //out << IF_DEEP() + tmp_ptr->ptr_str << " = " << str_exp1 << " + " << str_exp2 << endl;      // 输出类似于 t0 = T0 + 1
             other_out = IF_DEEP() + tmp_ptr->ptr_str + " = " + str_exp1 + " + " + str_exp2;
             Func_Other.push_back(other_out);
         }
@@ -661,6 +678,7 @@ AddExp:
     {
         Ptr_num* add_1 = ToPtrnum($1);
         Ptr_num* mul_1 = ToPtrnum($3);
+
         Ptr_num* tmp_ptr = new Ptr_num;
         if(add_1->IF_ptr_int && mul_1->IF_ptr_int){      //两个都是常量
             tmp_ptr->ptr_int = add_1->ptr_int - mul_1->ptr_int;
@@ -668,26 +686,28 @@ AddExp:
         }
         else{             // 至少有一个是变量
             //如果其中有常量，先强制把常量转成string类型
-            string str1, str2;
             if(add_1->IF_ptr_int){
-                str1 = to_string(add_1->ptr_int);
+                str_exp1 = to_string(add_1->ptr_int);
             }
             else{
-                str1 = add_1->ptr_str;
+                str_exp1 = add_1->ptr_str;
+                //out <<  "str_exp1 = "<<str_exp1 << endl;
             }
             if(mul_1->IF_ptr_int){
-                str2 = to_string(mul_1->ptr_int);
+                str_exp2 = to_string(mul_1->ptr_int);
             }
             else{
-                str2 = mul_1->ptr_str;
+                str_exp2 = mul_1->ptr_str;
             }
-
+            def_out = IF_DEEP_DEF() + "var t" + to_string(VAR_t_num);
+            Func_VarDecl.push_back(def_out);
             tmp_ptr->ptr_str = "t" +  to_string(VAR_t_num);   // 生成中间变量
             VAR_t_num ++;
+            //out << "str_exp1 = "<<str_exp1 << "  str_exp2 = " << str_exp2 << endl;
             //是字符型
             tmp_ptr->IF_ptr_int = 0;
-            // out << IF_DEEP() + tmp_ptr->ptr_str << " = " << str1 << " - " << str2 << endl;      // 输出类似于 t0 = T0 + 1
-            other_out = IF_DEEP() + tmp_ptr->ptr_str + " = " + str1 + " - " + str2;
+            // out << IF_DEEP() + tmp_ptr->ptr_str << " = " << str_exp1 << " - " << str_exp2 << endl;      // 输出类似于 t0 = T0 + 1
+            other_out = IF_DEEP() + tmp_ptr->ptr_str + " = " + str_exp1 + " - " + str_exp2;
             Func_Other.push_back(other_out);
         }
         $$ = tmp_ptr; 
@@ -699,6 +719,13 @@ MulExp:
     UnaryExp
     {
         $$ = $1;
+        // if(!ToPtrnum($1)->IF_ptr_int){
+            
+        //     other_out = "MulExp-----------tmp_ptr_old = "  + ToPtrnum($1)->ptr_str ; 
+        //     Func_Other.push_back(other_out);
+        // }
+        //ToPtrnum($1)->Print();
+        // ToPtrnum($1)->Print();
         // out << "MulExp" << endl;
     }
     | MulExp MUL UnaryExp
@@ -712,26 +739,26 @@ MulExp:
         }
         else{             // 至少有一个是变量
             //如果其中有常量，先强制把常量转成string类型
-            string str1, str2;
             if(add_1->IF_ptr_int){
-                str1 = to_string(add_1->ptr_int);
+                str_exp1 = to_string(add_1->ptr_int);
             }
             else{
-                str1 = add_1->ptr_str;
+                str_exp1 = add_1->ptr_str;
             }
             if(mul_1->IF_ptr_int){
-                str2 = to_string(mul_1->ptr_int);
+                str_exp2 = to_string(mul_1->ptr_int);
             }
             else{
-                str2 = mul_1->ptr_str;
+                str_exp2 = mul_1->ptr_str;
             }
-
+            def_out = IF_DEEP_DEF() + "var t" + to_string(VAR_t_num);
+            Func_VarDecl.push_back(def_out);
             tmp_ptr->ptr_str = "t" +  to_string(VAR_t_num);   // 生成中间变量
             VAR_t_num ++;
             //是字符型
             tmp_ptr->IF_ptr_int = 0;
-            // out << IF_DEEP() + tmp_ptr->ptr_str << " = " << str1 << " * " << str2 << endl;      // 输出类似于 t0 = T0 + 1
-            other_out = IF_DEEP() + tmp_ptr->ptr_str + " = " + str1 + " * " + str2;
+            // out << IF_DEEP() + tmp_ptr->ptr_str << " = " << str_exp1 << " * " << str_exp2 << endl;      // 输出类似于 t0 = T0 + 1
+            other_out = IF_DEEP() + tmp_ptr->ptr_str + " = " + str_exp1 + " * " + str_exp2;
             Func_Other.push_back(other_out);
         }
         $$ = tmp_ptr; 
@@ -750,29 +777,29 @@ MulExp:
         }
         else{             // 至少有一个是变量
             //如果其中有常量，先强制把常量转成string类型
-            string str1, str2;
             if(add_1->IF_ptr_int){
-                str1 = to_string(add_1->ptr_int);
+                str_exp1 = to_string(add_1->ptr_int);
             }
             else{
-                str1 = add_1->ptr_str;
+                str_exp1 = add_1->ptr_str;
             }
             if(mul_1->IF_ptr_int){
                 if(mul_1->ptr_int == 0){       //除0报错
                     yyerror("Integer division by zero.");
                 }
-                str2 = to_string(mul_1->ptr_int);
+                str_exp2 = to_string(mul_1->ptr_int);
             }
             else{
-                str2 = mul_1->ptr_str;
+                str_exp2 = mul_1->ptr_str;
             }
-
+            def_out = IF_DEEP_DEF() + "var t" + to_string(VAR_t_num);
+            Func_VarDecl.push_back(def_out);
             tmp_ptr->ptr_str = "t" +  to_string(VAR_t_num);   // 生成中间变量
             VAR_t_num ++;
             //是字符型
             tmp_ptr->IF_ptr_int = 0;
-            // out << IF_DEEP() + tmp_ptr->ptr_str << " = " << str1 << " / " << str2 << endl;      // 输出类似于 t0 = T0 + 1
-            other_out = IF_DEEP() + tmp_ptr->ptr_str + " = " + str1 + " / " + str2;
+            // out << IF_DEEP() + tmp_ptr->ptr_str << " = " << str_exp1 << " / " << str_exp2 << endl;      // 输出类似于 t0 = T0 + 1
+            other_out = IF_DEEP() + tmp_ptr->ptr_str + " = " + str_exp1 + " / " + str_exp2;
             Func_Other.push_back(other_out);
         }
         $$ = tmp_ptr; 
@@ -791,29 +818,29 @@ MulExp:
         }
         else{             // 至少有一个是变量
             //如果其中有常量，先强制把常量转成string类型
-            string str1, str2;
             if(add_1->IF_ptr_int){
-                str1 = to_string(add_1->ptr_int);
+                str_exp1 = to_string(add_1->ptr_int);
             }
             else{
-                str1 = add_1->ptr_str;
+                str_exp1 = add_1->ptr_str;
             }
             if(mul_1->IF_ptr_int){
                 if(mul_1->ptr_int == 0){       //除0报错
                     yyerror("Integer mod by zero.");
                 }
-                str2 = to_string(mul_1->ptr_int);
+                str_exp2 = to_string(mul_1->ptr_int);
             }
             else{
-                str2 = mul_1->ptr_str;
+                str_exp2 = mul_1->ptr_str;
             }
-
+            def_out = IF_DEEP_DEF() + "var t" + to_string(VAR_t_num);
+            Func_VarDecl.push_back(def_out);
             tmp_ptr->ptr_str = "t" +  to_string(VAR_t_num);   // 生成中间变量
             VAR_t_num ++;
             //是字符型
             tmp_ptr->IF_ptr_int = 0;
-            // out << IF_DEEP() + tmp_ptr->ptr_str << " = " << str1 << " % " << str2 << endl;      // 输出类似于 t0 = T0 + 1
-            other_out = IF_DEEP() + tmp_ptr->ptr_str + " = " + str1 + " % " + str2;
+            // out << IF_DEEP() + tmp_ptr->ptr_str << " = " << str_exp1 << " % " << str_exp2 << endl;      // 输出类似于 t0 = T0 + 1
+            other_out = IF_DEEP() + tmp_ptr->ptr_str + " = " + str_exp1 + " % " + str_exp2;
             Func_Other.push_back(other_out);
         }
         $$ = tmp_ptr; 
@@ -824,6 +851,7 @@ UnaryExp:
     PrimaryExp
     {
         $$ = $1;
+        //ToPtrnum($1)->Print();
         // out << "PrimaryExp" << endl;
   //      
     }
@@ -838,15 +866,24 @@ UnaryExp:
         }
 
         // out << IF_DEEP() + "t" + to_string(VAR_t_num) + " = call f_" + *(ToStr($1)) << endl;
-        other_out = IF_DEEP() + "t" + to_string(VAR_t_num) + " = call f_" + *(ToStr($1));
-        Func_Other.push_back(other_out);
+        if(tmp->IDENT_if_ret_int == 1){        //返回值是INT的函数
+            def_out = IF_DEEP_DEF() + "var t" + to_string(VAR_t_num);
+            Func_VarDecl.push_back(def_out);
+            other_out = IF_DEEP() + "t" + to_string(VAR_t_num) + " = call f_" + *(ToStr($1));
+            Func_Other.push_back(other_out);
 
-        Ptr_num* tmp_ptr = new Ptr_num;
-        tmp_ptr->ptr_str = "t" + to_string(VAR_t_num);
-        tmp_ptr->IF_ptr_int = 0;
+            Ptr_num* tmp_ptr = new Ptr_num;
+            tmp_ptr->ptr_str = "t" + to_string(VAR_t_num);
+            tmp_ptr->IF_ptr_int = 0;
 
-        VAR_t_num ++;
-        $$ = tmp_ptr;
+            VAR_t_num ++;
+            $$ = tmp_ptr;
+        }
+        else{
+            other_out = IF_DEEP() + "call f_" + *(ToStr($1));
+            Func_Other.push_back(other_out);
+        }
+        
     }
     | ADD UnaryExp
     {
@@ -892,7 +929,8 @@ PrimaryExp:
     }
     | LVal
     {
-        //out << "LVal" << endl;
+        // out << "LVal" << endl;
+        // ToPtrnum($1)->Print();
         $$ = $1;
         
     }
@@ -934,24 +972,29 @@ LVal:
     }
         ArrayLVals
         {        //a[2][3]     a[1][b]  
-            Ptr_num tmp_ptr, tmp_ptr_new, tmp_ptr_old;
+            // Ptr_num tmp_ptr, tmp_ptr_new, tmp_ptr_old;
+            Ptr_num* tmp_ptr = new Ptr_num;      //尝试写成指针
+            Ptr_num* tmp_ptr_new = new Ptr_num;
+            Ptr_num* tmp_ptr_old = new Ptr_num;
             // auto tmp_ptr_old = new Ptr_num;
             int ptr_size = INTSIZE;
 
             for(int i = Array_LVal_dim.size()-1; i >= 0 ;i --){
-                tmp_ptr = Array_LVal_dim[i];
-                if(tmp_ptr.IF_ptr_int){     //是整数
-                    tmp_ptr_new.IF_ptr_int = 1;
-                    tmp_ptr_new.ptr_int = tmp_ptr.ptr_int * ptr_size;
+                tmp_ptr = &Array_LVal_dim[i];
+                if(tmp_ptr->IF_ptr_int){     //是整数
+                    tmp_ptr_new->IF_ptr_int = 1;
+                    tmp_ptr_new->ptr_int = tmp_ptr->ptr_int * ptr_size;
                     if(i != Array_LVal_dim.size()-1){     //第一次，不用考虑和之前相加
-                        if(tmp_ptr_old.IF_ptr_int){     //如果前面的也是INT
-                            tmp_ptr_old.ptr_int += tmp_ptr_new.ptr_int;
+                        if(tmp_ptr_old->IF_ptr_int){     //如果前面的也是INT
+                            tmp_ptr_old->ptr_int += tmp_ptr_new->ptr_int;
                         }
                         else{
+                            def_out = IF_DEEP_DEF() + "var t" + to_string(VAR_t_num);
+                            Func_VarDecl.push_back(def_out);
                             // out << IF_DEEP() + "t" + to_string(VAR_t_num ) << " = "<< tmp_ptr_new.ptr_int << " + " << tmp_ptr_old.ptr_str << endl;
-                            other_out =  IF_DEEP() + "t" + to_string(VAR_t_num ) + " = " + to_string(tmp_ptr_new.ptr_int) + " + " + tmp_ptr_old.ptr_str;
+                            other_out =  IF_DEEP() + "t" + to_string(VAR_t_num ) + " = " + to_string(tmp_ptr_new->ptr_int) + " + " + tmp_ptr_old->ptr_str;
                             Func_Other.push_back(other_out);
-                            tmp_ptr_old.ptr_str = "t" + to_string(VAR_t_num);
+                            tmp_ptr_old->ptr_str = "t" + to_string(VAR_t_num);
                             VAR_t_num ++;
                         }
                     }
@@ -960,17 +1003,20 @@ LVal:
                     }
                 }
                 else{
-                    tmp_ptr_new.IF_ptr_int = 0;
-                    tmp_ptr_new.ptr_str = "t" + to_string(VAR_t_num);
-                    tmp_ptr_old.ptr_str = to_string(tmp_ptr_old.ptr_int);    //强制转换为string类型
-                    tmp_ptr_old.IF_ptr_int = 0;
+                    def_out = IF_DEEP_DEF() + "var t" + to_string(VAR_t_num);
+                    Func_VarDecl.push_back(def_out);
+                    tmp_ptr_new->IF_ptr_int = 0;
+                    tmp_ptr_new->ptr_str = "t" + to_string(VAR_t_num);
+                    tmp_ptr_old->ptr_str = to_string(tmp_ptr_old->ptr_int);    //强制转换为string类型
+                    tmp_ptr_old->IF_ptr_int = 0;
                     VAR_t_num ++;
-                    out << IF_DEEP() + tmp_ptr_new.ptr_str << " = " << tmp_ptr.ptr_str << " * " << ptr_size << endl;
+                    other_out = IF_DEEP() + tmp_ptr_new->ptr_str + " = " + tmp_ptr->ptr_str + " * " + to_string(ptr_size);
+                    Func_Other.push_back(other_out);
                     if(i != Array_LVal_dim.size()-1){     //第一次不用考虑和之前相加
                         // out <<IF_DEEP() + "t" + to_string(VAR_t_num ) << " = "<< tmp_ptr_new.ptr_str << " + " << tmp_ptr_old.ptr_str << endl;
-                        other_out = IF_DEEP() + "t" + to_string(VAR_t_num ) + " = " + tmp_ptr_new.ptr_str + " + " + tmp_ptr_old.ptr_str;
+                        other_out = IF_DEEP() + "t" + to_string(VAR_t_num ) + " = " + tmp_ptr_new->ptr_str + " + " + tmp_ptr_old->ptr_str;
                         Func_Other.push_back(other_out);
-                        tmp_ptr_old.ptr_str = "t" + to_string(VAR_t_num);
+                        tmp_ptr_old->ptr_str = "t" + to_string(VAR_t_num);
                         VAR_t_num ++;
                     }
                     else{
@@ -980,26 +1026,30 @@ LVal:
                 ptr_size *= Array_dim[i];     //更新ptr_size
             }
             Array_LVal_dim.clear();
-            if(tmp_ptr_old.IF_ptr_int){
-                tmp_ptr_old.ptr_str = Array_name + "[" + to_string(tmp_ptr_old.ptr_int) + "]";
-                tmp_ptr_old.IF_ptr_int = 0;     //最后的结果一定是一个字符串类型
+            if(tmp_ptr_old->IF_ptr_int){
+                tmp_ptr_old->ptr_str = Array_name + "[" + to_string(tmp_ptr_old->ptr_int) + "]";
+                tmp_ptr_old->IF_ptr_int = 0;     //最后的结果一定是一个字符串类型
             }
             else{
-                tmp_ptr_old.ptr_str = Array_name + "[" + tmp_ptr_old.ptr_str + "]";
-                tmp_ptr_old.IF_ptr_int = 0;
+                tmp_ptr_old->ptr_str = Array_name + "[" + tmp_ptr_old->ptr_str + "]";
+                tmp_ptr_old->IF_ptr_int = 0;
             }    
-            if(R_Array_Flag == 1){
-                other_out = IF_DEEP() + "t" + to_string(VAR_t_num ) + " = " + tmp_ptr_old.ptr_str;
+            if(R_Array_Flag == 1){      //表示位于右侧的数组
+                def_out = IF_DEEP_DEF() + "var t" + to_string(VAR_t_num);
+                Func_VarDecl.push_back(def_out);
+                other_out = IF_DEEP() + "t" + to_string(VAR_t_num ) + " = " + tmp_ptr_old->ptr_str;
                 Func_Other.push_back(other_out);
 
-                tmp_ptr_old.ptr_str = "t" + to_string(VAR_t_num);
+                tmp_ptr_old->ptr_str = "t" + to_string(VAR_t_num);
                 VAR_t_num ++;
-                $$ = & tmp_ptr_old;
+                $$ = tmp_ptr_old;
+                // other_out = "tmp_ptr_old = "  + tmp_ptr_old.ptr_str ; 
+                // Func_Other.push_back(other_out);
             }
             else{
-                $$ = & tmp_ptr_old;
+                $$ = tmp_ptr_old;
             }
-           
+            // tmp_ptr_old.Print();
         }
 ;
 
@@ -1253,8 +1303,8 @@ Stmt:
     {
         LABEL_l_num_st = LABEL_l_num_end;
         Stk_IF_ELSE.push(LABEL_l_num_st);      //当前的label存入栈中
-        other_out = IF_DEEP() + "l" + to_string(LABEL_l_num_st+2) + ":";    //没什么用，但看起来更整齐
-        Func_Other.push_back(other_out);
+        // other_out = IF_DEEP() + "l" + to_string(LABEL_l_num_st+2) + ":";    //没什么用，但看起来更整齐
+        // Func_Other.push_back(other_out);
     }
         LPAREN Cond RPAREN 
         {
@@ -1323,6 +1373,11 @@ Stmt:
 IF_Else:
     {
         // 不存在ELSE的情况
+        LABEL_l_num_st = Stk_IF_ELSE.top();
+        //Stk_IF_ELSE.pop();
+        // out << IF_DEEP() + "l" + to_string(LABEL_l_num_st+2) + ":" << endl;
+        other_out = IF_DEEP() + "l" + to_string(LABEL_l_num_st+2) + ":";
+        Func_Other.push_back(other_out);  
     }
     | ELSE Stmt
     {
@@ -1453,7 +1508,9 @@ EqExp:
         }
         // ToPtrnum($$)->Print();
         //out << endl;
-        Func_Other.push_back(other_out);  
+        Func_Other.push_back(other_out); 
+        def_out = IF_DEEP_DEF() + "var t" + to_string(VAR_t_num);
+        Func_VarDecl.push_back(def_out); 
         Ptr_num* tmp_ptr = new Ptr_num("t" + to_string(VAR_t_num));
         VAR_t_num ++;
         $$ = tmp_ptr;
@@ -1477,6 +1534,8 @@ EqExp:
         // ToPtrnum($$)->Print();
         //out << endl;
         Func_Other.push_back(other_out);  
+        def_out = IF_DEEP_DEF() + "var t" + to_string(VAR_t_num);
+        Func_VarDecl.push_back(def_out);
         Ptr_num* tmp_ptr = new Ptr_num("t" + to_string(VAR_t_num));
         VAR_t_num ++;
         $$ = tmp_ptr;
@@ -1511,6 +1570,8 @@ RelExp:
         // ToPtrnum($$)->Print();
         //out << endl;
         Func_Other.push_back(other_out);  
+        def_out = IF_DEEP_DEF() + "var t" + to_string(VAR_t_num);
+        Func_VarDecl.push_back(def_out);
         Ptr_num* tmp_ptr = new Ptr_num("t" + to_string(VAR_t_num));
         VAR_t_num ++;
         $$ = tmp_ptr;
@@ -1534,6 +1595,8 @@ RelExp:
         // ToPtrnum($$)->Print();
         //out << endl;
         Func_Other.push_back(other_out);  
+        def_out = IF_DEEP_DEF() + "var t" + to_string(VAR_t_num);
+        Func_VarDecl.push_back(def_out);
         Ptr_num* tmp_ptr = new Ptr_num("t" + to_string(VAR_t_num));
         VAR_t_num ++;
         $$ = tmp_ptr;
@@ -1557,6 +1620,8 @@ RelExp:
         // ToPtrnum($$)->Print();
         //out << endl;
         Func_Other.push_back(other_out);  
+        def_out = IF_DEEP_DEF() + "var t" + to_string(VAR_t_num);
+        Func_VarDecl.push_back(def_out);
         Ptr_num* tmp_ptr = new Ptr_num("t" + to_string(VAR_t_num));
         VAR_t_num ++;
         $$ = tmp_ptr;
