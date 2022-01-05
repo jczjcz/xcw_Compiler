@@ -375,7 +375,7 @@ VarDef:
     }
         InitVal
         {
-
+            //out << "InitVal"<<endl;
             if(ToPtrnum($4)->IF_ptr_int == 1){       //传递的是常量
                 int num = ToPtrnum($4)->ptr_int;
                 IDENT_scope tmp = IDENT_scope(*ToStr($1), to_string(num), DEEP, 0);  
@@ -596,13 +596,15 @@ ArrayUnit:
 InitVal: 
     Exp
     {
-
+        // out << "Exp"<<endl;
+        $$ = $1;
     }
 ;
 
 Exp:
     AddExp
     {
+        // out << "ADDExp"<<endl;
         $$ = $1;            
     }
 ;
@@ -697,7 +699,7 @@ MulExp:
     UnaryExp
     {
         $$ = $1;
-        
+        // out << "MulExp" << endl;
     }
     | MulExp MUL UnaryExp
     {
@@ -822,7 +824,7 @@ UnaryExp:
     PrimaryExp
     {
         $$ = $1;
-        //out << "PrimaryExp" << endl;
+        // out << "PrimaryExp" << endl;
   //      
     }
     | IDENT LPAREN FuncRParams RPAREN
@@ -846,7 +848,38 @@ UnaryExp:
         VAR_t_num ++;
         $$ = tmp_ptr;
     }
+    | ADD UnaryExp
+    {
+        $$ = $1;
+    }
+    | SUB UnaryExp
+    {
+        Ptr_num* tmp_ptr = ToPtrnum($2);
+        if(tmp_ptr->IF_ptr_int){
+            tmp_ptr->ptr_int = - tmp_ptr->ptr_int;
+        }
+        else{
+            tmp_ptr->ptr_str = "-" + tmp_ptr->ptr_str;
+        }
+        $$ = $2;
+    }
+    | NOT UnaryExp
+    {
+        Ptr_num* tmp_ptr = ToPtrnum($2);
+        if(tmp_ptr->IF_ptr_int){
+            if(tmp_ptr->ptr_int == 0)
+                tmp_ptr->ptr_int = 1;
+            else    
+                tmp_ptr->ptr_int = 0;
+        }
+        else{
+            tmp_ptr->ptr_str = "!" + tmp_ptr->ptr_str;
+        }
+        $$ = $2;
+    }
 ;
+
+
 
 PrimaryExp:
     NUMBER
@@ -863,11 +896,9 @@ PrimaryExp:
         $$ = $1;
         
     }
-    | LPAREN Exp RPAREN SEMI
+    | LPAREN Exp RPAREN
     {
-        out << "LPAREN Exp RPAREN SEMI" << endl;
         $$ = $2;
-        out << "test"<<endl;
     }
 ;
 
