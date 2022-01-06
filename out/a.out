@@ -1,0 +1,31 @@
+var 36 T0
+f_main [3]
+	var T1
+	var T2
+	var t0
+	var t1
+	var t2
+	var t3
+	var t4
+	var t5
+	var t6
+	var t7
+	var T3
+	T1 = 0
+	T2 = 0
+	t0 = T1 + T2
+not INT ---------
+	t1 = T1 * 4
+not INT ---------
+NOT_INT-start-------tmp_ptr_old->str = t1
+NOT_INT-start-------tmp_ptr_new->str = t2
+	t2 = t0 * 12
+	t3 = t2 + t1
+	t4 = p0[t3]
+	t5 = T2 - t4
+not INT ---------
+	t6 = t5 * 4
+	t7 = T0[t6]
+	T3 = t7
+	return
+end f_main

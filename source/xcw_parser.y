@@ -153,6 +153,7 @@ IDENT_scope* find_define(string name){
 //-----------------数组相关变量------------------------------
 vector<int> Array_dim;        // 该数据结构用于数组声明时，从前到后，用于存放数组的各个维度
 vector<Ptr_num> Array_LVal_dim;       //在右侧作为表达式的时候，用来存储数组对象的各个维度
+stack<int> Array_LVal_length;     //在右侧作为表达式的时候，用来存储各个数组对象的长度
 int path_length = 1;
 int Array_loc;
 int Array_dest, old_Array_dest;    //old_Array_dest用来临时存之前的Array_dest
@@ -977,33 +978,45 @@ LVal:
     | IDENT
     {
         //out << "IDENT  ArrayLVals" << endl;
-        // other_out = "IDENT  ArrayLVals";
+        // other_out = "IDENT  ArrayLVals  IDENT name = " + (*ToStr($1));
         // Func_Other.push_back(other_out);
         IDENT_scope* tmp = find_define(*ToStr($1));    //搜索这个数组的定义
         Array_name.push(tmp->IR_name);
         // other_out = "tmp->IR_name = " + tmp->IR_name;
         // Func_Other.push_back(other_out);
-        Array_dim.clear();
-        for(int i = 0;i < (*tmp).IDENT_dim_array->size();i++){
-            Array_dim.push_back((*(*tmp).IDENT_dim_array)[i]);
-        }
+        // Array_dim.clear();
+        // for(int i = 0;i < (*tmp).IDENT_dim_array->size();i++){
+        //     Array_dim.push_back((*(*tmp).IDENT_dim_array)[i]);
+        // }
+
+        Array_LVal_length.push(0);
     }
         ArrayLVals
         {        //a[2][3]     a[1][b]  
+
+            IDENT_scope* tmp_lval = find_define(*ToStr($1));    //搜索这个数组的定义
+            Array_dim.clear();
+            for(int i = 0;i < (*tmp_lval).IDENT_dim_array->size();i++){
+                Array_dim.push_back((*(*tmp_lval).IDENT_dim_array)[i]);    //原数组的维度
+            }
             // Ptr_num tmp_ptr, tmp_ptr_new, tmp_ptr_old;
             Ptr_num* tmp_ptr = new Ptr_num;      //尝试写成指针
             Ptr_num* tmp_ptr_new = new Ptr_num;
             Ptr_num* tmp_ptr_old = new Ptr_num;
             // auto tmp_ptr_old = new Ptr_num;
             int ptr_size = INTSIZE;
-
-            for(int i = Array_LVal_dim.size()-1; i >= 0 ;i --){
-                tmp_ptr = &Array_LVal_dim[i];
-                // tmp_ptr->Print();
+            
+            // other_out = "Array_dim.size = " + to_string(Array_LVal_dim.size());
+            // Func_Other.push_back(other_out);
+            //  Array_LVal_dim 存储了各个数组具体的维度，Array_dim存储了原始的维度
+            int array_len = Array_LVal_length.top();
+            for(int i = 0; i < array_len ;i ++){
+                tmp_ptr = & Array_LVal_dim.back();
+                Array_LVal_dim.pop_back();
                 if(tmp_ptr->IF_ptr_int){     //是整数
                     tmp_ptr_new->IF_ptr_int = 1;
                     tmp_ptr_new->ptr_int = tmp_ptr->ptr_int * ptr_size;
-                    if(i != Array_LVal_dim.size()-1){     //第一次，不用考虑和之前相加
+                    if(i != 0){     //第一次，不用考虑和之前相加
                         if(tmp_ptr_old->IF_ptr_int){     //如果前面的也是INT
                             tmp_ptr_old->ptr_int += tmp_ptr_new->ptr_int;
                         }
@@ -1018,46 +1031,65 @@ LVal:
                         }
                     }
                     else{
-                        tmp_ptr_old = tmp_ptr_new;
+                        tmp_ptr_old->ptr_int = tmp_ptr_new->ptr_int;
+                        tmp_ptr_old->IF_ptr_int = tmp_ptr_new->IF_ptr_int;
                     }
                 }
-                else{
+                else{            //其中有一个是变量
                     // other_out = "not INT ---------";
                     // Func_Other.push_back(other_out);
+                    
+                    if(i != 0){
+                        // other_out = "NOT_INT-start-------tmp_ptr_old->str = " + tmp_ptr_old->ptr_str;
+                        // Func_Other.push_back(other_out);
+                    }
+                    
                     def_out = IF_DEEP_DEF() + "var t" + to_string(VAR_t_num);
                     Func_VarDecl.push_back(def_out);
                     tmp_ptr_new->IF_ptr_int = 0;
                     tmp_ptr_new->ptr_str = "t" + to_string(VAR_t_num);
-                    // other_out = "tmp_ptr_new->str = " + tmp_ptr_new->ptr_str;
-                    // Func_Other.push_back(other_out);
-
-                    if(i != Array_LVal_dim.size()-1 && tmp_ptr_old->IF_ptr_int){
+                    
+                    // if(i != 0){
+                    //     other_out = "NOT_INT-start-------tmp_ptr_new->str = " + tmp_ptr_new->ptr_str;
+                    //     Func_Other.push_back(other_out);
+                    // }
+                    if(i != 0 && tmp_ptr_old->IF_ptr_int){
                         tmp_ptr_old->ptr_str = to_string(tmp_ptr_old->ptr_int);    //强制转换为string类型
                         tmp_ptr_old->IF_ptr_int = 0;    
                     }
                     VAR_t_num ++;
                     // tmp_ptr_old->Print();
+                    // if(i != Array_LVal_dim.size()-1){
+                    //     other_out = "NOT_INT-start-------tmp_ptr_old->str = " + tmp_ptr_old->ptr_str;
+                    //     Func_Other.push_back(other_out);
+                    // }
                     other_out = IF_DEEP() + tmp_ptr_new->ptr_str + " = " + tmp_ptr->ptr_str + " * " + to_string(ptr_size);
                     Func_Other.push_back(other_out);
-                    if(i != Array_LVal_dim.size()-1){     //第一次不用考虑和之前相加
+                    if(i != 0){     //第一次不用考虑和之前相加
                         // out <<IF_DEEP() + "t" + to_string(VAR_t_num ) << " = "<< tmp_ptr_new.ptr_str << " + " << tmp_ptr_old.ptr_str << endl;
                         def_out = IF_DEEP_DEF() + "var t" + to_string(VAR_t_num);
                         Func_VarDecl.push_back(def_out);
 
-                        other_out = IF_DEEP() + "t" + to_string(VAR_t_num ) + " = " + tmp_ptr_new->ptr_str + " + " + tmp_ptr_old->ptr_str;
+                        // other_out = "tmp_ptr_new->str = " + tmp_ptr_new->ptr_str;
+                        // Func_Other.push_back(other_out);
+                        // other_out = "tmp_ptr_old->str = " + tmp_ptr_old->ptr_str;
+                        // Func_Other.push_back(other_out);
+                        other_out = IF_DEEP() + "t" + to_string(VAR_t_num) + " = " + tmp_ptr_new->ptr_str + " + " + tmp_ptr_old->ptr_str;
                         Func_Other.push_back(other_out);
                         tmp_ptr_old->ptr_str = "t" + to_string(VAR_t_num);
                         VAR_t_num ++;
                     }
-                    else{
-                        tmp_ptr_old = tmp_ptr_new;
+                    else{     //注意这里需要深度复制
+                        tmp_ptr_old->ptr_str = tmp_ptr_new->ptr_str;
+                        tmp_ptr_old->IF_ptr_int = tmp_ptr_new->IF_ptr_int;
                     }
-                    // other_out = "tmp_ptr_old->str = " + tmp_ptr_old->ptr_str;
+                    // other_out = "end-------tmp_ptr_old->str = " + tmp_ptr_old->ptr_str;
                     // Func_Other.push_back(other_out);
                 }
-                ptr_size *= Array_dim[i];     //更新ptr_size
+                ptr_size *= Array_dim.back();     //更新ptr_size
+                Array_dim.pop_back();
             }
-            Array_LVal_dim.clear();
+            // Array_LVal_dim.clear();
             if(tmp_ptr_old->IF_ptr_int){
                 tmp_ptr_old->ptr_str = Array_name.top() + "[" + to_string(tmp_ptr_old->ptr_int) + "]";
                 tmp_ptr_old->IF_ptr_int = 0;     //最后的结果一定是一个字符串类型
@@ -1092,6 +1124,7 @@ LVal:
             }
             // tmp_ptr_old->Print();
             Array_name.pop();
+            Array_LVal_length.pop();
         }
 ;
 
@@ -1109,8 +1142,11 @@ ArrayLVal:
     }
     Exp RBRAC
     {
+        // other_out = "LBRAC Exp PBRAC and EXP = " + ((ToPtrnum($3))->ptr_str);
+        // Func_Other.push_back(other_out);
         Array_LVal_dim.push_back(*(ToPtrnum($3)));    //存入进行引用的维度
         BRAC_Array_Flag.pop();
+        Array_LVal_length.top() += 1;      //长度 + 1
 
         //ToPtrnum($3)->Print();
         // other_out = "set BRAC_Array_Flag = 0";
