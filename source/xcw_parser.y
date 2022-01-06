@@ -157,7 +157,8 @@ int path_length = 1;
 int Array_loc;
 int Array_dest, old_Array_dest;    //old_Array_dest用来临时存之前的Array_dest
 int Array_deep;
-string Array_name;
+stack<string> Array_name;
+
 //----------------------------------------------------------
 
 //-----------------IF_ELSE、While相关变量------------------------------
@@ -179,6 +180,8 @@ int R_Array_Flag = 0;    //表示这个数组是否在右边表达式
 string LVal_Assign_out;
 
 int Cond_Array_Flag = 0;    //表示这个数组是否在条件表达式
+
+stack<int> BRAC_Array_Flag;   //如果为空就说明不在括号内
 
 int Array_in_Assign = 0;     //当且仅当数组被赋值的时候，不需要用临时变量去表示（包括定义和赋值）
 
@@ -967,8 +970,12 @@ LVal:
     | IDENT
     {
         //out << "IDENT  ArrayLVals" << endl;
+        // other_out = "IDENT  ArrayLVals";
+        // Func_Other.push_back(other_out);
         IDENT_scope* tmp = find_define(*ToStr($1));    //搜索这个数组的定义
-        Array_name = tmp->IR_name;
+        Array_name.push(tmp->IR_name);
+        // other_out = "tmp->IR_name = " + tmp->IR_name;
+        // Func_Other.push_back(other_out);
         Array_dim.clear();
         for(int i = 0;i < (*tmp).IDENT_dim_array->size();i++){
             Array_dim.push_back((*(*tmp).IDENT_dim_array)[i]);
@@ -1031,14 +1038,22 @@ LVal:
             }
             Array_LVal_dim.clear();
             if(tmp_ptr_old->IF_ptr_int){
-                tmp_ptr_old->ptr_str = Array_name + "[" + to_string(tmp_ptr_old->ptr_int) + "]";
+                tmp_ptr_old->ptr_str = Array_name.top() + "[" + to_string(tmp_ptr_old->ptr_int) + "]";
                 tmp_ptr_old->IF_ptr_int = 0;     //最后的结果一定是一个字符串类型
             }
             else{
-                tmp_ptr_old->ptr_str = Array_name + "[" + tmp_ptr_old->ptr_str + "]";
+                tmp_ptr_old->ptr_str = Array_name.top() + "[" + tmp_ptr_old->ptr_str + "]";
                 tmp_ptr_old->IF_ptr_int = 0;
             }    
-            if(R_Array_Flag == 1 || Cond_Array_Flag == 1){      //表示位于右侧的数组
+            // other_out = "Cond_Array_Flag = " + to_string(Cond_Array_Flag);
+            // Func_Other.push_back(other_out);
+            // other_out = "R_Array_Flag = " + to_string(R_Array_Flag);
+            // Func_Other.push_back(other_out);
+            // other_out = "BRAC_Array_Flag = " + to_string(BRAC_Array_Flag);
+            // Func_Other.push_back(other_out);
+
+            if(Cond_Array_Flag == 1 || R_Array_Flag == 1 || (!BRAC_Array_Flag.empty())){      //表示位于右侧的数组
+
                 def_out = IF_DEEP_DEF() + "var t" + to_string(VAR_t_num);
                 Func_VarDecl.push_back(def_out);
                 other_out = IF_DEEP() + "t" + to_string(VAR_t_num ) + " = " + tmp_ptr_old->ptr_str;
@@ -1053,7 +1068,8 @@ LVal:
             else{
                 $$ = tmp_ptr_old;
             }
-            // tmp_ptr_old.Print();
+            // tmp_ptr_old->Print();
+            Array_name.pop();
         }
 ;
 
@@ -1063,9 +1079,20 @@ ArrayLVals:
 ;
 
 ArrayLVal:
-    LBRAC Exp RBRAC
+    LBRAC 
     {
-        Array_LVal_dim.push_back(*(ToPtrnum($2)));    //存入进行引用的维度
+        BRAC_Array_Flag.push(1);
+        // other_out = "set BRAC_Array_Flag = 1";
+        // Func_Other.push_back(other_out);
+    }
+    Exp RBRAC
+    {
+        Array_LVal_dim.push_back(*(ToPtrnum($3)));    //存入进行引用的维度
+        BRAC_Array_Flag.pop();
+
+        //ToPtrnum($3)->Print();
+        // other_out = "set BRAC_Array_Flag = 0";
+        // Func_Other.push_back(other_out);
     }
 ;
 
@@ -1400,6 +1427,8 @@ Stmt:
         Func_Other.push_back(other_out);  
     }
 ;
+
+
 
 IF_Else:
     {
