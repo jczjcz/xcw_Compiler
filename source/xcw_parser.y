@@ -902,7 +902,7 @@ UnaryExp:
     }
     | ADD UnaryExp
     {
-        $$ = $1;
+        $$ = $2;
     }
     | SUB UnaryExp
     {
@@ -911,7 +911,12 @@ UnaryExp:
             tmp_ptr->ptr_int = - tmp_ptr->ptr_int;
         }
         else{
-            tmp_ptr->ptr_str = "-" + tmp_ptr->ptr_str;
+            def_out = IF_DEEP_DEF() + "var t" + to_string(VAR_t_num);
+            Func_VarDecl.push_back(def_out);
+            other_out = IF_DEEP() + "t" + to_string(VAR_t_num ) + " = -" + tmp_ptr->ptr_str;
+            Func_Other.push_back(other_out);
+            tmp_ptr->ptr_str = "t" + to_string(VAR_t_num );
+            VAR_t_num ++;
         }
         $$ = $2;
     }
@@ -925,7 +930,12 @@ UnaryExp:
                 tmp_ptr->ptr_int = 0;
         }
         else{
-            tmp_ptr->ptr_str = "!" + tmp_ptr->ptr_str;
+            def_out = IF_DEEP_DEF() + "var t" + to_string(VAR_t_num);
+            Func_VarDecl.push_back(def_out);
+            other_out = IF_DEEP() + "t" + to_string(VAR_t_num ) + " = !" + tmp_ptr->ptr_str;
+            Func_Other.push_back(other_out);
+            tmp_ptr->ptr_str = "t" + to_string(VAR_t_num );
+            VAR_t_num ++;
         }
         $$ = $2;
     }

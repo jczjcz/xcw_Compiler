@@ -1,128 +1,41 @@
-var 40000 T0
-var T1
-T1 = 0
-var 40000 T2
-var T3
-T3 = 0
-var T4
-var T5
-T4 = 0
-T5 = 1
-var T6
-T6 = 0
-var 40000 T7
-var 40000 T8
-f_isdigit [1]
+var 24 T0
+T0[0] = 10
+T0[4] = 1
+T0[8] = 50
+T0[12] = 50
+T0[16] = 20
+T0[20] = 5
+var 400 T1
+f_main [0]
+	var T2
+	var T3
+	var T4
+	var T5
+	var T6
+	var T7
 	var t0
 	var t1
-		t0 = p0 >= 48
-		if t0 == 0 goto l0
-		t1 = p0 <= 57
-		if t1 == 0 goto l0
-		goto l1
-	l1:
-	return 1
-		goto l2
-	l0:
-	l2:
-	return 0
-	return 0
-end f_isdigit
-f_power [2]
-	var T9
 	var t2
 	var t3
 	var t4
-	T9 = 1
-	l5:
-		t2 = p1 != 0
-		if t2 == 0 goto l3
-		goto l4
-	l4:
-		t3 = T9 * p0
-		T9 = t3
-		t4 = p1 - 1
-		p1 = t4
-		goto l5
-	l3:
-	return T9
-	return 0
-end f_power
-f_getstr [1]
 	var t5
-	var T10
-	var T11
 	var t6
 	var t7
 	var t8
 	var t9
 	var t10
-	t5 = call f_getch
-	T10 = t5
-	T11 = 0
-	l8:
-		t6 = T10 != 13
-		if t6 == 0 goto l6
-		t7 = T10 != 10
-		if t7 == 0 goto l6
-		goto l7
-	l7:
-		t8 = T11 * 4
-		p0[t8] = T10
-		t9 = T11 + 1
-		T11 = t9
-		t10 = call f_getch
-		T10 = t10
-		goto l8
-	l6:
-	return T11
-	return 0
-end f_getstr
-f_intpush [1]
 	var t11
 	var t12
-	t11 = T1 + 1
-	T1 = t11
-	t12 = T1 * 4
-	T0[t12] = p0
-	return
-end f_intpush
-f_chapush [1]
 	var t13
 	var t14
-	t13 = T3 + 1
-	T3 = t13
-	t14 = T3 * 4
-	T2[t14] = p0
-	return
-end f_chapush
-f_intpop [0]
 	var t15
 	var t16
 	var t17
 	var t18
-	t15 = T1 - 1
-	T1 = t15
-	t16 = T1 + 1
-	t17 = t16 * 4
-	t18 = T0[t17]
-	return t18
-	return 0
-end f_intpop
-f_chapop [0]
 	var t19
 	var t20
 	var t21
 	var t22
-	t19 = T3 - 1
-	T3 = t19
-	t20 = T3 + 1
-	t21 = t20 * 4
-	t22 = T2[t21]
-	return t22
-	return 0
-end f_chapop
-f_intadd [1]
 	var t23
 	var t24
 	var t25
@@ -131,48 +44,13 @@ f_intadd [1]
 	var t28
 	var t29
 	var t30
-	t23 = T1 * 4
-	t24 = T1 * 4
-	t25 = T0[t24]
-	t26 = t25 * 10
-	T0[t23] = t26
-	t27 = T1 * 4
-	t28 = T1 * 4
-	t29 = T0[t28]
-	t30 = t29 + p0
-	T0[t27] = t30
-	return
-end f_intadd
-f_find [0]
 	var t31
 	var t32
 	var t33
 	var t34
 	var t35
 	var t36
-	t31 = call f_chapop
-	T6 = t31
-	t32 = T5 * 4
-	T8[t32] = 32
-	t33 = T5 + 1
-	t34 = t33 * 4
-	T8[t34] = T6
-	t35 = T5 + 2
-	T5 = t35
-		t36 = T3 == 0
-		if t36 == 0 goto l9
-		goto l10
-	l10:
-	return 0
-		goto l11
-	l9:
-	l11:
-	return 1
-	return 0
-end f_find
-f_main [0]
 	var t37
-	var T12
 	var t38
 	var t39
 	var t40
@@ -180,702 +58,94 @@ f_main [0]
 	var t42
 	var t43
 	var t44
-	var t45
-	var t46
-	var t47
-	var t48
-	var t49
-	var t50
-	var t51
-	var t52
-	var t53
-	var t54
-	var t55
-	var t56
-	var t57
-	var t58
-	var t59
-	var t60
-	var t61
-	var t62
-	var t63
-	var t64
-	var t65
-	var t66
-	var t67
-	var t68
-	var t69
-	var t70
-	var t71
-	var t72
-	var t73
-	var t74
-	var t75
-	var t76
-	var t77
-	var t78
-	var t79
-	var t80
-	var t81
-	var t82
-	var t83
-	var t84
-	var t85
-	var t86
-	var t87
-	var t88
-	var t89
-	var t90
-	var t91
-	var t92
-	var t93
-	var t94
-	var t95
-	var t96
-	var t97
-	var t98
-	var t99
-	var t100
-	var t101
-	var t102
-	var t103
-	var t104
-	var t105
-	var t106
-	var t107
-	var t108
-	var t109
-	var t110
-	var t111
-	var t112
-	var t113
-	var t114
-	var t115
-	var t116
-	var t117
-	var t118
-	var t119
-	var t120
-	var t121
-	var t122
-	var t123
-	var t124
-	var t125
-	var t126
-	var t127
-	var t128
-	var t129
-	var t130
-	var t131
-	var t132
-	var t133
-	var t134
-	var t135
-	var t136
-	var t137
-	var t138
-	var t139
-	var t140
-	var t141
-	var t142
-	var t143
-	var t144
-	var t145
-	var t146
-	var t147
-	var t148
-	var t149
-	var t150
-	var t151
-	var t152
-	var t153
-	var t154
-	var t155
-	var t156
-	var t157
-	var t158
-	var t159
-	var t160
-	var t161
-	var t162
-	var t163
-	var t164
-	var T13
-	var t165
-	var t166
-	var t167
-	var t168
-	var t169
-	var t170
-	var t171
-	var t172
-	var t173
-	var t174
-	var t175
-	var t176
-	var t177
-	var t178
-	var t179
-	var t180
-	var t181
-	var t182
-	var t183
-	var t184
-	var t185
-	var t186
-	var t187
-	var t188
-	var t189
-	var t190
-	var t191
-	var T14
-	var t192
-	var T15
-	var T16
-	var t193
-	var t194
-	var t195
-	var t196
-	var t197
-	var t198
-	var t199
-	var t200
-	var t201
-	var t202
-	var t203
-	var t204
-	var t205
-	var t206
-	var t207
-	var t208
-	var t209
-	var t210
-	var t211
-	var t212
-	var t213
-	var t214
-	var t215
-	var t216
-	var t217
-	var t218
-	var t219
-	var t220
-	var t221
-	var t222
-	var t223
-	var t224
-	var t225
-	var t226
-	var t227
-	var t228
-	var t229
-	var t230
-	var t231
-	var t232
-	var t233
-	var t234
-	var t235
-	T1 = 0
+	T2 = 0
+	T2 = 6
 	T3 = 0
-	param T7
-	t37 = call f_getstr
-	T12 = t37
-	l14:
-		t38 = T4 < T12
-		if t38 == 0 goto l12
-		goto l13
-	l13:
-		t39 = T4 * 4
-		t40 = T7[t39]
-		param t40
-		t41 = call f_isdigit
-			t42 = t41 == 1
-			if t42 == 0 goto l15
-			goto l16
-		l16:
-			t43 = T5 * 4
-			t44 = T4 * 4
-			t45 = T7[t44]
-			T8[t43] = t45
-			t46 = T5 + 1
-			T5 = t46
-			goto l17
-		l15:
-			t47 = T4 * 4
-			t48 = T7[t47]
-				t49 = t48 == 40
-				if t49 == 0 goto l18
-				goto l19
-			l19:
-			param 40
-			call f_chapush
-				goto l20
-			l18:
-			l20:
-			t50 = T4 * 4
-			t51 = T7[t50]
-				t52 = t51 == 94
-				if t52 == 0 goto l21
-				goto l22
-			l22:
-			param 94
-			call f_chapush
-				goto l23
-			l21:
-			l23:
-			t53 = T4 * 4
-			t54 = T7[t53]
-				t55 = t54 == 41
-				if t55 == 0 goto l24
-				goto l25
-			l25:
-				t56 = call f_chapop
-				T6 = t56
-				l29:
-					t57 = T6 != 40
-					if t57 == 0 goto l27
-					goto l28
-				l28:
-					t58 = T5 * 4
-					T8[t58] = 32
-					t59 = T5 + 1
-					t60 = t59 * 4
-					T8[t60] = T6
-					t61 = T5 + 2
-					T5 = t61
-					t62 = call f_chapop
-					T6 = t62
-					goto l29
-				l27:
-				goto l26
-			l24:
-			l26:
-			t63 = T4 * 4
-			t64 = T7[t63]
-				t65 = t64 == 43
-				if t65 == 0 goto l30
-				goto l31
-			l31:
-				l35:
-				t66 = T3 * 4
-				t67 = T2[t66]
-					t68 = t67 == 43
-					if t68 == 0 goto l33
-					goto l34
-				t69 = T3 * 4
-				t70 = T2[t69]
-					t71 = t70 == 45
-					if t71 == 0 goto l33
-					goto l34
-				t72 = T3 * 4
-				t73 = T2[t72]
-					t74 = t73 == 42
-					if t74 == 0 goto l33
-					goto l34
-				t75 = T3 * 4
-				t76 = T2[t75]
-					t77 = t76 == 47
-					if t77 == 0 goto l33
-					goto l34
-				t78 = T3 * 4
-				t79 = T2[t78]
-					t80 = t79 == 37
-					if t80 == 0 goto l33
-					goto l34
-				t81 = T3 * 4
-				t82 = T2[t81]
-					t83 = t82 == 94
-					if t83 == 0 goto l33
-					goto l34
-				l34:
-					t84 = call f_find
-						t85 = t84 == 0
-						if t85 == 0 goto l36
-						goto l37
-					l37:
-					goto l33
-						goto l38
-					l36:
-					l38:
-					goto l35
-				l33:
-				param 43
-				call f_chapush
-				goto l32
-			l30:
-			l32:
-			t86 = T4 * 4
-			t87 = T7[t86]
-				t88 = t87 == 45
-				if t88 == 0 goto l39
-				goto l40
-			l40:
-				l44:
-				t89 = T3 * 4
-				t90 = T2[t89]
-					t91 = t90 == 43
-					if t91 == 0 goto l42
-					goto l43
-				t92 = T3 * 4
-				t93 = T2[t92]
-					t94 = t93 == 45
-					if t94 == 0 goto l42
-					goto l43
-				t95 = T3 * 4
-				t96 = T2[t95]
-					t97 = t96 == 42
-					if t97 == 0 goto l42
-					goto l43
-				t98 = T3 * 4
-				t99 = T2[t98]
-					t100 = t99 == 47
-					if t100 == 0 goto l42
-					goto l43
-				t101 = T3 * 4
-				t102 = T2[t101]
-					t103 = t102 == 37
-					if t103 == 0 goto l42
-					goto l43
-				t104 = T3 * 4
-				t105 = T2[t104]
-					t106 = t105 == 94
-					if t106 == 0 goto l42
-					goto l43
-				l43:
-					t107 = call f_find
-						t108 = t107 == 0
-						if t108 == 0 goto l45
-						goto l46
-					l46:
-					goto l42
-						goto l47
-					l45:
-					l47:
-					goto l44
-				l42:
-				param 45
-				call f_chapush
-				goto l41
-			l39:
-			l41:
-			t109 = T4 * 4
-			t110 = T7[t109]
-				t111 = t110 == 42
-				if t111 == 0 goto l48
-				goto l49
-			l49:
-				l53:
-				t112 = T3 * 4
-				t113 = T2[t112]
-					t114 = t113 == 42
-					if t114 == 0 goto l51
-					goto l52
-				t115 = T3 * 4
-				t116 = T2[t115]
-					t117 = t116 == 47
-					if t117 == 0 goto l51
-					goto l52
-				t118 = T3 * 4
-				t119 = T2[t118]
-					t120 = t119 == 37
-					if t120 == 0 goto l51
-					goto l52
-				t121 = T3 * 4
-				t122 = T2[t121]
-					t123 = t122 == 94
-					if t123 == 0 goto l51
-					goto l52
-				l52:
-					t124 = call f_find
-						t125 = t124 == 0
-						if t125 == 0 goto l54
-						goto l55
-					l55:
-					goto l51
-						goto l56
-					l54:
-					l56:
-					goto l53
-				l51:
-				param 42
-				call f_chapush
-				goto l50
-			l48:
-			l50:
-			t126 = T4 * 4
-			t127 = T7[t126]
-				t128 = t127 == 47
-				if t128 == 0 goto l57
-				goto l58
-			l58:
-				l62:
-				t129 = T3 * 4
-				t130 = T2[t129]
-					t131 = t130 == 42
-					if t131 == 0 goto l60
-					goto l61
-				t132 = T3 * 4
-				t133 = T2[t132]
-					t134 = t133 == 47
-					if t134 == 0 goto l60
-					goto l61
-				t135 = T3 * 4
-				t136 = T2[t135]
-					t137 = t136 == 37
-					if t137 == 0 goto l60
-					goto l61
-				t138 = T3 * 4
-				t139 = T2[t138]
-					t140 = t139 == 94
-					if t140 == 0 goto l60
-					goto l61
-				l61:
-					t141 = call f_find
-						t142 = t141 == 0
-						if t142 == 0 goto l63
-						goto l64
-					l64:
-					goto l60
-						goto l65
-					l63:
-					l65:
-					goto l62
-				l60:
-				param 47
-				call f_chapush
-				goto l59
-			l57:
-			l59:
-			t143 = T4 * 4
-			t144 = T7[t143]
-				t145 = t144 == 37
-				if t145 == 0 goto l66
-				goto l67
-			l67:
-				l71:
-				t146 = T3 * 4
-				t147 = T2[t146]
-					t148 = t147 == 42
-					if t148 == 0 goto l69
-					goto l70
-				t149 = T3 * 4
-				t150 = T2[t149]
-					t151 = t150 == 47
-					if t151 == 0 goto l69
-					goto l70
-				t152 = T3 * 4
-				t153 = T2[t152]
-					t154 = t153 == 37
-					if t154 == 0 goto l69
-					goto l70
-				t155 = T3 * 4
-				t156 = T2[t155]
-					t157 = t156 == 94
-					if t157 == 0 goto l69
-					goto l70
-				l70:
-					t158 = call f_find
-						t159 = t158 == 0
-						if t159 == 0 goto l72
-						goto l73
-					l73:
-					goto l69
-						goto l74
-					l72:
-					l74:
-					goto l71
-				l69:
-				param 37
-				call f_chapush
-				goto l68
-			l66:
-			l68:
-			t160 = T5 * 4
-			T8[t160] = 32
-			t161 = T5 + 1
-			T5 = t161
-		l17:
-		t162 = T4 + 1
-		T4 = t162
-		goto l14
-	l12:
-	l77:
-		t163 = T3 > 0
-		if t163 == 0 goto l75
-		goto l76
-	l76:
-		t164 = call f_chapop
-		T13 = t164
-		t165 = T5 * 4
-		T8[t165] = 32
-		t166 = T5 + 1
-		t167 = t166 * 4
-		T8[t167] = T13
-		t168 = T5 + 2
-		T5 = t168
-		goto l77
-	l75:
-	t169 = T5 * 4
-	T8[t169] = 64
-	T4 = 1
-	l80:
-	t170 = T4 * 4
-	t171 = T8[t170]
-		t172 = t171 != 64
-		if t172 == 0 goto l78
-		goto l79
-	l79:
-		t173 = T4 * 4
-		t174 = T8[t173]
-			t175 = t174 == 43
-			if t175 == 0 goto l81
-			goto l82
-		t176 = T4 * 4
-		t177 = T8[t176]
-			t178 = t177 == 45
-			if t178 == 0 goto l81
-			goto l82
-		t179 = T4 * 4
-		t180 = T8[t179]
-			t181 = t180 == 42
-			if t181 == 0 goto l81
-			goto l82
-		t182 = T4 * 4
-		t183 = T8[t182]
-			t184 = t183 == 47
-			if t184 == 0 goto l81
-			goto l82
-		t185 = T4 * 4
-		t186 = T8[t185]
-			t187 = t186 == 37
-			if t187 == 0 goto l81
-			goto l82
-		t188 = T4 * 4
-		t189 = T8[t188]
-			t190 = t189 == 94
-			if t190 == 0 goto l81
-			goto l82
-		l82:
-			t191 = call f_intpop
-			T14 = t191
-			t192 = call f_intpop
-			T15 = t192
-			T16 = 0
-			t193 = T4 * 4
-			t194 = T8[t193]
-				t195 = t194 == 43
-				if t195 == 0 goto l84
-				goto l85
-			l85:
-			t196 = T14 + T15
-			T16 = t196
-				goto l86
-			l84:
-			l86:
-			t197 = T4 * 4
-			t198 = T8[t197]
-				t199 = t198 == 45
-				if t199 == 0 goto l87
-				goto l88
-			l88:
-			t200 = T15 - T14
-			T16 = t200
-				goto l89
-			l87:
-			l89:
-			t201 = T4 * 4
-			t202 = T8[t201]
-				t203 = t202 == 42
-				if t203 == 0 goto l90
-				goto l91
-			l91:
-			t204 = T14 * T15
-			T16 = t204
-				goto l92
-			l90:
-			l92:
-			t205 = T4 * 4
-			t206 = T8[t205]
-				t207 = t206 == 47
-				if t207 == 0 goto l93
-				goto l94
-			l94:
-			t208 = T15 / T14
-			T16 = t208
-				goto l95
-			l93:
-			l95:
-			t209 = T4 * 4
-			t210 = T8[t209]
-				t211 = t210 == 37
-				if t211 == 0 goto l96
-				goto l97
-			l97:
-			t212 = T15 % T14
-			T16 = t212
-				goto l98
-			l96:
-			l98:
-			t213 = T4 * 4
-			t214 = T8[t213]
-				t215 = t214 == 94
-				if t215 == 0 goto l99
-				goto l100
-			l100:
-			param T15
-			param T14
-			t216 = call f_power
-			T16 = t216
-				goto l101
-			l99:
-			l101:
-			param T16
-			call f_intpush
-			goto l83
-		l81:
-			t217 = T4 * 4
-			t218 = T8[t217]
-				t219 = t218 != 32
-				if t219 == 0 goto l102
-				goto l103
-			l103:
-				t220 = T4 * 4
-				t221 = T8[t220]
-				t222 = t221 - 48
-				param t222
-				call f_intpush
-				T5 = 1
-				l107:
-				t223 = T4 + T5
-				t224 = t223 * 4
-				t225 = T8[t224]
-					t226 = t225 != 32
-					if t226 == 0 goto l105
-					goto l106
-				l106:
-					t227 = T4 + T5
-					t228 = t227 * 4
-					t229 = T8[t228]
-					t230 = t229 - 48
-					param t230
-					call f_intadd
-					t231 = T5 + 1
-					T5 = t231
-					goto l107
-				l105:
-				t232 = T4 + T5
-				t233 = t232 - 1
-				T4 = t233
-				goto l104
-			l102:
-			l104:
-		l83:
-		t234 = T4 + 1
-		T4 = t234
-		goto l80
-	l78:
-	t235 = T0[4]
-	param t235
+	T4 = 0
+	T5 = 0
+	T6 = 0
+	T7 = 0
+	T3 = 3     // k=3
+	l2:
+		t0 = T3 <= T2
+		if t0 == 0 goto l0
+		goto l1
+	l1:
+		T4 = 0
+		l5:
+		t1 = T2 - T3
+		t2 = t1 + 1
+			t3 = T4 < t2
+			if t3 == 0 goto l3
+			goto l4
+		l4:
+			t4 = T4 + T3
+			t5 = t4 - 1
+			T6 = t5
+			t6 = T4 + 1
+			T5 = t6
+			l8:
+				t7 = T5 < T6          // while(t<j)
+				if t7 == 0 goto l6
+				goto l7
+			l7:
+				t8 = T5 * 4
+				t9 = T4 * 40
+				t10 = t9 + t8
+				t11 = T1[t10]
+				t12 = T6 * 4
+				t13 = T5 * 40
+				t14 = t13 + t12
+				t15 = T1[t14]
+				t16 = t11 + t15
+				t17 = T4 * 4
+				t18 = T0[t17]
+				t19 = T5 * 4
+				t20 = T0[t19]
+				t21 = t18 * t20
+				t22 = T6 * 4
+				t23 = T0[t22]
+				t24 = t21 * t23
+				t25 = t16 + t24
+				T7 = t25
+				t26 = T6 * 4
+				t27 = T4 * 40
+				t28 = t27 + t26
+				t29 = T1[t28]       // dp[i][t]
+					if !t29 == 0 goto l9       
+					goto l10
+				t30 = T6 * 4
+				t31 = T4 * 40
+				t32 = t31 + t30
+				t33 = T1[t32]
+					t34 = T7 < t33
+					if t34 == 0 goto l9
+					goto l10
+				l10:
+					t35 = T6 * 4
+					t36 = T4 * 40
+					t37 = t36 + t35
+					T1[t37] = T7
+					goto l11
+				l9:
+				l11:
+				t38 = T5 + 1
+				T5 = t38
+				goto l8
+			l6:
+			t39 = T4 + 1       // k = k + 1
+			T4 = t39
+			goto l5
+		l3:
+		t40 = T3 + 1
+		T3 = t40
+		goto l2
+	l0:
+	t41 = T2 - 1
+	t42 = t41 * 4
+	t43 = 0 + t42
+	t44 = T1[t43]
+	param t44
 	call f_putint
 	return 0
 	return 0
