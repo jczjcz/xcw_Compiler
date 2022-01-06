@@ -180,6 +180,8 @@ string LVal_Assign_out;
 
 int Cond_Array_Flag = 0;    //表示这个数组是否在条件表达式
 
+int Array_in_Assign = 0;     //当且仅当数组被赋值的时候，不需要用临时变量去表示（包括定义和赋值）
+
 
 //-----------------函数语句打印相关变量------------------------------
 vector<string> Func_VarDecl;
@@ -448,6 +450,8 @@ VarDef:
             Ident_array->push_back(tmp_ptr);
         }
         VAR_T_num ++;
+
+        Array_dim.clear();
     }
     | IDENT ArrayDef ASSIGN 
     {
@@ -1034,7 +1038,7 @@ LVal:
                 tmp_ptr_old->ptr_str = Array_name + "[" + tmp_ptr_old->ptr_str + "]";
                 tmp_ptr_old->IF_ptr_int = 0;
             }    
-            if(R_Array_Flag == 1){      //表示位于右侧的数组
+            if(R_Array_Flag == 1 || Cond_Array_Flag == 1){      //表示位于右侧的数组
                 def_out = IF_DEEP_DEF() + "var t" + to_string(VAR_t_num);
                 Func_VarDecl.push_back(def_out);
                 other_out = IF_DEEP() + "t" + to_string(VAR_t_num ) + " = " + tmp_ptr_old->ptr_str;
@@ -1174,20 +1178,44 @@ FuncFParam:
         VAR_p_num ++;
         Scope.push_back(tmp);
     }
-    | INT IDENT LBRAC RBRAC ArrayParamDef
+    | INT IDENT LBRAC 
+    {
+        Array_dim.push_back(10);   //传入一个假参数
+    }
+    RBRAC ArrayParamDef
     {      //void d(int d[])
         // 检查是否出现过
+        // other_out = "INT IDENT LBRAC RBRAC ArrayParamDef";
+        // Func_Other.push_back(other_out);
+        // out << "INT IDENT LBRAC RBRAC ArrayParamDef" << endl;
+
         if(!check_define(*ToStr($2))){
             string err = "\"" +  *ToStr($1) + "\" already defined in this scope.";
             yyerror(err);
         }
 
-        IDENT_scope tmp = IDENT_scope(*ToStr($2), "0", DEEP, 0);    //是一个变量
-        tmp.IDENT_if_array = 1;    //是数组
-        tmp.IR_name = "p" + to_string(VAR_p_num);
+        IDENT_scope* tmp_ptr = new IDENT_scope(*ToStr($2), "0", DEEP, 0);    //是一个变量
+        tmp_ptr->IDENT_if_array = 1;    //是数组
+        tmp_ptr->IR_name = "p" + to_string(VAR_p_num);
+
+        int n = ToPtrnum($6)->ptr_int;
+        // out << "n = "<<n<<endl;
+
+        vector<Ptr_num>* Ident_array = new vector<Ptr_num>;
+        vector<int>* Ident_dim_array = new vector<int>;
+
+        tmp_ptr->Array_size = n;
+        for(int i = 0; i < Array_dim.size();i++){
+            Ident_dim_array->push_back(Array_dim[i]);
+            // out << "Array_dim[i] = " << Array_dim[i] << endl;
+        }
+        tmp_ptr->IDENT_dim_array = Ident_dim_array;
+
         //tmp.Print_IDENT();
         VAR_p_num ++;
-        Scope.push_back(tmp);
+        Scope.push_back(*tmp_ptr);
+
+        Array_dim.clear();
     }
 ;
 
@@ -1197,13 +1225,16 @@ ArrayParamDef:
         $$ = $1;
     }
     | ArrayParamDef ArrayUnit
-    {
+    {   //   例如[3][4]
         ToPtrnum($1)->ptr_int = ToPtrnum($1)->ptr_int * ToPtrnum($2)->ptr_int;
         $$ = $1;
     }
     |
     {
         //也有可能为空
+        // ToPtrnum($$)->ptr_int = 10;
+        Ptr_num* tmp_dim = new Ptr_num(1);     //传一个假的n上去 
+        $$ = (void*)tmp_dim;
     }
 ;
 
@@ -1390,8 +1421,10 @@ IF_Else:
 ;
 
 Cond:
-    LOrExp
+    {Cond_Array_Flag = 1;}LOrExp
     {
+        $$ = $2;
+        Cond_Array_Flag = 0;
         //out << "LOrExp"<<endl;
         // // out << IF_DEEP() + "t" + to_string(VAR_t_num) + " = ";
         // other_out = IF_DEEP() + "t" + to_string(VAR_t_num) + " = ";
