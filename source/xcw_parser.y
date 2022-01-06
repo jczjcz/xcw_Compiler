@@ -183,6 +183,9 @@ int Cond_Array_Flag = 0;    //表示这个数组是否在条件表达式
 
 stack<int> BRAC_Array_Flag;   //如果为空就说明不在括号内
 
+// stack<int> Func_Array_Flag = 0;  //是否在函数参数里
+
+
 int Array_in_Assign = 0;     //当且仅当数组被赋值的时候，不需要用临时变量去表示（包括定义和赋值）
 
 
@@ -862,7 +865,11 @@ UnaryExp:
         // out << "PrimaryExp" << endl;
   //      
     }
-    | IDENT LPAREN FuncRParams RPAREN
+    | IDENT LPAREN 
+    {
+        BRAC_Array_Flag.push(1);
+    }
+    FuncRParams RPAREN
     {
         //out << "IDENT LPAREN FuncRParams RPAREN" << endl;
         IDENT_scope* tmp = find_define(*ToStr($1));
@@ -890,7 +897,7 @@ UnaryExp:
             other_out = IF_DEEP() + "call f_" + *(ToStr($1));
             Func_Other.push_back(other_out);
         }
-        
+        BRAC_Array_Flag.pop();
     }
     | ADD UnaryExp
     {
@@ -992,6 +999,7 @@ LVal:
 
             for(int i = Array_LVal_dim.size()-1; i >= 0 ;i --){
                 tmp_ptr = &Array_LVal_dim[i];
+                // tmp_ptr->Print();
                 if(tmp_ptr->IF_ptr_int){     //是整数
                     tmp_ptr_new->IF_ptr_int = 1;
                     tmp_ptr_new->ptr_int = tmp_ptr->ptr_int * ptr_size;
@@ -1014,17 +1022,28 @@ LVal:
                     }
                 }
                 else{
+                    // other_out = "not INT ---------";
+                    // Func_Other.push_back(other_out);
                     def_out = IF_DEEP_DEF() + "var t" + to_string(VAR_t_num);
                     Func_VarDecl.push_back(def_out);
                     tmp_ptr_new->IF_ptr_int = 0;
                     tmp_ptr_new->ptr_str = "t" + to_string(VAR_t_num);
-                    tmp_ptr_old->ptr_str = to_string(tmp_ptr_old->ptr_int);    //强制转换为string类型
-                    tmp_ptr_old->IF_ptr_int = 0;
+                    // other_out = "tmp_ptr_new->str = " + tmp_ptr_new->ptr_str;
+                    // Func_Other.push_back(other_out);
+
+                    if(i != Array_LVal_dim.size()-1 && tmp_ptr_old->IF_ptr_int){
+                        tmp_ptr_old->ptr_str = to_string(tmp_ptr_old->ptr_int);    //强制转换为string类型
+                        tmp_ptr_old->IF_ptr_int = 0;    
+                    }
                     VAR_t_num ++;
+                    // tmp_ptr_old->Print();
                     other_out = IF_DEEP() + tmp_ptr_new->ptr_str + " = " + tmp_ptr->ptr_str + " * " + to_string(ptr_size);
                     Func_Other.push_back(other_out);
                     if(i != Array_LVal_dim.size()-1){     //第一次不用考虑和之前相加
                         // out <<IF_DEEP() + "t" + to_string(VAR_t_num ) << " = "<< tmp_ptr_new.ptr_str << " + " << tmp_ptr_old.ptr_str << endl;
+                        def_out = IF_DEEP_DEF() + "var t" + to_string(VAR_t_num);
+                        Func_VarDecl.push_back(def_out);
+
                         other_out = IF_DEEP() + "t" + to_string(VAR_t_num ) + " = " + tmp_ptr_new->ptr_str + " + " + tmp_ptr_old->ptr_str;
                         Func_Other.push_back(other_out);
                         tmp_ptr_old->ptr_str = "t" + to_string(VAR_t_num);
@@ -1033,6 +1052,8 @@ LVal:
                     else{
                         tmp_ptr_old = tmp_ptr_new;
                     }
+                    // other_out = "tmp_ptr_old->str = " + tmp_ptr_old->ptr_str;
+                    // Func_Other.push_back(other_out);
                 }
                 ptr_size *= Array_dim[i];     //更新ptr_size
             }
@@ -1045,6 +1066,7 @@ LVal:
                 tmp_ptr_old->ptr_str = Array_name.top() + "[" + tmp_ptr_old->ptr_str + "]";
                 tmp_ptr_old->IF_ptr_int = 0;
             }    
+            
             // other_out = "Cond_Array_Flag = " + to_string(Cond_Array_Flag);
             // Func_Other.push_back(other_out);
             // other_out = "R_Array_Flag = " + to_string(R_Array_Flag);
@@ -1303,18 +1325,23 @@ Stmt:
     RETURN SEMI
     {
     }
-    | RETURN Exp SEMI
+    | RETURN
     {
-        if(ToPtrnum($2)->IF_ptr_int){       //为常量
+        BRAC_Array_Flag.push(1);
+    }
+    Exp SEMI
+    {
+        if(ToPtrnum($3)->IF_ptr_int){       //为常量
             // out << IF_DEEP() + "return " << ToPtrnum($2)->ptr_int << endl;
-            other_out = IF_DEEP() + "return " + to_string(ToPtrnum($2)->ptr_int);
+            other_out = IF_DEEP() + "return " + to_string(ToPtrnum($3)->ptr_int);
             Func_Other.push_back(other_out);
         }
         else{
             // out << IF_DEEP() + "return " + ToPtrnum($2)->ptr_str << endl;
-            other_out = IF_DEEP() + "return " + ToPtrnum($2)->ptr_str;
+            other_out = IF_DEEP() + "return " + ToPtrnum($3)->ptr_str;
             Func_Other.push_back(other_out);
         }
+        BRAC_Array_Flag.pop();
     }
     | Exp SEMI
     {
@@ -1554,6 +1581,8 @@ EqExp:
     }
     | EqExp EQ RelExp
     {
+        // def_out = IF_DEEP_DEF() + "var t" + to_string(VAR_t_num);
+        // Func_VarDecl.push_back(def_out);
         other_out = IF_DEEP() + "\tt" + to_string(VAR_t_num) + " = ";
         if(ToPtrnum($1)->IF_ptr_int){    //如果是常量
             other_out += to_string(ToPtrnum($1)->ptr_int);
@@ -1579,6 +1608,8 @@ EqExp:
     }
     | EqExp NEQ RelExp
     {
+        // def_out = IF_DEEP_DEF() + "var t" + to_string(VAR_t_num);
+        // Func_VarDecl.push_back(def_out);
         other_out = IF_DEEP() + "\tt" + to_string(VAR_t_num) + " = ";
         if(ToPtrnum($1)->IF_ptr_int){    //如果是常量
             other_out += to_string(ToPtrnum($1)->ptr_int);
@@ -1615,6 +1646,8 @@ RelExp:
     }
     | RelExp LE AddExp
     {
+        // def_out = IF_DEEP_DEF() + "var t" + to_string(VAR_t_num);
+        // Func_VarDecl.push_back(def_out);
         other_out = IF_DEEP() + "\tt" + to_string(VAR_t_num) + " = ";
         if(ToPtrnum($1)->IF_ptr_int){    //如果是常量
             other_out += to_string(ToPtrnum($1)->ptr_int);
@@ -1640,6 +1673,8 @@ RelExp:
     }
     | RelExp GE AddExp
     {
+        // def_out = IF_DEEP_DEF() + "var t" + to_string(VAR_t_num);
+        // Func_VarDecl.push_back(def_out);
         other_out = IF_DEEP() + "\tt" + to_string(VAR_t_num) + " = ";
         if(ToPtrnum($1)->IF_ptr_int){    //如果是常量
             other_out += to_string(ToPtrnum($1)->ptr_int);
@@ -1665,6 +1700,8 @@ RelExp:
     }
     | RelExp LEQ AddExp
     {
+        // def_out = IF_DEEP_DEF() + "var t" + to_string(VAR_t_num);
+        // Func_VarDecl.push_back(def_out);
         other_out = IF_DEEP() + "\tt" + to_string(VAR_t_num) + " = ";
         if(ToPtrnum($1)->IF_ptr_int){    //如果是常量
             other_out += to_string(ToPtrnum($1)->ptr_int);
@@ -1690,6 +1727,8 @@ RelExp:
     }
     | RelExp GEQ AddExp
     {
+        // def_out = IF_DEEP_DEF() + "var t" + to_string(VAR_t_num);
+        // Func_VarDecl.push_back(def_out);
         other_out = IF_DEEP() + "\tt" + to_string(VAR_t_num) + " = ";
         if(ToPtrnum($1)->IF_ptr_int){    //如果是常量
             other_out += to_string(ToPtrnum($1)->ptr_int);
@@ -1707,6 +1746,8 @@ RelExp:
         // ToPtrnum($$)->Print();
         //out << endl;
         Func_Other.push_back(other_out);  
+        def_out = IF_DEEP_DEF() + "var t" + to_string(VAR_t_num);
+        Func_VarDecl.push_back(def_out);
         Ptr_num* tmp_ptr = new Ptr_num("t" + to_string(VAR_t_num));
         VAR_t_num ++;
         $$ = tmp_ptr;
