@@ -1,152 +1,81 @@
-var 24 T0
-T0[0] = 10
-T0[4] = 1
-T0[8] = 50
-T0[12] = 50
-T0[16] = 20
-T0[20] = 5
-var 400 T1
-f_main [0]
-	var T2
-	var T3
-	var T4
-	var T5
-	var T6
-	var T7
+f_atoi_ [1]
+	var T0
+	var T1
 	var t0
 	var t1
 	var t2
 	var t3
 	var t4
+	var T2
+	var T3
 	var t5
 	var t6
 	var t7
 	var t8
 	var t9
+	var T4
+	var T5
 	var t10
 	var t11
-	var t12
-	var t13
-	var t14
-	var t15
-	var t16
-	var t17
-	var t18
-	var t19
-	var t20
-	var t21
-	var t22
-	var t23
-	var t24
-	var t25
-	var t26
-	var t27
-	var t28
-	var t29
-	var t30
-	var t31
-	var t32
-	var t33
-	var t34
-	var t35
-	var t36
-	var t37
-	var t38
-	var t39
-	var t40
-	var t41
-	var t42
-	var t43
-	var t44
-	T2 = 0
-	T2 = 6
-	T3 = 0
-	T4 = 0
-	T5 = 0
-	T6 = 0
-	T7 = 0
-	T3 = 3     // k=3
-	l2:
-		t0 = T3 <= T2
-		if t0 == 0 goto l0
+	var T6
+	var T7
+	T0 = 0
+	T1 = 0
+	T1 = 1
+	l3:
+	t0 = T0 * 4
+	t1 = p0[t0]
+		t2 = t1 == 43
+		if t2 == 0 goto l4
+		goto l1
+	l4:
+		t3 = T0 == 5
+		if t3 == 0 goto l0
+		goto l5
+	l5:
+		t4 = T0 == 6
+		if t4 == 0 goto l0
 		goto l1
 	l1:
-		T4 = 0
-		l5:
-		t1 = T2 - T3
-		t2 = t1 + 1
-			t3 = T4 < t2
-			if t3 == 0 goto l3
-			goto l4
-		l4:
-			t4 = T4 + T3
-			t5 = t4 - 1
-			T6 = t5
-			t6 = T4 + 1
-			T5 = t6
-			l8:
-				t7 = T5 < T6          // while(t<j)
-				if t7 == 0 goto l6
-				goto l7
-			l7:
-				t8 = T5 * 4
-				t9 = T4 * 40
-				t10 = t9 + t8
-				t11 = T1[t10]
-				t12 = T6 * 4
-				t13 = T5 * 40
-				t14 = t13 + t12
-				t15 = T1[t14]
-				t16 = t11 + t15
-				t17 = T4 * 4
-				t18 = T0[t17]
-				t19 = T5 * 4
-				t20 = T0[t19]
-				t21 = t18 * t20
-				t22 = T6 * 4
-				t23 = T0[t22]
-				t24 = t21 * t23
-				t25 = t16 + t24
-				T7 = t25
-				t26 = T6 * 4
-				t27 = T4 * 40
-				t28 = t27 + t26
-				t29 = T1[t28]       // dp[i][t]
-					if !t29 == 0 goto l9       
-					goto l10
-				t30 = T6 * 4
-				t31 = T4 * 40
-				t32 = t31 + t30
-				t33 = T1[t32]
-					t34 = T7 < t33
-					if t34 == 0 goto l9
-					goto l10
-				l10:
-					t35 = T6 * 4
-					t36 = T4 * 40
-					t37 = t36 + t35
-					T1[t37] = T7
-					goto l11
-				l9:
-				l11:
-				t38 = T5 + 1
-				T5 = t38
-				goto l8
-			l6:
-			t39 = T4 + 1       // k = k + 1
-			T4 = t39
-			goto l5
-		l3:
-		t40 = T3 + 1
-		T3 = t40
-		goto l2
+		T2 = 1
+		goto l3
 	l0:
-	t41 = T2 - 1
-	t42 = t41 * 4
-	t43 = 0 + t42
-	t44 = T1[t43]
-	param t44
-	call f_putint
+	l2:
+	T3 = 1000000
+	l10:
+	t5 = T0 * 4
+	t6 = p0[t5]
+		t7 = t6 == 43
+		if t7 == 0 goto l11
+		goto l8
+	l11:
+		t8 = T0 == 5
+		if t8 == 0 goto l7
+		goto l12
+	l12:
+		t9 = T0 == 6
+		if t9 == 0 goto l7
+		goto l8
+	l8:
+		T4 = 1
+		goto l9
+	l7:
+		T5 = 5
+	l9:
+	T3 = 11111111
+	l17:
+		t10 = T0 == 100
+		if t10 == 0 goto l18
+		goto l15
+	l18:
+		t11 = T0 == 101
+		if t11 == 0 goto l14
+		goto l15
+	l15:
+		T6 = 10
+		goto l16
+	l14:
+		T7 = 11
+	l16:
 	return 0
-	return 0
-end f_main
+end f_atoi_
