@@ -1465,6 +1465,9 @@ Stmt:
             // Cond_num = 0;
             other_out = IF_DEEP() + "l" + to_string(LABEL_l_num_st+1) + ":";    // l1后面是正确内容
             Func_Other.push_back(other_out);
+
+            LABEL_l_num_end = Stk_IF_ELSE.top() + 5 + Cond_num;    // 正常会用4个
+            Cond_num = 0;    // 初始化
         }
         Stmt
         { 
@@ -1487,8 +1490,7 @@ Stmt:
         }
         IF_Else
         {
-            LABEL_l_num_end = Stk_IF_ELSE.top() + 5 + Cond_num;    // 正常会用4个
-            Cond_num = 0;    // 初始化
+            
             Stk_IF_ELSE.pop();
         }
     | WHILE 
@@ -1517,6 +1519,9 @@ Stmt:
             // LABEL_l_num_end += 3;      //因为一个While语句一般会用到3个label
             other_out = IF_DEEP() + "l" + to_string(LABEL_l_num_st+1) + ":";
             Func_Other.push_back(other_out);  
+
+            LABEL_l_num_end = LABEL_l_num_st + 5 + Cond_num;
+            Cond_num = 0;
         }
         Stmt
         {
@@ -1533,8 +1538,7 @@ Stmt:
             other_out = IF_DEEP() + "l" + to_string(LABEL_l_num_st+2) + ":";    //下一个句子
             Func_Other.push_back(other_out);  
 
-            LABEL_l_num_end = LABEL_l_num_st + 5 + Cond_num;
-            Cond_num = 0;
+            
         }
     | BREAK SEMI
     {

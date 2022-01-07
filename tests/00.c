@@ -1,33 +1,47 @@
-// Simple atoi program
-int atoi_(int src[]) {
-    int i;
-    int isMinus;
-    isMinus = 1;
-    
-    while(src[i] == 43 || i==5 && i==6) {
-        int a = 1;
-    } 
+int buf[2][100];
 
-    int m = 1000000;
+// sort [l, r)
+void merge_sort(int l, int r)
+{
+    if (l + 1 >= r)
+        return;
 
+    int mid = (l + r) / 2;
+    merge_sort(l, mid);
+    merge_sort(mid, r);
 
-
-    if(src[i] == 43 || i==5 && i==6) {
-        int a = 1;
-    } 
-    else{
-        int a = 5;
+    int i = l, j = mid, k = l;
+    while (i < mid && j < r) {
+        if (buf[0][i] < buf[0][j]) {
+            buf[1][k] = buf[0][i];
+            i = i + 1;
+        } else {
+            buf[1][k] = buf[0][j];
+            j = j + 1;
+        }
+        k = k + 1;
+    }
+    while (i < mid) {
+        buf[1][k] = buf[0][i];
+        i = i + 1;
+        k = k + 1;
+    }
+    while (j < r) {
+        buf[1][k] = buf[0][j];
+        j = j + 1;
+        k = k + 1;
     }
 
-    m = 11111111;
-
-    if(i==100 || i == 101){
-        int a = 10;
+    while (l < r) {
+        buf[0][l] = buf[1][l];
+        l = l + 1;
     }
-    else{
-        int a = 11;
-    }
-    
-
 }
 
+int main()
+{
+    int n = getarray(buf[0]);
+    merge_sort(0, n);
+    putarray(n, buf[0]);
+    return 0;
+}

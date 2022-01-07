@@ -1,81 +1,193 @@
-f_atoi_ [1]
-	var T0
-	var T1
+var 800 T0
+f_merge_sort [2]
 	var t0
 	var t1
 	var t2
 	var t3
-	var t4
+	var T1
 	var T2
 	var T3
+	var T4
+	var t4
 	var t5
 	var t6
 	var t7
 	var t8
 	var t9
-	var T4
-	var T5
 	var t10
 	var t11
-	var T6
-	var T7
-	T0 = 0
-	T1 = 0
-	T1 = 1
+	var t12
+	var t13
+	var t14
+	var t15
+	var t16
+	var t17
+	var t18
+	var t19
+	var t20
+	var t21
+	var t22
+	var t23
+	var t24
+	var t25
+	var t26
+	var t27
+	var t28
+	var t29
+	var t30
+	var t31
+	var t32
+	var t33
+	var t34
+	var t35
+	var t36
+	var t37
+	var t38
+	var t39
+	var t40
+	var t41
+	var t42
+	var t43
+	var t44
+	var t45
+	var t46
+	var t47
+	var t48
 	l3:
-	t0 = T0 * 4
-	t1 = p0[t0]
-		t2 = t1 == 43
-		if t2 == 0 goto l4
-		goto l1
-	l4:
-		t3 = T0 == 5
-		if t3 == 0 goto l0
-		goto l5
-	l5:
-		t4 = T0 == 6
-		if t4 == 0 goto l0
+	t0 = p0 + 1
+		t1 = t0 >= p1
+		if t1 == 0 goto l0
 		goto l1
 	l1:
-		T2 = 1
-		goto l3
+		goto l2
 	l0:
 	l2:
-	T3 = 1000000
-	l10:
-	t5 = T0 * 4
-	t6 = p0[t5]
-		t7 = t6 == 43
-		if t7 == 0 goto l11
-		goto l8
-	l11:
-		t8 = T0 == 5
-		if t8 == 0 goto l7
-		goto l12
-	l12:
-		t9 = T0 == 6
-		if t9 == 0 goto l7
-		goto l8
+	t2 = p0 + p1
+	t3 = t2 / 2
+	T1 = t3
+	param p0
+	param T1
+	call f_merge_sort
+	param T1
+	param p1
+	call f_merge_sort
+	T2 = p0
+	T3 = T1
+	T4 = p0
 	l8:
-		T4 = 1
+		t4 = T2 < T1
+		if t4 == 0 goto l5
 		goto l9
-	l7:
-		T5 = 5
 	l9:
-	T3 = 11111111
+		t5 = T3 < p1
+		if t5 == 0 goto l5
+		goto l6
+	l6:
+		l14:
+		t6 = T2 * 4
+		t7 = 0 + t6
+		t8 = T0[t7]
+		t9 = T3 * 4
+		t10 = 0 + t9
+		t11 = T0[t10]
+			t12 = t8 < t11
+			if t12 == 0 goto l11
+			goto l12
+		l12:
+			t13 = T4 * 4
+			t14 = 400 + t13
+			t15 = T2 * 4
+			t16 = 0 + t15
+			t17 = T0[t16]
+			T0[t14] = t17
+			t18 = T2 + 1
+			T2 = t18
+			goto l13
+		l11:
+			t19 = T4 * 4
+			t20 = 400 + t19
+			t21 = T3 * 4
+			t22 = 0 + t21
+			t23 = T0[t22]
+			T0[t20] = t23
+			t24 = T3 + 1
+			T3 = t24
+		l13:
+		t25 = T4 + 1
+		T4 = t25
+		goto l8
+	l5:
+	l7:
+	l19:
+		t26 = T2 < T1
+		if t26 == 0 goto l16
+		goto l17
 	l17:
-		t10 = T0 == 100
-		if t10 == 0 goto l18
-		goto l15
-	l18:
-		t11 = T0 == 101
-		if t11 == 0 goto l14
-		goto l15
-	l15:
-		T6 = 10
-		goto l16
-	l14:
-		T7 = 11
+		t27 = T4 * 4
+		t28 = 400 + t27
+		t29 = T2 * 4
+		t30 = 0 + t29
+		t31 = T0[t30]
+		T0[t28] = t31
+		t32 = T2 + 1
+		T2 = t32
+		t33 = T4 + 1
+		T4 = t33
+		goto l19
 	l16:
+	l18:
+	l24:
+		t34 = T3 < p1
+		if t34 == 0 goto l21
+		goto l22
+	l22:
+		t35 = T4 * 4
+		t36 = 400 + t35
+		t37 = T3 * 4
+		t38 = 0 + t37
+		t39 = T0[t38]
+		T0[t36] = t39
+		t40 = T3 + 1
+		T3 = t40
+		t41 = T4 + 1
+		T4 = t41
+		goto l24
+	l21:
+	l23:
+	l29:
+		t42 = p0 < p1
+		if t42 == 0 goto l26
+		goto l27
+	l27:
+		t43 = p0 * 4
+		t44 = 0 + t43
+		t45 = p0 * 4
+		t46 = 400 + t45
+		t47 = T0[t46]
+		T0[t44] = t47
+		t48 = p0 + 1
+		p0 = t48
+		goto l29
+	l26:
+	l28:
+	return
+end f_merge_sort
+f_main [0]
+	var t49
+	var t50
+	var T5
+	var t51
+	t49 = T0[0]
+	param t49
+	t50 = call f_getarray
+	T5 = t50
+	param 0
+	param T5
+	call f_merge_sort
+	param T5
+	t51 = T0[0]
+	param t51
+	call f_putarray
 	return 0
-end f_atoi_
+	return 0
+end f_main
