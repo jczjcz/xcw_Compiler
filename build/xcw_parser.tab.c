@@ -3835,8 +3835,8 @@ yyreturn:
 
 
 void yyerror(const char *s) {
-    extern int yylineno, charNum;
-    cout << "Line " << yylineno << "," << charNum << ": " << s << endl;
+    extern int yylineno;
+    cout << "Line " << yylineno <<  ": " << s << endl;
     exit(1);
 }
 
@@ -3852,13 +3852,6 @@ int main(int argc, char **argv) {
     if (argc >= 6)
         if (freopen(argv[5], "w", stdout) == NULL)
             yyerror("Cannot open output file.");
-
-    // nowScope->addToken(new FuncIdentToken(RetInt, "getint", 0));
-    // nowScope->addToken(new FuncIdentToken(RetInt, "getch", 0));
-    // nowScope->addToken(new FuncIdentToken(RetInt, "getarray", 1));
-    // nowScope->addToken(new FuncIdentToken(RetVoid, "putint", 1));
-    // nowScope->addToken(new FuncIdentToken(RetVoid, "putch", 1));
-    // nowScope->addToken(new FuncIdentToken(RetVoid, "putarray", 2));
 
     IDENT_scope tmp_1 = IDENT_scope("getint", "0", DEEP, 0);    //不是Const
     tmp_1.IDENT_if_ret_int = 1;

@@ -533,20 +533,13 @@ int yy_flex_debug = 0;
 char *yytext;
 #line 1 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
 #line 2 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
-// Inspired by Zhenbang You
 #define YYSTYPE void*
-// Common headers
 #include <iostream>
 #include <string>
 using namespace std;
-// Token table
 #include "xcw_parser.tab.h"
-// Token class
-//#include "tokenclass.h"
-
-int charNum = 1;
-#line 549 "/home/xcw/xcw_Compiler/build/xcw_main.l.yy.cpp"
-#line 550 "/home/xcw/xcw_Compiler/build/xcw_main.l.yy.cpp"
+#line 542 "/home/xcw/xcw_Compiler/build/xcw_main.l.yy.cpp"
+#line 543 "/home/xcw/xcw_Compiler/build/xcw_main.l.yy.cpp"
 
 #define INITIAL 0
 
@@ -763,9 +756,9 @@ YY_DECL
 		}
 
 	{
-#line 28 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
+#line 21 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
 
-#line 769 "/home/xcw/xcw_Compiler/build/xcw_main.l.yy.cpp"
+#line 762 "/home/xcw/xcw_Compiler/build/xcw_main.l.yy.cpp"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -834,213 +827,209 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 29 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
-{charNum += yyleng;}
+#line 22 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
+{}
 	YY_BREAK
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-#line 30 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
-{charNum = 1;}
+#line 23 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
+{}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 31 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
-{charNum += yyleng; return IF;}
+#line 24 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
+{ return IF;}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 32 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
-{charNum += yyleng; return ELSE;}
+#line 25 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
+{ return ELSE;}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 33 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
-{charNum += yyleng; return CONT;}
+#line 26 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
+{ return CONT;}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 34 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
-{charNum += yyleng; return BREAK;}
+#line 27 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
+{ return BREAK;}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 35 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
-{charNum += yyleng; return WHILE;}
+#line 28 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
+{ return WHILE;}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 36 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
-{charNum += yyleng; return RETURN;}
+#line 29 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
+{ return RETURN;}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 37 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
-{charNum += yyleng; return INT;}
+#line 30 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
+{ return INT;}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 38 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
-{charNum += yyleng; return VOID;}
+#line 31 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
+{ return VOID;}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 39 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
-{charNum += yyleng; return CONST;}
+#line 32 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
+{ return CONST;}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 40 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
-{++charNum; return ADD;}
+#line 33 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
+{ return ADD;}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 41 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
-{++charNum; return SUB;}
+#line 34 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
+{ return SUB;}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 42 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
-{++charNum; return MUL;}
+#line 35 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
+{ return MUL;}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 43 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
-{++charNum; return DIV;}
+#line 36 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
+{ return DIV;}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 44 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
-{++charNum; return LE;}
+#line 37 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
+{ return LE;}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 45 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
-{charNum += 2; return LEQ;}
+#line 38 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
+{ return LEQ;}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 46 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
-{++charNum; return GE;}
+#line 39 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
+{ return GE;}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 47 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
-{charNum += 2; return GEQ;}
+#line 40 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
+{ return GEQ;}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 48 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
-{charNum += 2; return EQ;}
+#line 41 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
+{ return EQ;}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 49 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
-{charNum += 2; return NEQ;}
+#line 42 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
+{ return NEQ;}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 50 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
-{++charNum; return LPAREN;}
+#line 43 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
+{ return LPAREN;}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 51 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
-{++charNum; return RPAREN;}
+#line 44 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
+{ return RPAREN;}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 52 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
-{++charNum; return LCURLY;}
+#line 45 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
+{ return LCURLY;}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 53 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
-{++charNum; return RCURLY;}
+#line 46 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
+{ return RCURLY;}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 54 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
-{++charNum; return ASSIGN;}
+#line 47 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
+{ return ASSIGN;}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 55 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
-{++charNum; return SEMI;}
+#line 48 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
+{ return SEMI;}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 56 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
-{++charNum; return LBRAC;}
+#line 49 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
+{ return LBRAC;}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 57 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
-{++charNum; return RBRAC;}
+#line 50 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
+{ return RBRAC;}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 58 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
-{charNum += 2; return AND;}
+#line 51 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
+{ return AND;}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 59 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
-{charNum += 2; return OR;}
+#line 52 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
+{ return OR;}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 60 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
-{++charNum; return COMMA;}
+#line 53 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
+{ return COMMA;}
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 61 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
-{++charNum; return PERIOD;}
+#line 54 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
+{ return PERIOD;}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 62 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
-{++charNum; return NOT;}
+#line 55 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
+{ return NOT;}
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 63 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
-{++charNum; return MOD;}
+#line 56 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
+{ return MOD;}
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 64 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
+#line 59 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
 {
     yylval = new int(strtol(yytext, nullptr, 10));
-    charNum += yyleng;
     return NUMBER;
 }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 69 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
+#line 63 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
 {
     yylval = new int(strtol(yytext, nullptr, 8));
-    charNum += yyleng;
     return NUMBER;
 }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 74 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
+#line 67 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
 {
     yylval = new int(strtol(yytext, nullptr, 16));
-    charNum += yyleng;
     return NUMBER;
 }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 79 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
+#line 71 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
 {
     yylval = new string(yytext);
-    charNum += yyleng;
     return IDENT;
 }
 	YY_BREAK
@@ -1049,21 +1038,21 @@ case 40:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 85 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
-{/* Single line comment */}
+#line 76 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
+{/*ignore*/}
 	YY_BREAK
 case 41:
 /* rule 41 can match eol */
 YY_RULE_SETUP
-#line 86 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
-{ /* Multi-line comment. Copied from Zhenbang You */ }
+#line 77 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
+{/*ignore*/}
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 87 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
+#line 78 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
 ECHO;
 	YY_BREAK
-#line 1067 "/home/xcw/xcw_Compiler/build/xcw_main.l.yy.cpp"
+#line 1056 "/home/xcw/xcw_Compiler/build/xcw_main.l.yy.cpp"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2080,7 +2069,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 87 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
+#line 78 "/home/xcw/xcw_Compiler/source/xcw_scanner.l"
 
 
 int yywrap() {
