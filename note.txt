@@ -1,6 +1,0 @@
-git add.
-git commit -m "work_12_15_t"
-git push
-
-Func_VarDecl.push_back(def_out);
-Func_Other.push_back(other_out);
